@@ -29,10 +29,10 @@ export default function Header() {
                         Partidos
                     </Link>
                     <Link
-                        href="/ranking"
+                        href="/rankings"
                         className="hover:text-yellow-400 transition-colors duration-200"
                     >
-                        Ranking
+                        Rankings
                     </Link>
                 </nav>
             </div>

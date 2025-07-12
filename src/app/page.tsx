@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { KeyRound } from 'lucide-react';
+
 export default function Home() {
     return (
         <div className="relative">
@@ -36,10 +38,17 @@ export default function Home() {
                         Partidos
                     </Link>
                     <Link
-                        href="/partidos"
+                        href="/rankings"
                         className="w-full text-lg sm:text-xl px-6 py-3 rounded-xl font-semibold text-neutral-900 bg-yellow-300 transition-all duration-300 ease-in-out shadow-md hover:bg-yellow-400 hover:scale-105 hover:shadow-lg"
                     >
                         Ranking (WIP)
+                    </Link>
+                    <Link
+                        href="/auth/login"
+                        className="fixed bottom-4 right-4 z-50 bg-yellow-300 text-neutral-900 p-3 rounded-full shadow-md transition-all duration-300 ease-in-out hover:bg-yellow-400 hover:scale-105 hover:shadow-lg"
+                        aria-label="Acceso administrador"
+                    >
+                        <KeyRound className="w-5 h-5" />
                     </Link>
                 </div>
             </div>
