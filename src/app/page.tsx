@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function Home() {
     return (
-        <main className="relative min-h-screen">
+        <div className="relative">
             <Image
                 src="/home-image.jpg"
                 alt="Fondo de cancha de tenis"
@@ -13,7 +13,7 @@ export default function Home() {
                 className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/40 z-0" />
-            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 text-center gap-12">
+            <div className="relative min-h-[calc(100dvh-4rem)] z-10 flex flex-col items-center justify-center px-4 text-center gap-12">
                 <Image
                     src="/logo-apur.png"
                     alt="Logo de la liga"
@@ -35,11 +35,14 @@ export default function Home() {
                     >
                         Partidos
                     </Link>
-                    <span className="w-full text-lg sm:text-xl px-6 py-3 rounded-xl font-semibold bg-gray-300 text-gray-500 cursor-not-allowed shadow-none">
+                    <Link
+                        href="/partidos"
+                        className="w-full text-lg sm:text-xl px-6 py-3 rounded-xl font-semibold text-neutral-900 bg-yellow-300 transition-all duration-300 ease-in-out shadow-md hover:bg-yellow-400 hover:scale-105 hover:shadow-lg"
+                    >
                         Ranking (WIP)
-                    </span>
+                    </Link>
                 </div>
             </div>
-        </main>
+        </div>
     );
 }
