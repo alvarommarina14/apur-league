@@ -1,5 +1,5 @@
-import players from '@/seed/players.json';
-import categories from '@/seed/categories.json';
+import { GetAllPlayers } from '@/lib/services/player/service';
+import { GetAllCategories } from '@/lib/services/category/service';
 
 import Filters from './Filters';
 import PlayersTable from './Table';
@@ -12,6 +12,8 @@ export default async function Jugadores({
     searchParams,
 }: JugadoresSearchParamsType) {
     const { search, filterByCategory } = await searchParams;
+    const players = await GetAllPlayers();
+    const categories = await GetAllCategories();
 
     return (
         <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">

@@ -4,8 +4,13 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Select from 'react-select';
 
+interface Category {
+    id: number;
+    name: string;
+}
+
 interface FiltersProps {
-    categories: string[];
+    categories: Category[];
     search?: string;
     selectedCategory?: string;
 }
@@ -26,7 +31,10 @@ export default function Filters({
     const options = useMemo(
         () => [
             { value: '', label: 'Todas las categorías' },
-            ...categories.map((cat) => ({ value: cat, label: cat })),
+            ...categories.map((cat) => ({
+                value: cat.name,
+                label: cat.name,
+            })),
         ],
         [categories]
     );
