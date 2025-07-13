@@ -1,3 +1,4 @@
+import Link from 'next/link';
 interface Player {
     id: number;
     firstName: string;
@@ -17,6 +18,7 @@ export default function PlayersTable({ players }: PlayersTableProps) {
     const rows = players.flatMap((player) =>
         player.playerCategories.map((cat, j) => ({
             key: `${player.id}-${j}`,
+            id: player.id,
             lastName: player.lastName,
             firstName: player.firstName,
             categoryName: cat.category.name,
@@ -53,14 +55,29 @@ export default function PlayersTable({ players }: PlayersTableProps) {
                                 key={row.key}
                                 className="transition-colors duration-200 hover:bg-apur-lightGreen border-b border-neutral-100 last:border-b-0"
                             >
-                                <td className="px-6 py-4 font-medium text-neutral-900 truncate">
-                                    {row.lastName}
+                                <td>
+                                    <Link
+                                        href={`/jugadores/${row.id}`}
+                                        className="block w-full h-full px-6 py-4 font-medium text-neutral-900 truncate"
+                                    >
+                                        {row.lastName}
+                                    </Link>
                                 </td>
-                                <td className="px-6 py-4 truncate">
-                                    {row.firstName}
+                                <td>
+                                    <Link
+                                        href={`/jugadores/${row.id}`}
+                                        className="block w-full h-full px-6 py-4 truncate"
+                                    >
+                                        {row.firstName}
+                                    </Link>
                                 </td>
-                                <td className="px-6 py-4 truncate">
-                                    {row.categoryName}
+                                <td>
+                                    <Link
+                                        href={`/jugadores/${row.id}`}
+                                        className="block w-full h-full px-6 py-4 truncate"
+                                    >
+                                        {row.categoryName}
+                                    </Link>
                                 </td>
                             </tr>
                         ))
