@@ -1,5 +1,11 @@
 @import 'tailwindcss';
 
+@theme {
+    --color-apur-green: #004731;
+    --color-apur-yellow: #f2c94c;
+    --color-apur-lightGreen: #e8f5f1;
+}
+
 html,
 body {
     height: 100%;

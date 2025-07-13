@@ -1,15 +1,16 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+import { GetPlayerById } from '@/lib/services/player/service';
+
 export async function GET(
     _: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const { id } = await params;
-        const player = await prisma.player.findUnique({
-            where: { id: Number(id) },
-        });
+        const player = await GetPlayerById(Number(id));
+
         return NextResponse.json(player);
     } catch (error) {
         console.error('Error fetching player:', error);
