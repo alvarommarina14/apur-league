@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-import { GetPlayerById } from '@/lib/services/player/service';
+import { getPlayerById } from '@/lib/services/player';
 
 export async function GET(
     _: NextRequest,
@@ -9,7 +9,7 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-        const player = await GetPlayerById(Number(id));
+        const player = await getPlayerById(Number(id));
 
         return NextResponse.json(player);
     } catch (error) {

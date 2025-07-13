@@ -1,11 +1,11 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-import { GetAllPlayers } from '@/lib/services/player/service';
+import { getAllPlayers } from '@/lib/services/player';
 
 export async function GET() {
     try {
-        const players = await GetAllPlayers();
+        const players = await getAllPlayers();
         return NextResponse.json(players);
     } catch (error) {
         console.error('Error fetching player:', error);
