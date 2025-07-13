@@ -1,19 +1,25 @@
 import { GetAllPlayers } from '@/lib/services/player/service';
 import { GetAllCategories } from '@/lib/services/category/service';
+import { sortByKey } from '@/lib/helpers';
 
 import Filters from './Filters';
 import PlayersTable from './Table';
 
 interface JugadoresSearchParamsType {
-    searchParams: Promise<{ search?: string; filterByCategory?: string }>;
+    searchParams: Promise<{
+        search?: string;
+        filterByCategory?: string;
+        sortOrder?: 'asc' | 'desc';
+    }>;
 }
 
 export default async function Jugadores({
     searchParams,
 }: JugadoresSearchParamsType) {
-    const { search, filterByCategory } = await searchParams;
+    const { search, filterByCategory, sortOrder = 'asc' } = await searchParams;
     const players = await GetAllPlayers();
     const categories = await GetAllCategories();
+    const sortedPlayers = sortByKey(players, 'lastName', sortOrder);
 
     return (
         <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
@@ -29,9 +35,10 @@ export default async function Jugadores({
                     categories={categories}
                     search={search}
                     selectedCategory={filterByCategory}
+                    sortOrder={sortOrder}
                 />
 
-                <PlayersTable players={players} />
+                <PlayersTable players={sortedPlayers} />
             </div>
         </div>
     );
