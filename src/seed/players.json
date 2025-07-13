@@ -1,0 +1,118 @@
+[
+    {
+        "id": 1,
+        "firstName": "Lucía",
+        "lastName": "Fernández",
+        "dateOfBirth": "1994-06-21T00:00:00.000Z",
+        "playerCategories": [
+            {
+                "category": {
+                    "id": 1,
+                    "name": "DM2 - 30 - Singles"
+                }
+            },
+            {
+                "category": {
+                    "id": 5,
+                    "name": "DM2 - 30 - Dobles"
+                }
+            }
+        ],
+        "categoryPoints": [
+            {
+                "category": {
+                    "id": 1,
+                    "name": "DM2 - 30 - Singles"
+                },
+                "points": 820
+            },
+            {
+                "category": {
+                    "id": 5,
+                    "name": "DM2 - 30 - Dobles"
+                },
+                "points": 400
+            }
+        ],
+        "playerMatches": []
+    },
+    {
+        "id": 2,
+        "firstName": "Mateo",
+        "lastName": "Gómez",
+        "dateOfBirth": "1989-11-04T00:00:00.000Z",
+        "playerCategories": [
+            {
+                "category": {
+                    "id": 2,
+                    "name": "C3 - Libre - Dobles"
+                }
+            }
+        ],
+        "categoryPoints": [
+            {
+                "category": {
+                    "id": 2,
+                    "name": "C3 - Libre - Dobles"
+                },
+                "points": 1090
+            }
+        ],
+        "playerMatches": [
+            {
+                "match": {
+                    "id": 201,
+                    "date": "2024-06-01T14:00:00.000Z"
+                }
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "firstName": "Agustina",
+        "lastName": "Pérez",
+        "dateOfBirth": "1986-03-15T00:00:00.000Z",
+        "playerCategories": [
+            {
+                "category": {
+                    "id": 3,
+                    "name": "DM4 - 40 - Dobles"
+                }
+            }
+        ],
+        "categoryPoints": [
+            {
+                "category": {
+                    "id": 3,
+                    "name": "DM4 - 40 - Dobles"
+                },
+                "points": 600
+            }
+        ],
+        "playerMatches": []
+    },
+    {
+        "id": 4,
+        "firstName": "Tomás",
+        "lastName": "Ruiz",
+        "dateOfBirth": "1990-09-01T00:00:00.000Z",
+        "playerCategories": [
+            {
+                "category": {
+                    "id": 4,
+                    "name": "C1 - Libre - Mixto"
+                }
+            }
+        ],
+        "categoryPoints": [
+            {
+                "category": {
+                    "id": 4,
+                    "name": "C1 - Libre - Mixto"
+                },
+                "points": 980
+            }
+        ],
+        "playerMatches": []
+    }
+]
