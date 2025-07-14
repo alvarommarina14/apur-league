@@ -1,21 +1,15 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/generated/prisma';
-
-type MatchUpdateInput = Prisma.MatchUncheckedUpdateInput;
+import {
+    updateMatchBulk,
+    createMatchBulk,
+    createMatch,
+    deleteMatchBulk,
+} from '@/lib/services/matches';
 
 export async function PUT(request: Request) {
     try {
         const data = await request.json();
-        await prisma.$transaction(async (prisma) => {
-            data.map(async (match: MatchUpdateInput) => {
-                const { id, ...updateData } = match;
-                await prisma.match.update({
-                    where: { id: Number(id) },
-                    data: updateData,
-                });
-            });
-        });
+        await updateMatchBulk(data);
 
         return NextResponse.json(
             {
@@ -36,9 +30,13 @@ export async function PUT(request: Request) {
 export async function POST(request: Request) {
     try {
         const data = await request.json();
-        const result = await prisma.match.createMany({
-            data,
-        });
+
+        if (!Array.isArray(data) || data.length === 0) {
+            const result = await createMatch(data);
+            return NextResponse.json(result);
+        }
+
+        const result = await createMatchBulk(data);
         return NextResponse.json(
             {
                 message: `Successfully created ${result.count} matches.`,
@@ -66,13 +64,7 @@ export async function DELETE(request: NextRequest) {
             );
         }
 
-        const result = await prisma.match.deleteMany({
-            where: {
-                id: {
-                    in: ids,
-                },
-            },
-        });
+        const result = await deleteMatchBulk(ids);
 
         return NextResponse.json(
             {
