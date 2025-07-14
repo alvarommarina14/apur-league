@@ -35,6 +35,7 @@ model PlayerMatch {
   playerId Int
   matchId  Int
   winner   Boolean
+  team     Int
   player   Player  @relation(fields: [playerId], references: [id])
   match    Match   @relation(fields: [matchId], references: [id])
 
