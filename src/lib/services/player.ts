@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 
-export async function GetAllPlayers() {
+export async function getAllPlayers() {
     return prisma.player.findMany({
         include: {
             playerCategories: {
@@ -22,7 +22,7 @@ export async function GetAllPlayers() {
     });
 }
 
-export async function GetPlayerById(id: number) {
+export async function getPlayerById(id: number) {
     return prisma.player.findUnique({
         where: { id },
         include: {

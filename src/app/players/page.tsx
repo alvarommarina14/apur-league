@@ -1,5 +1,5 @@
-import { GetAllPlayers } from '@/lib/services/player/service';
-import { GetAllCategories } from '@/lib/services/category/service';
+import { getAllPlayers } from '@/lib/services/player';
+import { getAllCategories } from '@/lib/services/category';
 
 import Filters from './Filters';
 import PlayersTable from './Table';
@@ -12,8 +12,8 @@ export default async function Jugadores({
     searchParams,
 }: JugadoresSearchParamsType) {
     const { search, filterByCategory } = await searchParams;
-    const players = await GetAllPlayers();
-    const categories = await GetAllCategories();
+    const players = await getAllPlayers();
+    const categories = await getAllCategories();
 
     return (
         <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
