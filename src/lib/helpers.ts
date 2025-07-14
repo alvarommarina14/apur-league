@@ -1,3 +1,5 @@
+import { Player } from '@/types/player';
+
 export function sortByKey<T>(
     array: T[],
     key: keyof T,
@@ -19,4 +21,38 @@ export function sortByKey<T>(
 
         return 0;
     });
+}
+
+export function filterAndSortPlayers(
+    players: Player[],
+    {
+        search,
+        filterByCategory,
+        sortOrder = 'asc',
+    }: {
+        search?: string;
+        filterByCategory?: string;
+        sortOrder?: 'asc' | 'desc';
+    }
+) {
+    let filtered = players;
+
+    if (filterByCategory) {
+        filtered = filtered.filter((player) =>
+            player.playerCategories.some(
+                (pc) => pc.category.name === filterByCategory
+            )
+        );
+    }
+
+    if (search) {
+        const lowerSearch = search.toLowerCase();
+        filtered = filtered.filter(
+            (player) =>
+                player.firstName.toLowerCase().includes(lowerSearch) ||
+                player.lastName.toLowerCase().includes(lowerSearch)
+        );
+    }
+
+    return sortByKey(filtered, 'lastName', sortOrder);
 }

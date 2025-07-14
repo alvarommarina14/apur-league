@@ -1,14 +1,6 @@
+import { Player } from '@/types/player';
+
 import Link from 'next/link';
-interface Player {
-    id: number;
-    firstName: string;
-    lastName: string;
-    playerCategories: {
-        category: {
-            name: string;
-        };
-    }[];
-}
 
 interface PlayersTableProps {
     players: Player[];
