@@ -1,10 +1,10 @@
-import { GetAllPlayers } from '@/lib/services/player/service';
-import { GetAllCategories } from '@/lib/services/category/service';
+import { getAllPlayers } from '@/lib/services/player';
+import { getAllCategories } from '@/lib/services/category';
 
 import Filters from './Filters';
 import PlayersTable from './Table';
 
-interface JugadoresSearchParamsType {
+interface PLayersSearchParamsType {
     searchParams: Promise<{
         search?: string;
         filterByCategory?: string;
@@ -13,9 +13,9 @@ interface JugadoresSearchParamsType {
     }>;
 }
 
-export default async function Jugadores({
+export default async function PlayersPage({
     searchParams,
-}: JugadoresSearchParamsType) {
+}: PLayersSearchParamsType) {
     const {
         search,
         filterByCategory,
@@ -24,7 +24,7 @@ export default async function Jugadores({
     } = await searchParams;
     const pageNumber = Number(page) || 1;
     const perPage = 25;
-    const { players, totalCount } = await GetAllPlayers({
+    const { players, totalCount } = await getAllPlayers({
         search,
         filterByCategory,
         sortOrder,
@@ -33,7 +33,7 @@ export default async function Jugadores({
     });
     const totalPages = perPage > 0 ? Math.ceil(totalCount / perPage) : 1;
 
-    const categories = await GetAllCategories();
+    const categories = await getAllCategories();
 
     return (
         <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">

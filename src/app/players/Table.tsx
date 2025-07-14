@@ -48,7 +48,7 @@ export default function PlayersTable({
                                 >
                                     <td>
                                         <Link
-                                            href={`/jugadores/${row.id}`}
+                                            href={`/players/${row.id}`}
                                             className="block w-full h-full px-6 py-4 font-medium text-neutral-900 truncate"
                                         >
                                             {row.lastName}
@@ -56,7 +56,7 @@ export default function PlayersTable({
                                     </td>
                                     <td>
                                         <Link
-                                            href={`/jugadores/${row.id}`}
+                                            href={`/players/${row.id}`}
                                             className="block w-full h-full px-6 py-4 truncate"
                                         >
                                             {row.firstName}
@@ -64,7 +64,7 @@ export default function PlayersTable({
                                     </td>
                                     <td>
                                         <Link
-                                            href={`/jugadores/${row.id}`}
+                                            href={`/players/${row.id}`}
                                             className="w-full h-full px-6 py-4 flex gap-2"
                                         >
                                             {row.playerCategories?.map(

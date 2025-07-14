@@ -1,6 +1,6 @@
 import { format } from '@formkit/tempo';
 
-import { GetPlayerById } from '@/lib/services/player/service';
+import { getPlayerById } from '@/lib/services/player';
 
 interface ParamsProp {
     params: Promise<{ id: string }>;
@@ -8,7 +8,7 @@ interface ParamsProp {
 
 export default async function Jugador({ params }: ParamsProp) {
     const { id } = await params;
-    const player = await GetPlayerById(Number(id));
+    const player = await getPlayerById(Number(id));
 
     if (!player)
         return (
