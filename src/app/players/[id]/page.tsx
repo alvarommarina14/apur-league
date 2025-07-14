@@ -6,7 +6,7 @@ interface ParamsProp {
     params: Promise<{ id: string }>;
 }
 
-export default async function Jugador({ params }: ParamsProp) {
+export default async function PlayerPage({ params }: ParamsProp) {
     const { id } = await params;
     const player = await getPlayerById(Number(id));
 
