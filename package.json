@@ -9,6 +9,7 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@formkit/tempo": "^0.1.2",
         "@hookform/resolvers": "^5.1.1",
         "@prisma/client": "^6.11.1",
         "lucide-react": "^0.525.0",

@@ -26,13 +26,13 @@ export default function Home() {
 
                 <div className="flex flex-col gap-4 w-full max-w-xs">
                     <Link
-                        href="/jugadores"
+                        href="/players"
                         className="w-full text-lg sm:text-xl px-6 py-3 rounded-xl font-semibold text-neutral-900 bg-yellow-300 transition-all duration-300 ease-in-out shadow-md hover:bg-yellow-400 hover:scale-105 hover:shadow-lg"
                     >
                         Jugadores
                     </Link>
                     <Link
-                        href="/partidos"
+                        href="/matches"
                         className="w-full text-lg sm:text-xl px-6 py-3 rounded-xl font-semibold text-neutral-900 bg-yellow-300 transition-all duration-300 ease-in-out shadow-md hover:bg-yellow-400 hover:scale-105 hover:shadow-lg"
                     >
                         Partidos

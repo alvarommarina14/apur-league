@@ -17,13 +17,13 @@ export default function Header() {
 
                 <nav className="flex gap-6 text-sm sm:text-base font-medium">
                     <Link
-                        href="/jugadores"
+                        href="/players"
                         className="hover:text-yellow-400 transition-colors duration-200"
                     >
                         Jugadores
                     </Link>
                     <Link
-                        href="/partidos"
+                        href="/matches"
                         className="hover:text-yellow-400 transition-colors duration-200"
                     >
                         Partidos

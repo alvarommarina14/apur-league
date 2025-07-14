@@ -2,6 +2,38 @@ import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma';
 
+import { getAllPlayers } from '@/lib/services/player';
+
+export async function GET(request: Request) {
+    try {
+        const { searchParams } = new URL(request.url);
+
+        const search = searchParams.get('search') ?? undefined;
+        const filterByCategory =
+            searchParams.get('filterByCategory') ?? undefined;
+        const sortOrder =
+            (searchParams.get('sortOrder') as 'asc' | 'desc') ?? 'asc';
+        const page = Number(searchParams.get('page')) || 1;
+        const perPage = Number(searchParams.get('perPage')) || 50;
+
+        const players = await getAllPlayers({
+            search,
+            filterByCategory,
+            sortOrder,
+            page,
+            perPage,
+        });
+
+        return NextResponse.json(players);
+    } catch (error) {
+        console.error('Error fetching players:', error);
+        return NextResponse.json(
+            { error: 'Internal Server Error' },
+            { status: 500 }
+        );
+    }
+}
+
 type PlayerUpdateInput = Prisma.PlayerUncheckedUpdateInput;
 
 export async function PUT(request: NextRequest) {

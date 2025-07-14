@@ -4,15 +4,35 @@ import { getAllCategories } from '@/lib/services/category';
 import Filters from './Filters';
 import PlayersTable from './Table';
 
-interface JugadoresSearchParamsType {
-    searchParams: Promise<{ search?: string; filterByCategory?: string }>;
+interface PLayersSearchParamsType {
+    searchParams: Promise<{
+        search?: string;
+        filterByCategory?: string;
+        sortOrder?: 'asc' | 'desc';
+        page?: string;
+    }>;
 }
 
-export default async function Jugadores({
+export default async function PlayersPage({
     searchParams,
-}: JugadoresSearchParamsType) {
-    const { search, filterByCategory } = await searchParams;
-    const players = await getAllPlayers();
+}: PLayersSearchParamsType) {
+    const {
+        search,
+        filterByCategory,
+        sortOrder = 'asc',
+        page = '1',
+    } = await searchParams;
+    const pageNumber = Number(page) || 1;
+    const perPage = 25;
+    const { players, totalCount } = await getAllPlayers({
+        search,
+        filterByCategory,
+        sortOrder,
+        page: pageNumber,
+        perPage,
+    });
+    const totalPages = perPage > 0 ? Math.ceil(totalCount / perPage) : 1;
+
     const categories = await getAllCategories();
 
     return (
@@ -29,9 +49,14 @@ export default async function Jugadores({
                     categories={categories}
                     search={search}
                     selectedCategory={filterByCategory}
+                    sortOrder={sortOrder}
                 />
 
-                <PlayersTable players={players} />
+                <PlayersTable
+                    rows={players}
+                    page={pageNumber}
+                    totalPages={totalPages}
+                />
             </div>
         </div>
     );
