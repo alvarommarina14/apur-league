@@ -18,9 +18,9 @@ export interface Player {
     dateOfBirth: Date;
     createdAt: Date;
     updatedAt: Date;
-    playerMatches: PlayerMatch[];
-    playerCategories: PlayerCategory[];
-    categoryPoints: PlayerCategoryPoints[];
+    playerMatches?: PlayerMatch[];
+    playerCategories?: PlayerCategory[];
+    categoryPoints?: PlayerCategoryPoints[];
 }
 
 export interface PlayerMatch {

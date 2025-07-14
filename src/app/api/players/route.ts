@@ -3,16 +3,33 @@ import { prisma } from '@/lib/prisma';
 
 import { GetAllPlayers } from '@/lib/services/player/service';
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
-        const players = await GetAllPlayers();
+        const { searchParams } = new URL(request.url);
+
+        const search = searchParams.get('search') ?? undefined;
+        const filterByCategory =
+            searchParams.get('filterByCategory') ?? undefined;
+        const sortOrder =
+            (searchParams.get('sortOrder') as 'asc' | 'desc') ?? 'asc';
+        const page = Number(searchParams.get('page')) || 1;
+        const perPage = Number(searchParams.get('perPage')) || 50;
+
+        const players = await GetAllPlayers({
+            search,
+            filterByCategory,
+            sortOrder,
+            page,
+            perPage,
+        });
+
         return NextResponse.json(players);
     } catch (error) {
-        console.error('Error fetching player:', error);
-        return NextResponse.json({
-            status: 500,
-            error: 'Internal Server Error',
-        });
+        console.error('Error fetching players:', error);
+        return NextResponse.json(
+            { error: 'Internal Server Error' },
+            { status: 500 }
+        );
     }
 }
 

@@ -1,58 +1,48 @@
-import { Player } from '@/types/player';
+export function getPaginationPages(
+    currentPage: number,
+    totalPages: number,
+    maxPagesToShow = 5
+): (number | 'dots')[] {
+    const pages: (number | 'dots')[] = [];
 
-export function sortByKey<T>(
-    array: T[],
-    key: keyof T,
-    order: 'asc' | 'desc' = 'asc'
-): T[] {
-    return [...array].sort((a, b) => {
-        const aVal = a[key];
-        const bVal = b[key];
-
-        if (typeof aVal === 'string' && typeof bVal === 'string') {
-            return order === 'asc'
-                ? aVal.localeCompare(bVal)
-                : bVal.localeCompare(aVal);
+    if (totalPages <= maxPagesToShow) {
+        for (let i = 1; i <= totalPages; i++) {
+            pages.push(i);
         }
+        return pages;
+    }
 
-        if (typeof aVal === 'number' && typeof bVal === 'number') {
-            return order === 'asc' ? aVal - bVal : bVal - aVal;
+    const half = Math.floor(maxPagesToShow / 2);
+    let start = currentPage - half;
+    let end = currentPage + half;
+
+    if (start <= 1) {
+        start = 1;
+        end = maxPagesToShow;
+    }
+
+    if (end >= totalPages) {
+        start = totalPages - maxPagesToShow + 1;
+        end = totalPages;
+    }
+
+    pages.push(1);
+    if (start > 2) {
+        pages.push('dots');
+    }
+
+    for (let i = start; i <= end; i++) {
+        if (i !== 1 && i !== totalPages) {
+            pages.push(i);
         }
-
-        return 0;
-    });
-}
-
-export function filterAndSortPlayers(
-    players: Player[],
-    {
-        search,
-        filterByCategory,
-        sortOrder = 'asc',
-    }: {
-        search?: string;
-        filterByCategory?: string;
-        sortOrder?: 'asc' | 'desc';
-    }
-) {
-    let filtered = players;
-
-    if (filterByCategory) {
-        filtered = filtered.filter((player) =>
-            player.playerCategories.some(
-                (pc) => pc.category.name === filterByCategory
-            )
-        );
     }
 
-    if (search) {
-        const lowerSearch = search.toLowerCase();
-        filtered = filtered.filter(
-            (player) =>
-                player.firstName.toLowerCase().includes(lowerSearch) ||
-                player.lastName.toLowerCase().includes(lowerSearch)
-        );
+    if (end < totalPages - 1) {
+        pages.push('dots');
+    }
+    if (totalPages > 1) {
+        pages.push(totalPages);
     }
 
-    return sortByKey(filtered, 'lastName', sortOrder);
+    return pages;
 }

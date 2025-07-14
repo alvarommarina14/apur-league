@@ -2,12 +2,9 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import Select from 'react-select';
 
-interface Category {
-    id: number;
-    name: string;
-}
+import { Category } from '@/types/player';
+import Select from 'react-select';
 
 interface FiltersProps {
     categories: Category[];
@@ -112,8 +109,9 @@ export default function Filters({
                                     : 'text-gray-900'
                             }`,
                         singleValue: () => 'truncate',
-                        input: () => 'text-gray-900',
-                        dropdownIndicator: () => 'text-gray-500 px-2',
+                        input: () => 'text-gray-900 cursor-pointer',
+                        dropdownIndicator: () =>
+                            'text-gray-500 px-2 cursor-pointer',
                         indicatorSeparator: () => 'bg-gray-300',
                     }}
                 />
@@ -152,8 +150,9 @@ export default function Filters({
                                     : 'text-gray-900'
                             }`,
                         singleValue: () => 'truncate',
-                        input: () => 'text-gray-900',
-                        dropdownIndicator: () => 'text-gray-500 px-2',
+                        input: () => 'text-gray-900 cursor-pointer',
+                        dropdownIndicator: () =>
+                            'text-gray-500 px-2 cursor-pointer',
                         indicatorSeparator: () => 'bg-gray-300',
                     }}
                 />

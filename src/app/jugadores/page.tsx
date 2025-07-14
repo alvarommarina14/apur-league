@@ -1,8 +1,5 @@
-import { Player } from '@/types/player';
-
 import { GetAllPlayers } from '@/lib/services/player/service';
 import { GetAllCategories } from '@/lib/services/category/service';
-import { filterAndSortPlayers } from '@/lib/helpers';
 
 import Filters from './Filters';
 import PlayersTable from './Table';
@@ -12,21 +9,31 @@ interface JugadoresSearchParamsType {
         search?: string;
         filterByCategory?: string;
         sortOrder?: 'asc' | 'desc';
+        page?: string;
     }>;
 }
 
 export default async function Jugadores({
     searchParams,
 }: JugadoresSearchParamsType) {
-    const { search, filterByCategory, sortOrder = 'asc' } = await searchParams;
-    const players: Player[] = await GetAllPlayers();
-    const categories = await GetAllCategories();
-
-    const sortedPlayers = filterAndSortPlayers(players, {
+    const {
+        search,
+        filterByCategory,
+        sortOrder = 'asc',
+        page = '1',
+    } = await searchParams;
+    const pageNumber = Number(page) || 1;
+    const perPage = 25;
+    const { players, totalCount } = await GetAllPlayers({
         search,
         filterByCategory,
         sortOrder,
+        page: pageNumber,
+        perPage,
     });
+    const totalPages = perPage > 0 ? Math.ceil(totalCount / perPage) : 1;
+
+    const categories = await GetAllCategories();
 
     return (
         <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
@@ -45,7 +52,11 @@ export default async function Jugadores({
                     sortOrder={sortOrder}
                 />
 
-                <PlayersTable players={sortedPlayers} />
+                <PlayersTable
+                    rows={players}
+                    page={pageNumber}
+                    totalPages={totalPages}
+                />
             </div>
         </div>
     );
