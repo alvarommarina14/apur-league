@@ -2,16 +2,15 @@ import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma';
 
-type PlayerUpdateInput = Prisma.PlayerUncheckedUpdateInput;
+type MatchUpdateInput = Prisma.MatchUncheckedUpdateInput;
 
-export async function PUT(request: NextRequest) {
+export async function PUT(request: Request) {
     try {
         const data = await request.json();
-
         await prisma.$transaction(async (prisma) => {
-            data.map(async (player: PlayerUpdateInput) => {
-                const { id, ...updateData } = player;
-                await prisma.player.update({
+            data.map(async (match: MatchUpdateInput) => {
+                const { id, ...updateData } = match;
+                await prisma.match.update({
                     where: { id: Number(id) },
                     data: updateData,
                 });
@@ -26,7 +25,7 @@ export async function PUT(request: NextRequest) {
             { status: 200 }
         );
     } catch (error) {
-        console.error('Error updating player:', error);
+        console.error('Error updating matches:', error);
         return NextResponse.json({
             status: 500,
             error: 'Internal Server Error',
@@ -34,23 +33,21 @@ export async function PUT(request: NextRequest) {
     }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
     try {
         const data = await request.json();
-
-        const result = await prisma.player.createMany({
+        const result = await prisma.match.createMany({
             data,
         });
-
         return NextResponse.json(
             {
-                message: `Successfully created ${result.count} players.`,
+                message: `Successfully created ${result.count} matches.`,
                 createdCount: result.count,
             },
             { status: 200 }
         );
     } catch (error) {
-        console.error('Error creating player:', error);
+        console.error('Error creating matches:', error);
         return NextResponse.json({
             status: 500,
             error: 'Internal Server Error',
@@ -69,7 +66,7 @@ export async function DELETE(request: NextRequest) {
             );
         }
 
-        const result = await prisma.player.deleteMany({
+        const result = await prisma.match.deleteMany({
             where: {
                 id: {
                     in: ids,
@@ -79,16 +76,16 @@ export async function DELETE(request: NextRequest) {
 
         return NextResponse.json(
             {
-                message: `Successfully deleted ${result.count} players.`,
+                message: `Successfully deleted ${result.count} matches.`,
                 deletedCount: result.count,
             },
             { status: 200 }
         );
     } catch (error) {
-        console.error('Error deleting players:', error);
-        return NextResponse.json(
-            { error: 'Internal Server Error' },
-            { status: 500 }
-        );
+        console.error('Error deleting matches:', error);
+        return NextResponse.json({
+            status: 500,
+            error: 'Internal Server Error',
+        });
     }
 }

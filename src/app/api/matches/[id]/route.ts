@@ -5,14 +5,14 @@ export async function PUT(request: Request) {
     try {
         const data = await request.json();
 
-        const player = await prisma.player.update({
+        const match = await prisma.match.update({
             where: { id: Number(data.id) },
             data,
         });
 
-        return NextResponse.json(player);
+        return NextResponse.json(match);
     } catch (error) {
-        console.error('Error updating player:', error);
+        console.error('Error updating match:', error);
         return NextResponse.json({
             status: 500,
             error: 'Internal Server Error',
@@ -24,13 +24,13 @@ export async function POST(request: Request) {
     try {
         const data = await request.json();
 
-        const player = await prisma.player.create({
+        const match = await prisma.match.create({
             data,
         });
 
-        return NextResponse.json(player);
+        return NextResponse.json(match);
     } catch (error) {
-        console.error('Error creating player:', error);
+        console.error('Error creating match:', error);
         return NextResponse.json({
             status: 500,
             error: 'Internal Server Error',
@@ -45,13 +45,13 @@ export async function DELETE(
     try {
         const { id } = await params;
 
-        const player = await prisma.player.delete({
+        const match = await prisma.match.delete({
             where: { id: Number(id) },
         });
 
-        return NextResponse.json(player);
+        return NextResponse.json(match);
     } catch (error) {
-        console.error('Error deleting player:', error);
+        console.error('Error deleting match:', error);
         return NextResponse.json({
             status: 500,
             error: 'Internal Server Error',
