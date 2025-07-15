@@ -83,21 +83,23 @@ export default function PlayersTable({
                             ))
                         )}
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td
-                                colSpan={3}
-                                className="px-6 py-4 border-t border-gray-200"
-                            >
-                                <div className="flex justify-center">
-                                    <Pagination
-                                        page={page}
-                                        totalPages={totalPages}
-                                    />
-                                </div>
-                            </td>
-                        </tr>
-                    </tfoot>
+                    {rows.length > 0 && (
+                        <tfoot>
+                            <tr>
+                                <td
+                                    colSpan={3}
+                                    className="px-6 py-4 border-t border-gray-200"
+                                >
+                                    <div className="flex justify-center">
+                                        <Pagination
+                                            page={page}
+                                            totalPages={totalPages}
+                                        />
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    )}
                 </table>
             </div>
         </div>

@@ -5,12 +5,59 @@ import {
     MatchUpdateInputWithIdType,
 } from '@/types/matches';
 
-export async function getAllMatches() {
-    return prisma.match.findMany({
+export async function getMatchWeekWithMatches({
+    matchWeekId,
+    categoryId,
+    search,
+}: {
+    matchWeekId: number;
+    categoryId?: number;
+    search?: string;
+}) {
+    return await prisma.matchWeek.findUnique({
+        where: {
+            id: matchWeekId,
+        },
         include: {
-            playerMatches: {
+            matchDays: {
+                orderBy: { date: 'asc' },
                 include: {
-                    player: true,
+                    matches: {
+                        orderBy: { hour: 'asc' },
+                        where: {
+                            ...(categoryId && { categoryId }),
+                            ...(search && {
+                                playerMatches: {
+                                    some: {
+                                        player: {
+                                            OR: [
+                                                {
+                                                    firstName: {
+                                                        contains: search,
+                                                        mode: 'insensitive' as const,
+                                                    },
+                                                },
+                                                {
+                                                    lastName: {
+                                                        contains: search,
+                                                        mode: 'insensitive' as const,
+                                                    },
+                                                },
+                                            ],
+                                        },
+                                    },
+                                },
+                            }),
+                        },
+                        include: {
+                            playerMatches: {
+                                include: {
+                                    player: true,
+                                },
+                            },
+                            category: true,
+                        },
+                    },
                 },
             },
         },
@@ -21,6 +68,7 @@ export async function getMatchById(id: number) {
     prisma.match.findUnique({
         where: { id: Number(id) },
         include: {
+            category: true,
             playerMatches: {
                 include: {
                     player: true,

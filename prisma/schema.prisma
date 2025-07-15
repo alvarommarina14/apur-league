@@ -21,14 +21,30 @@ model Player {
   categoryPoints   PlayerCategoryPoints[]
 }
 
+model MatchWeek {
+  id        Int        @id @default(autoincrement())
+  name      String
+  matchDays MatchDay[]
+}
+
+model MatchDay {
+  id          Int       @id @default(autoincrement())
+  date        DateTime
+  matchWeekId Int
+  matchWeek   MatchWeek @relation(fields: [matchWeekId], references: [id])
+  matches     Match[]
+}
+
 model Match {
-  id     Int      @id @default(autoincrement())
-  date   DateTime
-  court  Court
-  type   Type
-  result String
+  id         Int       @id @default(autoincrement())
+  hour       DateTime
+  court      Court
+  type       Type
+  result     String
   categoryId Int?
-  category Category? @relation(fields: [categoryId], references: [id])
+  category   Category? @relation(fields: [categoryId], references: [id])
+  matchDay   MatchDay? @relation(fields: [matchDayId], references: [id])
+  matchDayId Int?
 
   playerMatches PlayerMatch[]
 }
@@ -37,7 +53,7 @@ model PlayerMatch {
   playerId Int
   matchId  Int
   winner   Boolean?
-  team     Int     @default(0)
+  team     Team
   player   Player  @relation(fields: [playerId], references: [id])
   match    Match   @relation(fields: [matchId], references: [id], onDelete: Cascade)
 
@@ -81,4 +97,9 @@ enum Court {
 enum Type {
   SINGLES
   DOUBLES
+}
+
+enum Team {
+  EQUIPO_1
+  EQUIPO_2
 }
