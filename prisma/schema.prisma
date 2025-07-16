@@ -55,15 +55,15 @@ model PlayerMatch {
   matchId  Int
   winner   Boolean?
   team     Team
-  player   Player  @relation(fields: [playerId], references: [id])
-  match    Match   @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player   Player   @relation(fields: [playerId], references: [id])
+  match    Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
 
   @@id([playerId, matchId])
 }
 
 model Category {
-  id               Int                    @id @default(autoincrement())
-  name             String
+  id   Int    @id @default(autoincrement())
+  name String
 
   matches          Match[]
   playerCategories PlayerCategory[]
@@ -103,4 +103,19 @@ enum Type {
 enum Team {
   EQUIPO_1
   EQUIPO_2
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
 }
