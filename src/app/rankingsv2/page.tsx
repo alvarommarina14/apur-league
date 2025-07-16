@@ -1,7 +1,8 @@
-import { RankingTable } from './Table';
 import Filters from './Filters';
 import { getAllCategories } from '@/lib/services/category';
-import { getPlayerPointsByCategory } from '@/lib/services/points';
+import { getPlayerPointsByCategoryv2 } from '@/lib/services/points';
+
+import { RankingList } from './RankingList';
 
 interface CategoryPlayersSearchParamsType {
     searchParams: Promise<{
@@ -14,17 +15,21 @@ interface CategoryPlayersSearchParamsType {
 export default async function RankingsPage({
     searchParams,
 }: CategoryPlayersSearchParamsType) {
-    const { search, categoryId, page = '1' } = await searchParams;
+    const { search, categoryId } = await searchParams;
+
+    const initialPage = 1;
     const perPage = 15;
-    const pageNumber = Number(page) || 1;
-    const { players, totalCount } = await getPlayerPointsByCategory({
-        search,
-        categoryId,
-        page: Number(page) || 1,
-        perPage,
-    });
-    const totalPages = perPage > 0 ? Math.ceil(totalCount / perPage) : 1;
+
+    const { players: initialPlayers, totalCount: initialTotalCount } =
+        await getPlayerPointsByCategoryv2({
+            search,
+            categoryId,
+            page: initialPage,
+            perPage,
+        });
+
     const categories = await getAllCategories();
+
     return (
         <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
             <div className="max-w-7xl mx-auto">
@@ -39,11 +44,13 @@ export default async function RankingsPage({
                     categories={categories}
                     search={search}
                     categoryId={categoryId}
-                ></Filters>
-                <RankingTable
-                    rows={players}
-                    page={pageNumber}
-                    totalPages={totalPages}
+                />
+                <RankingList
+                    initialPlayers={initialPlayers}
+                    initialTotalCount={initialTotalCount}
+                    search={search}
+                    categoryId={categoryId}
+                    perPage={perPage}
                 />
             </div>
         </div>

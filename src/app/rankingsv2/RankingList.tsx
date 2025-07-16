@@ -1,0 +1,109 @@
+'use client';
+
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { RankingTable } from './RankingTable';
+import { fetchMorePlayers } from '@/lib/actions/points';
+import { PlayerWithPoints } from '@/types/points';
+
+interface RankingListProps {
+    initialPlayers: PlayerWithPoints[];
+    initialTotalCount: number;
+    search: string | undefined;
+    categoryId: number | undefined;
+    perPage: number;
+}
+
+export function RankingList({
+    initialPlayers,
+    initialTotalCount,
+    search,
+    categoryId,
+    perPage,
+}: RankingListProps) {
+    const [players, setPlayers] = useState<PlayerWithPoints[]>(initialPlayers);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(
+        initialPlayers.length < initialTotalCount
+    );
+    const loader = useRef(null);
+
+    useEffect(() => {
+        setPlayers(initialPlayers);
+        setPage(1);
+        setHasMore(initialPlayers.length < initialTotalCount);
+    }, [initialPlayers, initialTotalCount, search, categoryId]);
+
+    const loadMorePlayers = useCallback(async () => {
+        if (loading || !hasMore) return;
+
+        setLoading(true);
+        const nextPage = page + 1;
+
+        try {
+            const { players: newPlayers, totalCount: newTotalCount } =
+                await fetchMorePlayers({
+                    search,
+                    categoryId,
+                    page: nextPage,
+                    perPage,
+                });
+
+            setPlayers((prevPlayers) => [...prevPlayers, ...newPlayers]);
+            setPage(nextPage);
+            setHasMore(players.length + newPlayers.length < newTotalCount);
+        } catch (error) {
+            console.error('Failed to load more players:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [page, loading, hasMore, search, categoryId, perPage, players.length]);
+
+    const handleObserver = useCallback(
+        (entries: IntersectionObserverEntry[]) => {
+            const target = entries[0];
+            if (target.isIntersecting && !loading && hasMore) {
+                loadMorePlayers();
+            }
+        },
+        [loading, hasMore, loadMorePlayers]
+    );
+
+    useEffect(() => {
+        const option = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1,
+        };
+
+        const currentLoader = loader.current;
+        const observer = new IntersectionObserver(handleObserver, option);
+
+        if (currentLoader && hasMore) {
+            observer.observe(currentLoader);
+        }
+
+        return () => {
+            if (currentLoader) {
+                observer.unobserve(currentLoader);
+            }
+        };
+    }, [handleObserver, hasMore]);
+
+    return (
+        <>
+            <RankingTable rows={players} />
+            {loading && (
+                <div className="text-center py-4 text-neutral-500">
+                    Cargando más jugadores...
+                </div>
+            )}
+            {!hasMore && players.length > 0 && (
+                <div className="text-center py-4 text-neutral-500">
+                    Todos los jugadores cargados.
+                </div>
+            )}
+            {hasMore && <div ref={loader} className="h-10 invisible" />}
+        </>
+    );
+}
