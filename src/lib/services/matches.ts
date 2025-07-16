@@ -64,6 +64,17 @@ export async function getMatchWeekWithMatches({
     });
 }
 
+export async function getAllMatchWeek() {
+    const weeks = await prisma.matchWeek.findMany();
+
+    //refactor this to avoid manual sort
+    return weeks.sort((a, b) => {
+        const aNum = parseInt(a.name.replace(/\D/g, ''), 10);
+        const bNum = parseInt(b.name.replace(/\D/g, ''), 10);
+        return aNum - bNum;
+    });
+}
+
 export async function getMatchById(id: number) {
     prisma.match.findUnique({
         where: { id: Number(id) },
