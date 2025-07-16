@@ -13,9 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: 'Liga Tenis Apur',
-    description:
-        'Sitio web para ver y gestionar los calendarios de la liga de Apur',
+    title: 'Login Page | Liga de Apur',
+    description: 'Pagina de login para la liga de tenis de Apur',
     icons: {
         icon: '/logo-apur.png',
         shortcut: '/logo-apur.png',
