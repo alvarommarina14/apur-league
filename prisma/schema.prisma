@@ -24,6 +24,7 @@ model Player {
 model MatchWeek {
   id        Int        @id @default(autoincrement())
   name      String
+  order     Int        @default(autoincrement())
   matchDays MatchDay[]
 }
 
