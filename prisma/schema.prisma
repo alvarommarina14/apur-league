@@ -37,10 +37,10 @@ model MatchDay {
 
 model Match {
   id         Int       @id @default(autoincrement())
-  hour       DateTime
+  hour       DateTime  @db.Time
   court      Court
   type       Type
-  result     String
+  result     String?
   categoryId Int?
   category   Category? @relation(fields: [categoryId], references: [id])
   matchDay   MatchDay? @relation(fields: [matchDayId], references: [id])

@@ -3,11 +3,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
-import { Category } from '@/types/player';
+import { CategoryType } from '@/types/category';
 import Select from 'react-select';
 
 interface FiltersProps {
-    categories: Category[];
+    categories: CategoryType[];
     search?: string;
     selectedCategory?: string;
     sortOrder?: 'asc' | 'desc';
