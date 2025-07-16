@@ -1,9 +1,9 @@
-import { Player } from '@/types/player';
+import { PlayerType } from '@/types/player';
 
 import Link from 'next/link';
 import Pagination from '@/components/Pagination';
 interface PlayersTableProps {
-    rows: Player[];
+    rows: PlayerType[];
     page: number;
     totalPages: number;
 }
@@ -71,9 +71,9 @@ export default function PlayersTable({
                                                 (pcat) => (
                                                     <span
                                                         key={pcat.categoryId}
-                                                        className={`px-3 py-1 rounded-full text-sm font-medium border ${pcat.category.name === 'Sin categoria' ? 'bg-red-100 text-red-800 border border-red-400' : 'bg-yellow-100 text-yellow-800 border-apur-yellow'}  truncate`}
+                                                        className={`px-3 py-1 rounded-full text-sm font-medium border ${pcat.category?.name === 'Sin categoria' ? 'bg-red-100 text-red-800 border border-red-400' : 'bg-yellow-100 text-yellow-800 border-apur-yellow'}  truncate`}
                                                     >
-                                                        {pcat.category.name}
+                                                        {pcat.category?.name}
                                                     </span>
                                                 )
                                             )}
@@ -83,21 +83,23 @@ export default function PlayersTable({
                             ))
                         )}
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td
-                                colSpan={3}
-                                className="px-6 py-4 border-t border-gray-200"
-                            >
-                                <div className="flex justify-center">
-                                    <Pagination
-                                        page={page}
-                                        totalPages={totalPages}
-                                    />
-                                </div>
-                            </td>
-                        </tr>
-                    </tfoot>
+                    {rows.length > 0 && (
+                        <tfoot>
+                            <tr>
+                                <td
+                                    colSpan={3}
+                                    className="px-6 py-4 border-t border-gray-200"
+                                >
+                                    <div className="flex justify-center">
+                                        <Pagination
+                                            page={page}
+                                            totalPages={totalPages}
+                                        />
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    )}
                 </table>
             </div>
         </div>

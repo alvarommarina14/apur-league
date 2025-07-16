@@ -62,7 +62,7 @@ export default async function PlayerPage({ params }: ParamsProp) {
                     <ul className="list-disc list-inside text-gray-800 space-y-1">
                         {player.playerMatches.map((mat) => (
                             <li key={mat.match.id} className="truncate">
-                                {format(mat.match.date, 'DD-MM-YYYY', 'es')}
+                                {format(mat.match.hour, 'DD-MM-YYYY', 'es')}
                             </li>
                         ))}
                     </ul>
