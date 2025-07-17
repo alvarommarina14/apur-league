@@ -1,11 +1,13 @@
+'use client';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { PlayerWithPoints } from '@/types/points';
 
 interface RankingTableProps {
     rows: PlayerWithPoints[];
+    totalCount: number;
 }
 
-export function RankingTable({ rows }: RankingTableProps) {
+export function RankingTable({ rows, totalCount }: RankingTableProps) {
     return (
         <>
             <div className="w-full sm:w-[60%] mx-auto mt-8 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm hidden sm:block">
@@ -45,7 +47,7 @@ export function RankingTable({ rows }: RankingTableProps) {
                                 let rowBgClass = '';
                                 if (index < 2) {
                                     rowBgClass = 'bg-green-100';
-                                } else if (index >= rows.length - 2) {
+                                } else if (index >= totalCount - 2) {
                                     rowBgClass = 'bg-red-100';
                                 }
 
@@ -57,7 +59,7 @@ export function RankingTable({ rows }: RankingTableProps) {
                                                     {index < 2 ? (
                                                         <ChevronUp className="w-4 h-4 text-green-700" />
                                                     ) : index >=
-                                                      rows.length - 2 ? (
+                                                      totalCount - 2 ? (
                                                         <ChevronDown className="w-4 h-4 text-red-600" />
                                                     ) : (
                                                         <ChevronUp className="w-4 h-4 opacity-0" />
@@ -93,7 +95,7 @@ export function RankingTable({ rows }: RankingTableProps) {
                     let bgClass = '';
                     if (index < 2) {
                         bgClass = 'bg-green-100';
-                    } else if (index >= rows.length - 2) {
+                    } else if (index >= totalCount - 2) {
                         bgClass = 'bg-red-100';
                     }
 
@@ -107,7 +109,7 @@ export function RankingTable({ rows }: RankingTableProps) {
                                     <span className="w-4 h-4 flex items-center justify-center">
                                         {index < 2 ? (
                                             <ChevronUp className="w-4 h-4 text-green-700" />
-                                        ) : index >= rows.length - 2 ? (
+                                        ) : index >= totalCount - 2 ? (
                                             <ChevronDown className="w-4 h-4 text-red-600" />
                                         ) : (
                                             <ChevronUp className="w-4 h-4 opacity-0" />

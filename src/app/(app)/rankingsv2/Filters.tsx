@@ -3,11 +3,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
-import { Category } from '@/types/player';
+import { CategoryType } from '@/types/category';
 import Select from 'react-select';
 
 interface FiltersProps {
-    categories: Category[];
+    categories: CategoryType[];
     search?: string;
     categoryId?: number;
 }
@@ -25,7 +25,6 @@ export default function Filters({
 
     const options = useMemo(
         () => [
-            { value: null, label: 'Todas las categorías' },
             ...categories.map((cat) => ({
                 value: cat.id,
                 label: cat.name,

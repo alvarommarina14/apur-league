@@ -10,6 +10,6 @@ interface GetPlayersParams {
 }
 
 export async function fetchMorePlayers(params: GetPlayersParams) {
-    const { players, totalCount } = await getPlayerPointsByCategoryv2(params);
-    return { players, totalCount };
+    const players = await getPlayerPointsByCategoryv2(params);
+    return players;
 }

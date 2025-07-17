@@ -1,7 +1,9 @@
 import Filters from './Filters';
 import { getAllCategories } from '@/lib/services/category';
-import { getPlayerPointsByCategoryv2 } from '@/lib/services/points';
-
+import {
+    getPlayerPointsByCategoryv2,
+    countPlayersByCategory,
+} from '@/lib/services/points';
 import { RankingList } from './RankingList';
 
 interface CategoryPlayersSearchParamsType {
@@ -16,19 +18,25 @@ export default async function RankingsPage({
     searchParams,
 }: CategoryPlayersSearchParamsType) {
     const { search, categoryId } = await searchParams;
-
     const initialPage = 1;
     const perPage = 15;
 
-    const { players: initialPlayers, totalCount: initialTotalCount } =
-        await getPlayerPointsByCategoryv2({
-            search,
-            categoryId,
-            page: initialPage,
-            perPage,
-        });
-
     const categories = await getAllCategories();
+
+    const defaultCategory = categories.find(
+        (cat) => (cat.name = 'C1-Libre-Singles')
+    );
+
+    const catId = categoryId || defaultCategory?.id;
+
+    const initialPlayers = await getPlayerPointsByCategoryv2({
+        search,
+        categoryId: catId,
+        page: initialPage,
+        perPage,
+    });
+
+    const totalCount = await countPlayersByCategory(categoryId);
 
     return (
         <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
@@ -47,9 +55,9 @@ export default async function RankingsPage({
                 />
                 <RankingList
                     initialPlayers={initialPlayers}
-                    initialTotalCount={initialTotalCount}
+                    totalCount={totalCount}
                     search={search}
-                    categoryId={categoryId}
+                    categoryId={catId}
                     perPage={perPage}
                 />
             </div>

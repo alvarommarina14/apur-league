@@ -117,7 +117,6 @@ export async function getPlayerPointsByCategory({
         return result;
     });
     return { players, totalCount };
-    return { players, totalCount };
 }
 
 export async function getPlayerPointsByCategoryv2({
@@ -157,40 +156,35 @@ export async function getPlayerPointsByCategoryv2({
         ],
     };
 
-    const [rawPlayers, totalCount] = await Promise.all([
-        prismaExtended.playerCategoryPoints.findMany({
-            where: filters,
-            orderBy: { points: 'desc' },
-            skip: (page - 1) * perPage,
-            take: perPage,
-            include: {
-                player: {
-                    select: {
-                        id: true,
-                        firstName: true,
-                        lastName: true,
-                        age: true,
-                        _count: {
-                            select: {
-                                playerMatches: {
-                                    where: categoryId
-                                        ? {
-                                              match: {
-                                                  categoryId:
-                                                      Number(categoryId),
-                                              },
-                                          }
-                                        : undefined,
-                                },
+    const rawPlayers = await prismaExtended.playerCategoryPoints.findMany({
+        where: filters,
+        orderBy: { points: 'desc' },
+        skip: (page - 1) * perPage,
+        take: perPage,
+        include: {
+            player: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    age: true,
+                    _count: {
+                        select: {
+                            playerMatches: {
+                                where: categoryId
+                                    ? {
+                                          match: {
+                                              categoryId: Number(categoryId),
+                                          },
+                                      }
+                                    : undefined,
                             },
                         },
                     },
                 },
             },
-        }),
-
-        prisma.playerCategoryPoints.count({ where: filters }),
-    ]);
+        },
+    });
 
     const players = rawPlayers.map((playerPoints) => {
         const { player, points } = playerPoints;
@@ -205,5 +199,13 @@ export async function getPlayerPointsByCategoryv2({
         };
         return result;
     });
-    return { players, totalCount };
+    return players;
+}
+
+export async function countPlayersByCategory(categoryId?: number) {
+    const filters: PrismaTypes.PlayerCategoryPointsWhereInput = {
+        categoryId: categoryId ? Number(categoryId) : undefined,
+    };
+
+    return prisma.playerCategoryPoints.count({ where: filters });
 }

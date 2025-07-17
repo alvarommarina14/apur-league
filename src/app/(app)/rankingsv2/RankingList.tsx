@@ -7,7 +7,7 @@ import { PlayerWithPoints } from '@/types/points';
 
 interface RankingListProps {
     initialPlayers: PlayerWithPoints[];
-    initialTotalCount: number;
+    totalCount: number;
     search: string | undefined;
     categoryId: number | undefined;
     perPage: number;
@@ -15,7 +15,7 @@ interface RankingListProps {
 
 export function RankingList({
     initialPlayers,
-    initialTotalCount,
+    totalCount,
     search,
     categoryId,
     perPage,
@@ -23,16 +23,14 @@ export function RankingList({
     const [players, setPlayers] = useState<PlayerWithPoints[]>(initialPlayers);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(
-        initialPlayers.length < initialTotalCount
-    );
+    const [hasMore, setHasMore] = useState(players.length < totalCount);
     const loader = useRef(null);
 
     useEffect(() => {
-        setPlayers(initialPlayers);
         setPage(1);
-        setHasMore(initialPlayers.length < initialTotalCount);
-    }, [initialPlayers, initialTotalCount, search, categoryId]);
+        setPlayers(initialPlayers);
+        setHasMore(initialPlayers.length < totalCount);
+    }, [initialPlayers, search, totalCount]);
 
     const loadMorePlayers = useCallback(async () => {
         if (loading || !hasMore) return;
@@ -41,23 +39,31 @@ export function RankingList({
         const nextPage = page + 1;
 
         try {
-            const { players: newPlayers, totalCount: newTotalCount } =
-                await fetchMorePlayers({
-                    search,
-                    categoryId,
-                    page: nextPage,
-                    perPage,
-                });
+            const newPlayers = await fetchMorePlayers({
+                search,
+                categoryId,
+                page: nextPage,
+                perPage,
+            });
 
             setPlayers((prevPlayers) => [...prevPlayers, ...newPlayers]);
             setPage(nextPage);
-            setHasMore(players.length + newPlayers.length < newTotalCount);
+            setHasMore(players.length + newPlayers.length < totalCount);
         } catch (error) {
             console.error('Failed to load more players:', error);
         } finally {
             setLoading(false);
         }
-    }, [page, loading, hasMore, search, categoryId, perPage, players.length]);
+    }, [
+        page,
+        loading,
+        hasMore,
+        search,
+        categoryId,
+        perPage,
+        players.length,
+        totalCount,
+    ]);
 
     const handleObserver = useCallback(
         (entries: IntersectionObserverEntry[]) => {
@@ -92,7 +98,7 @@ export function RankingList({
 
     return (
         <>
-            <RankingTable rows={players} />
+            <RankingTable rows={players} totalCount={totalCount} />
             {loading && (
                 <div className="text-center py-4 text-neutral-500">
                     Cargando más jugadores...
