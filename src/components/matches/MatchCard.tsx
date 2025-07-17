@@ -2,6 +2,8 @@ import { format } from '@formkit/tempo';
 import { Check } from 'lucide-react';
 import { MatchWithPlayersAndCategoryType } from '@/types/matches';
 
+import CategoryTag from '@/components/CategoryTag';
+
 interface Props {
     match: MatchWithPlayersAndCategoryType;
 }
@@ -100,11 +102,8 @@ export default function MatchCard({ match }: Props) {
                 </div>
                 {renderScore()}
             </div>
-
-            <div
-                className={`px-3 py-1 rounded-full text-sm font-medium border w-fit ${match.category?.name === 'Sin categoria' ? 'bg-red-100 text-red-800 border border-red-400' : 'bg-yellow-100 text-yellow-800 border-apur-yellow'}  truncate`}
-            >
-                {match.category?.name}
+            <div className="mt-3">
+                <CategoryTag category={match.category?.name} />
             </div>
         </div>
     );

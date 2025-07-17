@@ -39,7 +39,7 @@ export default async function MatchesPage({ searchParams }: Props) {
     }
 
     return (
-        <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
+        <div className="px-4 py-8 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
             <div className="max-w-[85rem] mx-auto">
                 <div className="mb-8 text-center">
                     <h1 className="text-4xl font-bold tracking-tight text-apur-green mb-2">
@@ -63,7 +63,7 @@ export default async function MatchesPage({ searchParams }: Props) {
                     </p>
                 ) : (
                     selectedMatchWeek.matchDays.map((day) => (
-                        <section key={day.id} className="mb-10">
+                        <section key={day.id} className="mt-10">
                             <div className="mb-4">
                                 <h2 className="text-xl font-semibold text-neutral-900">
                                     <time

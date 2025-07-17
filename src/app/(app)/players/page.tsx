@@ -36,7 +36,7 @@ export default async function PlayersPage({
     const categories = await getAllCategories();
 
     return (
-        <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
+        <div className="px-4 py-8 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
             <div className="max-w-7xl mx-auto">
                 <h1 className="text-4xl font-bold tracking-tight text-apur-green text-center">
                     Listado de Jugadores
