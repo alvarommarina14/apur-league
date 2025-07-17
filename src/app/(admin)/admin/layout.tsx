@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import '@/app/globals.css';
 
 import Header from '@/components/Header';
+import Sidebar from '@/components/admin/Sidebar';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -15,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: 'Liga Tenis Apur',
+    title: 'Admin | Liga Tenis Apur',
     description:
-        'Sitio web para ver y gestionar los calendarios de la liga de Apur',
+        'Administrador para gestionar las diferentes entidades de la liga',
     icons: {
         icon: '/logo-apur.png',
         shortcut: '/logo-apur.png',
@@ -33,7 +34,10 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable}`}>
                 <Header />
-                <main>{children}</main>
+                <main className="flex min-h-[calc(100dvh-4rem)]">
+                    <Sidebar />
+                    <div className="flex-1 p-4 bg-neutral-100">{children}</div>
+                </main>
             </body>
         </html>
     );
