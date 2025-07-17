@@ -4,10 +4,9 @@ import { PlayerWithPoints } from '@/types/points';
 
 interface RankingTableProps {
     rows: PlayerWithPoints[];
-    totalCount: number;
 }
 
-export function RankingTable({ rows, totalCount }: RankingTableProps) {
+export function RankingTable({ rows }: RankingTableProps) {
     return (
         <>
             <div className="w-full sm:w-[60%] mx-auto mt-8 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm hidden sm:block">
@@ -45,9 +44,9 @@ export function RankingTable({ rows, totalCount }: RankingTableProps) {
                         ) : (
                             rows.map((row, index) => {
                                 let rowBgClass = '';
-                                if (index < 2) {
+                                if (row.isPromoting) {
                                     rowBgClass = 'bg-green-100';
-                                } else if (index >= totalCount - 2) {
+                                } else if (row.isDemoting) {
                                     rowBgClass = 'bg-red-100';
                                 }
 
@@ -56,10 +55,9 @@ export function RankingTable({ rows, totalCount }: RankingTableProps) {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-1">
                                                 <span className="w-4 h-4 flex items-center justify-center">
-                                                    {index < 2 ? (
+                                                    {row.isPromoting ? (
                                                         <ChevronUp className="w-4 h-4 text-green-700" />
-                                                    ) : index >=
-                                                      totalCount - 2 ? (
+                                                    ) : row.isDemoting ? (
                                                         <ChevronDown className="w-4 h-4 text-red-600" />
                                                     ) : (
                                                         <ChevronUp className="w-4 h-4 opacity-0" />
@@ -93,9 +91,9 @@ export function RankingTable({ rows, totalCount }: RankingTableProps) {
             <div className="flex flex-col gap-4 mt-8 sm:hidden px-4">
                 {rows.map((row, index) => {
                     let bgClass = '';
-                    if (index < 2) {
+                    if (row.isPromoting) {
                         bgClass = 'bg-green-100';
-                    } else if (index >= totalCount - 2) {
+                    } else if (row.isDemoting) {
                         bgClass = 'bg-red-100';
                     }
 
@@ -107,9 +105,9 @@ export function RankingTable({ rows, totalCount }: RankingTableProps) {
                             <div className="flex justify-between items-center mb-2">
                                 <div className="flex items-center gap-2">
                                     <span className="w-4 h-4 flex items-center justify-center">
-                                        {index < 2 ? (
+                                        {row.isPromoting ? (
                                             <ChevronUp className="w-4 h-4 text-green-700" />
-                                        ) : index >= totalCount - 2 ? (
+                                        ) : row.isDemoting ? (
                                             <ChevronDown className="w-4 h-4 text-red-600" />
                                         ) : (
                                             <ChevronUp className="w-4 h-4 opacity-0" />

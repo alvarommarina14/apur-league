@@ -5,4 +5,6 @@ export type PlayerWithPoints = {
     age: number | null;
     points: number;
     matchesInCategory: number;
+    isPromoting: boolean;
+    isDemoting: boolean;
 };

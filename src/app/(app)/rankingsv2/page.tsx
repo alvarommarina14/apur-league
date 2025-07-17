@@ -2,7 +2,7 @@ import Filters from './Filters';
 import { getAllCategories } from '@/lib/services/category';
 import {
     getPlayerPointsByCategoryv2,
-    countPlayersByCategory,
+    countPlayersByFilters,
 } from '@/lib/services/points';
 import { RankingList } from './RankingList';
 
@@ -20,14 +20,13 @@ export default async function RankingsPage({
     const { search, categoryId } = await searchParams;
     const initialPage = 1;
     const perPage = 15;
-
     const categories = await getAllCategories();
 
     const defaultCategory = categories.find(
         (cat) => (cat.name = 'C1-Libre-Singles')
     );
 
-    const catId = categoryId || defaultCategory?.id;
+    const catId = categoryId || defaultCategory!.id;
 
     const initialPlayers = await getPlayerPointsByCategoryv2({
         search,
@@ -36,7 +35,7 @@ export default async function RankingsPage({
         perPage,
     });
 
-    const totalCount = await countPlayersByCategory(categoryId);
+    const totalCount = await countPlayersByFilters(catId, search);
 
     return (
         <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
@@ -51,7 +50,7 @@ export default async function RankingsPage({
                 <Filters
                     categories={categories}
                     search={search}
-                    categoryId={categoryId}
+                    categoryId={Number(categoryId)}
                 />
                 <RankingList
                     initialPlayers={initialPlayers}

@@ -98,7 +98,7 @@ export function RankingList({
 
     return (
         <>
-            <RankingTable rows={players} totalCount={totalCount} />
+            <RankingTable rows={players} />
             {loading && (
                 <div className="text-center py-4 text-neutral-500">
                     Cargando más jugadores...
