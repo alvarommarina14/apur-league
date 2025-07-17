@@ -5,22 +5,28 @@ import { useRouter, usePathname } from 'next/navigation';
 
 import { CategoryType } from '@/types/category';
 import { MatchWeekType } from '@/types/matchWeek';
+import { ClubType } from '@/types/club';
+
 import Select from 'react-select';
 
 interface FiltersProps {
     categories: CategoryType[];
     matchWeeks: MatchWeekType[];
+    clubs: ClubType[];
     search?: string;
     selectedCategory?: string;
     selectedMatchWeek?: string;
+    selectedClub?: string;
 }
 
 export default function Filters({
     categories,
     matchWeeks,
+    clubs,
     search: searchProp,
     selectedCategory: selectedCategoryProp,
     selectedMatchWeek: selectedMatchWeekProp,
+    selectedClub: selectedClubProp,
 }: FiltersProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -32,6 +38,7 @@ export default function Filters({
     const [selectedMatchWeek, setSelectedMatchWeek] = useState(
         selectedMatchWeekProp ?? ''
     );
+    const [selectedClub, setSelectedClub] = useState(selectedClubProp ?? '');
 
     const categoryOptions = useMemo(
         () => [
@@ -68,6 +75,22 @@ export default function Filters({
         [matchWeekOptions, selectedMatchWeek]
     );
 
+    const clubOptions = useMemo(
+        () => [
+            ...clubs.map((club) => ({
+                value: String(club.id),
+                label: club.name,
+            })),
+        ],
+        [clubs]
+    );
+
+    const selectedClubOption = useMemo(
+        () =>
+            clubOptions.find((o) => o.value === selectedClub) || clubOptions[0],
+        [clubOptions, selectedClub]
+    );
+
     useEffect(() => {
         const timeout = setTimeout(() => {
             const params = new URLSearchParams();
@@ -77,6 +100,7 @@ export default function Filters({
                 params.set('filterByCategory', selectedCategory);
             if (selectedMatchWeek)
                 params.set('filterByMatchWeek', selectedMatchWeek);
+            if (selectedClub) params.set('filterByClub', selectedClub);
 
             router.replace(
                 `${pathname}${params.toString() ? '?' + params.toString() : ''}`
@@ -84,7 +108,14 @@ export default function Filters({
         }, 300);
 
         return () => clearTimeout(timeout);
-    }, [search, selectedCategory, selectedMatchWeek, pathname, router]);
+    }, [
+        search,
+        selectedCategory,
+        selectedMatchWeek,
+        selectedClub,
+        pathname,
+        router,
+    ]);
 
     return (
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-6">
@@ -137,6 +168,37 @@ export default function Filters({
                     onChange={(option) =>
                         setSelectedCategory(option?.value || '')
                     }
+                    unstyled
+                    classNames={{
+                        control: ({ isFocused }) =>
+                            `rounded-md border py-2 pl-4 focus-within:ring-1 focus-within:ring-apur-green ${
+                                isFocused
+                                    ? 'border-apur-green'
+                                    : 'border-gray-300'
+                            }`,
+                        menu: () =>
+                            'z-50 rounded-md shadow-lg bg-white mt-2 border border-gray-300 overflow-hidden',
+                        option: ({ isFocused, isSelected }) =>
+                            `cursor-pointer select-none px-4 py-2 ${
+                                isFocused || isSelected
+                                    ? 'bg-apur-green text-white'
+                                    : 'text-gray-900'
+                            }`,
+                        singleValue: () => 'truncate',
+                        input: () => 'text-gray-900 cursor-pointer',
+                        dropdownIndicator: () =>
+                            'text-gray-500 px-2 cursor-pointer',
+                        indicatorSeparator: () => 'bg-gray-300',
+                    }}
+                />
+            </div>
+            <div className="w-full sm:w-64">
+                <Select
+                    instanceId="filters-select-category"
+                    value={selectedClubOption}
+                    options={clubOptions}
+                    closeMenuOnSelect
+                    onChange={(option) => setSelectedClub(option?.value || '')}
                     unstyled
                     classNames={{
                         control: ({ isFocused }) =>

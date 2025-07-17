@@ -9,10 +9,12 @@ export async function getMatchWeekWithMatches({
     matchWeekId,
     categoryId,
     search,
+    clubId,
 }: {
     matchWeekId: number;
     categoryId?: number;
     search?: string;
+    clubId?: number;
 }) {
     return await prisma.matchWeek.findUnique({
         where: {
@@ -48,6 +50,13 @@ export async function getMatchWeekWithMatches({
                                     },
                                 },
                             }),
+                            ...(clubId && {
+                                court: {
+                                    is: {
+                                        clubId: clubId,
+                                    },
+                                },
+                            }),
                         },
                         include: {
                             playerMatches: {
@@ -56,6 +65,11 @@ export async function getMatchWeekWithMatches({
                                 },
                             },
                             category: true,
+                            court: {
+                                include: {
+                                    club: true,
+                                },
+                            },
                         },
                     },
                 },

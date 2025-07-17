@@ -91,7 +91,9 @@ export default function MatchCard({ match }: Props) {
     return (
         <div className="border border-gray-200 rounded-xl p-4 shadow-md w-full sm:max-w-lg">
             <div className="flex justify-between text-sm text-gray-700 font-medium mb-2">
-                <span>APUR - Cancha {match.court.replace('CANCHA_', '')}</span>
+                <span>
+                    {match.court.club.name} - {match.court.name}
+                </span>
                 <span>{timeFormatted}</span>
             </div>
 

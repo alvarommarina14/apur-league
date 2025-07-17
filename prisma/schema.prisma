@@ -39,7 +39,8 @@ model MatchDay {
 model Match {
   id         Int       @id @default(autoincrement())
   hour       DateTime  @db.Time
-  court      Court
+  courtId    Int
+  court      Court     @relation(fields: [courtId], references: [id], onDelete: Cascade)
   type       Type
   result     String?
   categoryId Int?
@@ -79,6 +80,12 @@ model PlayerCategory {
   @@id([playerId, categoryId])
 }
 
+model Club {
+  id Int @id @default(autoincrement())
+  name String
+  courts Court[]
+}
+
 model PlayerCategoryPoints {
   id         Int      @id @default(autoincrement())
   playerId   Int
@@ -88,11 +95,14 @@ model PlayerCategoryPoints {
   category   Category @relation(fields: [categoryId], references: [id])
 }
 
-enum Court {
-  CANCHA_1
-  CANCHA_2
-  CANCHA_3
-  CANCHA_4
+model Court {
+  id      Int     @id @default(autoincrement())
+  name    String
+  clubId  Int
+  club    Club    @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  matches Match[]
+
+  @@unique([name, clubId])
 }
 
 enum Type {
