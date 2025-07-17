@@ -2,6 +2,7 @@ import { PlayerType } from '@/types/player';
 
 import Link from 'next/link';
 import Pagination from '@/components/Pagination';
+import CategoryTag from '@/components/CategoryTag';
 interface PlayersTableProps {
     rows: PlayerType[];
     page: number;
@@ -69,12 +70,12 @@ export default function PlayersTable({
                                         >
                                             {row.playerCategories?.map(
                                                 (pcat) => (
-                                                    <span
+                                                    <CategoryTag
                                                         key={pcat.categoryId}
-                                                        className={`px-3 py-1 rounded-full text-sm font-medium border ${pcat.category?.name === 'Sin categoria' ? 'bg-red-100 text-red-800 border border-red-400' : 'bg-yellow-100 text-yellow-800 border-apur-yellow'}  truncate`}
-                                                    >
-                                                        {pcat.category?.name}
-                                                    </span>
+                                                        category={
+                                                            pcat.category?.name
+                                                        }
+                                                    />
                                                 )
                                             )}
                                         </Link>
