@@ -1,7 +1,33 @@
-export default function AdminMatchesPage() {
+import { getAllPlayers } from '@/lib/services/player';
+import { getAllCategories } from '@/lib/services/category';
+import { getAllClubs } from '@/lib/services/club';
+
+import CreateForm from '@/components/admin/matches/CreateForm';
+interface AdminMatchesPageType {
+    searchParams: Promise<{
+        filterByCategory?: string;
+    }>;
+}
+
+export default async function AdminMatchesPage({
+    searchParams,
+}: AdminMatchesPageType) {
+    const categories = await getAllCategories();
+    const clubs = await getAllClubs();
+    const { filterByCategory = categories[0].name } = await searchParams;
+
+    const { players } = await getAllPlayers({
+        categoryId: Number(filterByCategory),
+    });
+
     return (
-        <div>
-            <h1>Admin Matches page</h1>
+        <div className="flex justify-center">
+            <CreateForm
+                players={players}
+                categories={categories}
+                clubs={clubs}
+                selectedCategory={filterByCategory}
+            />
         </div>
     );
 }

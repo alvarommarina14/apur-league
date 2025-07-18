@@ -2,13 +2,13 @@ import { prisma } from '@/lib/prisma';
 
 export async function getAllPlayers({
     search,
-    filterByCategory,
+    categoryId,
     sortOrder = 'asc',
     page = 1,
     perPage = 50,
 }: {
     search?: string;
-    filterByCategory?: string;
+    categoryId?: number;
     sortOrder?: 'asc' | 'desc';
     page?: number;
     perPage?: number;
@@ -33,11 +33,11 @@ export async function getAllPlayers({
                       ],
                   }
                 : {},
-            filterByCategory
+            categoryId
                 ? {
                       playerCategories: {
                           some: {
-                              category: { name: filterByCategory },
+                              category: { id: categoryId },
                           },
                       },
                   }

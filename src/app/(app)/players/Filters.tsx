@@ -4,7 +4,11 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
 import { CategoryType } from '@/types/category';
-import { mapOptions, getSelectedOption, buildQueryParams } from '@/lib/helpers';
+import {
+    mapOptions,
+    getSelectedOption,
+    buildQueryParams,
+} from '@/lib/helpers/utils';
 
 import CustomSelect from '@/components/CustomSelect';
 
@@ -36,7 +40,7 @@ export default function Filters({
         () =>
             mapOptions(
                 categories,
-                (cat) => cat.name,
+                (cat) => String(cat.id),
                 (cat) => cat.name,
                 true,
                 'Todas las categorías'

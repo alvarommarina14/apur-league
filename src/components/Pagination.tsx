@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-import { getPaginationPages } from '@/lib/helpers';
+import { getPaginationPages } from '@/lib/helpers/utils';
 
 interface PaginationProps {
     page: number;
