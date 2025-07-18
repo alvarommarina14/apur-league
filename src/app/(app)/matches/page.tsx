@@ -3,6 +3,7 @@ import {
     getAllMatchWeek,
 } from '@/lib/services/matches';
 import { getAllCategories } from '@/lib/services/category';
+import { getAllClubs } from '@/lib/services/club';
 
 import { format } from '@formkit/tempo';
 
@@ -14,11 +15,17 @@ interface Props {
         filterByMatchWeek?: string;
         search?: string;
         filterByCategory?: string;
+        filterByClub?: string;
     }>;
 }
 
 export default async function MatchesPage({ searchParams }: Props) {
-    const { filterByMatchWeek, search, filterByCategory } = await searchParams;
+    const {
+        filterByMatchWeek,
+        search,
+        filterByCategory,
+        filterByClub = '1',
+    } = await searchParams;
     const matchWeekId = filterByMatchWeek ? parseInt(filterByMatchWeek) : 1;
     const categoryId = filterByCategory
         ? parseInt(filterByCategory)
@@ -29,10 +36,12 @@ export default async function MatchesPage({ searchParams }: Props) {
         matchWeekId,
         categoryId,
         search: searchValue,
+        clubId: Number(filterByClub),
     });
 
     const categories = await getAllCategories();
     const matchWeeks = await getAllMatchWeek();
+    const clubs = await getAllClubs();
 
     if (!selectedMatchWeek) {
         return <p>No se encontró la jornada seleccionada.</p>;
@@ -52,9 +61,11 @@ export default async function MatchesPage({ searchParams }: Props) {
                 <Filters
                     categories={categories}
                     matchWeeks={matchWeeks}
+                    clubs={clubs}
                     search={search}
                     selectedCategory={filterByCategory}
                     selectedMatchWeek={filterByMatchWeek}
+                    selectedClub={filterByClub}
                 />
 
                 {selectedMatchWeek.matchDays.length === 0 ? (

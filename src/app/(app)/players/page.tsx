@@ -32,8 +32,11 @@ export default async function PlayersPage({
         perPage,
     });
     const totalPages = perPage > 0 ? Math.ceil(totalCount / perPage) : 1;
-
     const categories = await getAllCategories();
+    const sortOrderOptions = [
+        { value: 'asc', label: 'Ordenar: A-Z' },
+        { value: 'desc', label: 'Ordenar: Z-A' },
+    ];
 
     return (
         <div className="px-4 py-8 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
@@ -50,6 +53,7 @@ export default async function PlayersPage({
                     search={search}
                     selectedCategory={filterByCategory}
                     sortOrder={sortOrder}
+                    sortOrderOptions={sortOrderOptions}
                 />
 
                 <PlayersTable

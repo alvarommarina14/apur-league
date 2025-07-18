@@ -12,5 +12,10 @@ export type MatchWithPlayersAndCategoryType = Prisma.MatchGetPayload<{
             };
         };
         category: true;
+        court: {
+            include: {
+                club: true;
+            };
+        };
     };
 }>;

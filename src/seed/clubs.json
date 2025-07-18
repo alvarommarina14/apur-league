@@ -1,0 +1,65 @@
+[
+    {
+        "name": "Apur",
+        "courts": [
+            {
+                "name": "CANCHA_1"
+            },
+            {
+                "name": "CANCHA_2"
+            },
+            {
+                "name": "CANCHA_3"
+            },
+            {
+                "name": "CANCHA_4"
+            }
+        ]
+    },
+    {
+        "name": "Palos Verdes",
+        "courts": [
+            {
+                "name": "CANCHA_1"
+            },
+            {
+                "name": "CANCHA_2"
+            },
+            {
+                "name": "CANCHA_3"
+            },
+            {
+                "name": "CANCHA_4"
+            },
+            {
+                "name": "CANCHA_5"
+            },
+            {
+                "name": "CANCHA_6"
+            },
+            {
+                "name": "CANCHA_7"
+            },
+            {
+                "name": "CANCHA_8"
+            }
+        ]
+    },
+    {
+        "name": "Talleres",
+        "courts": [
+            {
+                "name": "CANCHA_1"
+            },
+            {
+                "name": "CANCHA_2"
+            },
+            {
+                "name": "CANCHA_3"
+            },
+            {
+                "name": "CANCHA_4"
+            }
+        ]
+    }
+]

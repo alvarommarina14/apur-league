@@ -4,25 +4,24 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
 import { CategoryType } from '@/types/category';
-import Select from 'react-select';
+import { mapOptions, getSelectedOption, buildQueryParams } from '@/lib/helpers';
+
+import CustomSelect from '@/components/CustomSelect';
 
 interface FiltersProps {
     categories: CategoryType[];
     search?: string;
     selectedCategory?: string;
     sortOrder?: 'asc' | 'desc';
+    sortOrderOptions: { value: string; label: string }[];
 }
-
-const sortOrderOptions = [
-    { value: 'asc', label: 'Ordenar: A-Z' },
-    { value: 'desc', label: 'Ordenar: Z-A' },
-];
 
 export default function Filters({
     categories,
     search: searchProp,
     selectedCategory: selectedCategoryProp,
     sortOrder: sortOrderProp,
+    sortOrderOptions,
 }: FiltersProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -33,40 +32,38 @@ export default function Filters({
     );
     const [sortOrder, setSortOrder] = useState(sortOrderProp ?? 'asc');
 
-    const options = useMemo(
-        () => [
-            { value: '', label: 'Todas las categorías' },
-            ...categories.map((cat) => ({
-                value: cat.name,
-                label: cat.name,
-            })),
-        ],
+    const categoryOptions = useMemo(
+        () =>
+            mapOptions(
+                categories,
+                (cat) => cat.name,
+                (cat) => cat.name,
+                true,
+                'Todas las categorías'
+            ),
         [categories]
     );
 
-    const selectedOption = useMemo(
-        () => options.find((o) => o.value === selectedCategory) || options[0],
-        [options, selectedCategory]
+    const selectedCategoryOption = useMemo(
+        () => getSelectedOption(categoryOptions, selectedCategory),
+        [categoryOptions, selectedCategory]
     );
 
     const selectedSortOrderOption = useMemo(
-        () =>
-            sortOrderOptions.find((o) => o.value === sortOrder) ||
-            sortOrderOptions[0],
-        [sortOrder]
+        () => getSelectedOption(sortOrderOptions, sortOrder),
+        [sortOrder, sortOrderOptions]
     );
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            const params = new URLSearchParams();
-
-            if (search) params.set('search', search);
-            if (selectedCategory)
-                params.set('filterByCategory', selectedCategory);
-            if (sortOrder) params.set('sortOrder', sortOrder);
+            const queryString = buildQueryParams({
+                search,
+                filterByCategory: selectedCategory,
+                sortOrder,
+            });
 
             router.replace(
-                `${pathname}${params.toString() ? '?' + params.toString() : ''}`
+                `${pathname}${queryString ? '?' + queryString : ''}`
             );
         }, 300);
 
@@ -84,77 +81,23 @@ export default function Filters({
             />
 
             <div className="w-full sm:w-64">
-                <Select
-                    instanceId="filters-select-category"
-                    value={selectedOption}
-                    options={options}
-                    closeMenuOnSelect
-                    onChange={(option) =>
-                        setSelectedCategory(option?.value || '')
-                    }
-                    unstyled
-                    classNames={{
-                        control: ({ isFocused }) =>
-                            `rounded-md border py-2 pl-4 focus-within:ring-1 focus-within:ring-apur-green ${
-                                isFocused
-                                    ? 'border-apur-green'
-                                    : 'border-gray-300'
-                            }`,
-                        menu: () =>
-                            'z-50 rounded-md shadow-lg bg-white mt-2 border border-gray-300 overflow-hidden',
-                        option: ({ isFocused, isSelected }) =>
-                            `cursor-pointer select-none px-4 py-2 ${
-                                isFocused || isSelected
-                                    ? 'bg-apur-green text-white'
-                                    : 'text-gray-900'
-                            }`,
-                        singleValue: () => 'truncate',
-                        input: () => 'text-gray-900 cursor-pointer',
-                        dropdownIndicator: () =>
-                            'text-gray-500 px-2 cursor-pointer',
-                        indicatorSeparator: () => 'bg-gray-300',
-                    }}
+                <CustomSelect
+                    value={selectedCategoryOption}
+                    options={categoryOptions}
+                    setValue={setSelectedCategory}
+                    instanceId="players-category"
                 />
             </div>
 
             <div className="w-full sm:w-48">
-                <Select
-                    instanceId="filters-select-sortorder"
+                <CustomSelect
                     value={selectedSortOrderOption}
                     options={sortOrderOptions}
-                    closeMenuOnSelect
-                    onChange={(option) => {
-                        if (
-                            option?.value === 'asc' ||
-                            option?.value === 'desc'
-                        ) {
-                            setSortOrder(option.value);
-                        } else {
-                            setSortOrder('asc');
-                        }
-                    }}
-                    unstyled
-                    classNames={{
-                        control: ({ isFocused }) =>
-                            `rounded-md border py-2 pl-4 focus-within:ring-1 focus-within:ring-apur-green ${
-                                isFocused
-                                    ? 'border-apur-green'
-                                    : 'border-gray-300'
-                            }`,
-                        menu: () =>
-                            'z-50 rounded-md shadow-lg bg-white mt-2 border border-gray-300 overflow-hidden',
-                        option: ({ isFocused, isSelected }) =>
-                            `cursor-pointer select-none px-4 py-2 ${
-                                isFocused || isSelected
-                                    ? 'bg-apur-green text-white'
-                                    : 'text-gray-900'
-                            }`,
-                        singleValue: () => 'truncate',
-                        input: () => 'text-gray-900 cursor-pointer',
-                        dropdownIndicator: () =>
-                            'text-gray-500 px-2 cursor-pointer',
-                        indicatorSeparator: () => 'bg-gray-300',
-                    }}
+                    setValue={() => {}}
+                    instanceId="sortorder"
+                    onChangeExtra={(option) =>
+                        setSortOrder(option?.value === 'asc' ? 'asc' : 'desc')
+                    }
                 />
             </div>
         </div>
