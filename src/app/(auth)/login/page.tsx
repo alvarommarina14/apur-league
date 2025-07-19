@@ -88,7 +88,7 @@ export default function Login() {
                                     required: 'Email is required',
                                 })}
                                 type="email"
-                                className="border-2 border-neutral-600 rounded-lg p-3 focus:border-apur-green focus:ring-2 focus:ring-apur-green focus:outline-none transition-colors" // Added focus styles
+                                className="border-2 border-neutral-600 rounded-lg p-3 focus:border-apur-green focus:ring-2 focus:ring-apur-green focus:outline-none transition-colors"
                                 placeholder="Email"
                             />
                             {errors.email && (

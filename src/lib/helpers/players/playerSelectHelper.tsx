@@ -52,7 +52,6 @@ export const PlayerSelects: React.FC<PlayerSelectsProps> = ({
     type,
     isDisabled,
 }) => {
-    // Memoizar las opciones para no recalcular en cada render
     const options = useMemo(() => {
         const opts = generatePlayerOptions(
             players,

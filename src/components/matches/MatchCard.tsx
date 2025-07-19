@@ -46,11 +46,6 @@ export default function MatchCard({ match }: Props) {
 
     const renderScore = () => {
         if (!match.result) return null;
-        // return (
-        //     <div className="flex flex-col gap-1 text-sm min-w-[3.5rem] items-end justify-between">
-        //         pending
-        //     </div>
-        // );
 
         const sets = match.result.split(' ');
         const setPairs = sets.map((set) => set.split('/'));
