@@ -1,0 +1,109 @@
+'use client';
+
+import { useState } from 'react';
+import { format } from '@formkit/tempo';
+import Link from 'next/link';
+import { Pencil, X } from 'lucide-react';
+
+import { MatchWeekWithMatchDaysType } from '@/types/matchWeek';
+
+interface MatchWeekCardEditableProp {
+    week: MatchWeekWithMatchDaysType;
+}
+
+export default function MatchWeekCardEditable({
+    week,
+}: MatchWeekCardEditableProp) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [newDate, setNewDate] = useState('');
+
+    const handleRemoveDay = (id: number) => {
+        alert(`Eliminar fecha existente ID: ${id}`);
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        alert('Fechas nuevas a guardar:\n' + newDate);
+
+        setNewDate('');
+    };
+
+    return (
+        <div className="relative bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition">
+            <button
+                onClick={() => setIsEditing((prev) => !prev)}
+                className={`absolute top-4 right-4 transition p-2 rounded-full cursor-pointer hover:text-apur-green hover:bg-gray-100  ${isEditing ? 'text-apur-green bg-gray-100' : 'text-gray-500'}`}
+            >
+                <Pencil size={18} />
+            </button>
+
+            <h2 className="text-xl font-semibold text-neutral-700 mb-4 uppercase">
+                {week.name}
+            </h2>
+
+            <div className="flex flex-wrap gap-3">
+                {week.matchDays.map((day) => {
+                    const dateStr = format(day.date, 'YYYY-MM-DD');
+
+                    return (
+                        <div key={day.id} className="relative">
+                            {!isEditing ? (
+                                <Link
+                                    href={`/admin/matchWeeks/${week.id}/${day.id}`}
+                                    className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-apur-green text-sm font-medium text-apur-green bg-white hover:bg-apur-green hover:text-white transition"
+                                >
+                                    <time dateTime={dateStr}>
+                                        {format(day.date, 'DD/MM/YYYY', 'es')}
+                                    </time>
+                                </Link>
+                            ) : (
+                                <div className="cursor-default inline-flex items-center justify-center px-4 py-2 rounded-full border border-apur-green text-sm font-medium text-apur-green bg-white">
+                                    <time dateTime={dateStr}>
+                                        {format(day.date, 'DD/MM/YYYY', 'es')}
+                                    </time>
+                                </div>
+                            )}
+
+                            {isEditing && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemoveDay(day.id)}
+                                    className="absolute -top-3 -right-2 cursor-pointer bg-red-800 text-white rounded-full p-1.5 hover:bg-red-600 transition"
+                                >
+                                    <X size={14} />
+                                </button>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+
+            {isEditing && (
+                <form
+                    onSubmit={handleSubmit}
+                    className="flex flex-col gap-3 mt-4"
+                >
+                    <label className="block text-sm font-medium text-gray-700">
+                        Agregar día:
+                    </label>
+                    <div className="flex items-center justify-between gap-4">
+                        <input
+                            type="date"
+                            value={newDate}
+                            onChange={(e) => setNewDate(e.target.value)}
+                            className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full"
+                        />
+                        <button
+                            type="submit"
+                            disabled={!newDate}
+                            className={`${!newDate ? 'opacity-30' : 'cursor-pointer hover:bg-apur-green-hover'} font-semibold bg-apur-green text-white text-sm px-3 py-2 rounded-md transition`}
+                        >
+                            Agregar
+                        </button>
+                    </div>
+                </form>
+            )}
+        </div>
+    );
+}

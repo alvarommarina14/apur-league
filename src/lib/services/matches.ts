@@ -10,11 +10,13 @@ export async function getMatchWeekWithMatches({
     categoryId,
     search,
     clubId,
+    matchDayId,
 }: {
     matchWeekId: number;
     categoryId?: number;
     search?: string;
     clubId?: number;
+    matchDayId?: number;
 }) {
     return await prisma.matchWeek.findUnique({
         where: {
@@ -22,6 +24,9 @@ export async function getMatchWeekWithMatches({
         },
         include: {
             matchDays: {
+                where: {
+                    ...(matchDayId && { id: matchDayId }),
+                },
                 orderBy: { date: 'asc' },
                 include: {
                     matches: {
@@ -82,6 +87,19 @@ export async function getAllMatchWeek() {
     const weeks = await prisma.matchWeek.findMany({
         orderBy: {
             order: 'asc',
+        },
+    });
+
+    return weeks;
+}
+
+export async function getAllMatchWeekWithMatchDays() {
+    const weeks = await prisma.matchWeek.findMany({
+        orderBy: {
+            order: 'asc',
+        },
+        include: {
+            matchDays: true,
         },
     });
 

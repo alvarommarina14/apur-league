@@ -56,7 +56,7 @@ export default function Sidebar() {
                                 Jugadores
                             </Link>
                             <Link
-                                href="/admin/matches"
+                                href="/admin/matchWeeks"
                                 className={`${pathname.startsWith('/admin/matches') && 'bg-neutral-100'} text-sm font-semibold flex items-center hover:bg-admin-grey-hover gap-4 p-2 rounded-md`}
                                 onClick={closeSidebar}
                             >
