@@ -1,6 +1,6 @@
 import { getAllMatchWeekWithMatchDays } from '@/lib/services/matchWeek';
 
-import MatchWeekCardEditable from '@/components/admin/matches/MatchWeekCardEditable';
+import MatchWeekCardEditable from '@/components/admin/matchWeek/MatchWeekCardEditable';
 import CreateButton from '@/components/admin/matchWeek/CreateButton';
 
 export default async function AdminMatchWeeksPage() {

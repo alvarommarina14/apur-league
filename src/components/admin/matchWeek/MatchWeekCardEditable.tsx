@@ -1,11 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { format } from '@formkit/tempo';
 import Link from 'next/link';
 import { Pencil, X } from 'lucide-react';
 
 import { MatchWeekWithMatchDaysType } from '@/types/matchWeek';
+
+import { deleteMatchDayAction } from '@/lib/actions/matchDay';
 
 import Modal from '@/components/Modal';
 import ConfirmModal from '@/components/ConfirmModal';
@@ -22,6 +25,7 @@ interface DateToDeleteType {
 export default function MatchWeekCardEditable({
     week,
 }: MatchWeekCardEditableProp) {
+    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [newDate, setNewDate] = useState('');
@@ -35,9 +39,10 @@ export default function MatchWeekCardEditable({
     };
 
     const handleDelete = async () => {
+        if (!dateToDelete) return;
+        await deleteMatchDayAction(String(dateToDelete.id));
         setIsOpen(false);
-
-        alert('Fecha eliminada');
+        router.refresh();
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
