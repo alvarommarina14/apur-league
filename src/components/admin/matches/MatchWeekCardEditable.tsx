@@ -43,13 +43,17 @@ export default function MatchWeekCardEditable({
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        alert('Fechas nuevas a guardar:\n' + newDate);
+        const formData = {
+            matchWeekId: week.id,
+            date: newDate,
+        };
 
+        console.log('data: ', formData);
         setNewDate('');
     };
 
     return (
-        <div className="relative bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition">
+        <div className="relative bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition min-h-[130px]">
             <button
                 onClick={() => setIsEditing((prev) => !prev)}
                 className={`absolute top-4 right-4 transition p-2 rounded-full cursor-pointer hover:text-apur-green hover:bg-gray-100  ${isEditing ? 'text-apur-green bg-gray-100' : 'text-gray-500'}`}
@@ -111,7 +115,7 @@ export default function MatchWeekCardEditable({
                     <label className="block text-sm font-medium text-gray-700">
                         Agregar día:
                     </label>
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center justify-between gap-4 flex-wrap 2xl:flex-nowrap">
                         <input
                             type="date"
                             value={newDate}
@@ -121,7 +125,7 @@ export default function MatchWeekCardEditable({
                         <button
                             type="submit"
                             disabled={!newDate}
-                            className={`${!newDate ? 'opacity-30' : 'cursor-pointer hover:bg-apur-green-hover'} font-semibold bg-apur-green text-white text-sm px-3 py-2 rounded-md transition`}
+                            className={`${!newDate ? 'opacity-30' : 'cursor-pointer hover:bg-apur-green-hover'} w-full font-semibold bg-apur-green text-white text-sm px-3 py-2 rounded-md transition`}
                         >
                             Agregar
                         </button>

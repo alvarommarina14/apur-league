@@ -3,7 +3,7 @@ import { format } from '@formkit/tempo';
 import { getAllPlayers } from '@/lib/services/player';
 import { getAllCategories } from '@/lib/services/category';
 import { getAllClubs } from '@/lib/services/club';
-import { getMatchWeekWithMatches } from '@/lib/services/matches';
+import { getMatchWeekWithMatches } from '@/lib/services/matchWeek';
 
 import CreateForm from '@/components/admin/matches/CreateForm';
 import MatchCardEditable from '@/components/admin/matches/MatchCardEditable';

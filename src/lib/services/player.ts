@@ -90,11 +90,6 @@ export async function getPlayerById(id: number) {
                     match: true,
                 },
             },
-            categoryPoints: {
-                include: {
-                    category: true,
-                },
-            },
         },
     });
 }

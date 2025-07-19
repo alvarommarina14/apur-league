@@ -34,44 +34,6 @@ export default async function PlayerPage({ params }: ParamsProp) {
                     {format(player.dateOfBirth, 'DD-MM-YYYY', 'es')}
                 </span>
             </p>
-
-            <section className="mb-8">
-                <h2 className="text-2xl font-semibold text-apur-green mb-2">
-                    Categorías Activas
-                </h2>
-                {player.playerCategories.length > 0 ? (
-                    <ul className="list-disc list-inside text-gray-800 space-y-1">
-                        {player.playerCategories.map((cat) => (
-                            <li key={cat.category.id} className="truncate">
-                                {cat.category.name}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-500 italic">
-                        No hay categorías activas
-                    </p>
-                )}
-            </section>
-
-            <section>
-                <h2 className="text-2xl font-semibold text-apur-green mb-2">
-                    Partidos Jugados
-                </h2>
-                {player.playerMatches.length > 0 ? (
-                    <ul className="list-disc list-inside text-gray-800 space-y-1">
-                        {player.playerMatches.map((mat) => (
-                            <li key={mat.match.id} className="truncate">
-                                {format(mat.match.hour, 'DD-MM-YYYY', 'es')}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-500 italic">
-                        No hay partidos jugados
-                    </p>
-                )}
-            </section>
         </div>
     );
 }

@@ -1,6 +1,7 @@
-import { getAllMatchWeekWithMatchDays } from '@/lib/services/matches';
+import { getAllMatchWeekWithMatchDays } from '@/lib/services/matchWeek';
 
 import MatchWeekCardEditable from '@/components/admin/matches/MatchWeekCardEditable';
+import CreateButton from '@/components/admin/matchWeek/CreateButton';
 
 export default async function AdminMatchWeeksPage() {
     const matchWeeks = await getAllMatchWeekWithMatchDays();
@@ -13,8 +14,8 @@ export default async function AdminMatchWeeksPage() {
             <p className="text-center text-neutral-500 text-sm mt-2">
                 Todas las jornadas activas de la liga
             </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+            <CreateButton />
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-6">
                 {matchWeeks.map((week) => (
                     <MatchWeekCardEditable key={week.id} week={week} />
                 ))}

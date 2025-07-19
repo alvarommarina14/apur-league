@@ -1,7 +1,7 @@
 import {
     getMatchWeekWithMatches,
     getAllMatchWeek,
-} from '@/lib/services/matches';
+} from '@/lib/services/matchWeek';
 import { getAllCategories } from '@/lib/services/category';
 import { getAllClubs } from '@/lib/services/club';
 
