@@ -7,21 +7,40 @@ import { Pencil, X } from 'lucide-react';
 
 import { MatchWeekWithMatchDaysType } from '@/types/matchWeek';
 
+import Modal from '@/components/Modal';
+import ConfirmModal from '@/components/ConfirmModal';
+
 interface MatchWeekCardEditableProp {
     week: MatchWeekWithMatchDaysType;
+}
+
+interface DateToDeleteType {
+    id: string | number;
+    date: string;
 }
 
 export default function MatchWeekCardEditable({
     week,
 }: MatchWeekCardEditableProp) {
+    const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [newDate, setNewDate] = useState('');
+    const [dateToDelete, setDateToDelete] = useState<DateToDeleteType | null>(
+        null
+    );
 
-    const handleRemoveDay = (id: number) => {
-        alert(`Eliminar fecha existente ID: ${id}`);
+    const handleRemoveDay = (day: DateToDeleteType) => {
+        setDateToDelete(day);
+        setIsOpen(true);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleDelete = async () => {
+        setIsOpen(false);
+
+        alert('Fecha eliminada');
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         alert('Fechas nuevas a guardar:\n' + newDate);
@@ -68,7 +87,12 @@ export default function MatchWeekCardEditable({
                             {isEditing && (
                                 <button
                                     type="button"
-                                    onClick={() => handleRemoveDay(day.id)}
+                                    onClick={() =>
+                                        handleRemoveDay({
+                                            id: day.id,
+                                            date: dateStr,
+                                        })
+                                    }
                                     className="absolute -top-3 -right-2 cursor-pointer bg-red-800 text-white rounded-full p-1.5 hover:bg-red-600 transition"
                                 >
                                     <X size={14} />
@@ -103,6 +127,20 @@ export default function MatchWeekCardEditable({
                         </button>
                     </div>
                 </form>
+            )}
+            {isOpen && (
+                <Modal
+                    onClose={() => {
+                        setIsOpen(false);
+                    }}
+                >
+                    <ConfirmModal
+                        entity={'la fecha'}
+                        entityItem={dateToDelete?.date || ''}
+                        onClose={() => setIsOpen(false)}
+                        onTrigger={handleDelete}
+                    />
+                </Modal>
             )}
         </div>
     );
