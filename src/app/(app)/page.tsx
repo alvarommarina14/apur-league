@@ -41,7 +41,7 @@ export default function Home() {
                         href="/rankings"
                         className="w-full text-lg sm:text-xl px-6 py-3 rounded-xl font-semibold text-neutral-900 bg-yellow-300 transition-all duration-300 ease-in-out shadow-md hover:bg-yellow-400 hover:scale-105 hover:shadow-lg"
                     >
-                        Ranking (WIP)
+                        Rankings
                     </Link>
                     <Link
                         href="/login"
