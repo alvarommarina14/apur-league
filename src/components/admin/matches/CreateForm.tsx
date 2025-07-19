@@ -14,6 +14,7 @@ import hoursOptions from '@/seed/hours.json';
 import { CategoryType } from '@/types/category';
 import { PlayerType } from '@/types/player';
 import { ClubWithCourtsType } from '@/types/club';
+import { MatchModeType } from '@/types/matches';
 
 import CustomSelect from '@/components/CustomSelect';
 import { PlayerSelects } from '@/lib/helpers/players/playerSelectHelper';
@@ -34,7 +35,7 @@ export default function CreateMatchForm({
     const router = useRouter();
     const pathname = usePathname();
 
-    const [type, setType] = useState<'SINGLES' | 'DOUBLES'>('SINGLES');
+    const [type, setType] = useState<MatchModeType>('SINGLES');
     const [selectedCategory, setSelectedCategory] = useState(
         String(selectedCategoryProp) ?? ''
     );

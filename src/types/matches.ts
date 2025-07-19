@@ -1,4 +1,5 @@
 import { Prisma } from '@/generated/prisma';
+import { Type } from '@/generated/prisma';
 
 export type MatchUpdateInputType = Prisma.MatchUpdateInput;
 export type MatchUpdateInputWithIdType = Prisma.MatchUncheckedUpdateInput;
@@ -19,3 +20,5 @@ export type MatchWithPlayersAndCategoryType = Prisma.MatchGetPayload<{
         };
     };
 }>;
+
+export type MatchModeType = Type;
