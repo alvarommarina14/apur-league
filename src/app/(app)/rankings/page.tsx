@@ -1,7 +1,10 @@
-import { RankingTable } from './Table';
 import Filters from './Filters';
 import { getAllCategories } from '@/lib/services/category';
-import { getPlayerPointsByCategory } from '@/lib/services/points';
+import {
+    getPlayerStatsByCategory,
+    countPlayersByFilters,
+} from '@/lib/services/stats';
+import { RankingList } from './RankingList';
 
 interface CategoryPlayersSearchParamsType {
     searchParams: Promise<{
@@ -14,17 +17,26 @@ interface CategoryPlayersSearchParamsType {
 export default async function RankingsPage({
     searchParams,
 }: CategoryPlayersSearchParamsType) {
-    const { search, categoryId, page = '1' } = await searchParams;
+    const { search, categoryId } = await searchParams;
+    const initialPage = 1;
     const perPage = 15;
-    const pageNumber = Number(page) || 1;
-    const { players, totalCount } = await getPlayerPointsByCategory({
+    const categories = await getAllCategories();
+
+    const defaultCategory = categories.find(
+        (cat) => (cat.name = 'C1-Libre-Singles')
+    );
+
+    const catId = categoryId || defaultCategory!.id;
+
+    const initialPlayers = await getPlayerStatsByCategory({
         search,
-        categoryId,
-        page: Number(page) || 1,
+        categoryId: catId,
+        page: initialPage,
         perPage,
     });
-    const totalPages = perPage > 0 ? Math.ceil(totalCount / perPage) : 1;
-    const categories = await getAllCategories();
+
+    const totalCount = await countPlayersByFilters(catId, search);
+
     return (
         <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
             <div className="max-w-7xl mx-auto">
@@ -38,12 +50,14 @@ export default async function RankingsPage({
                 <Filters
                     categories={categories}
                     search={search}
-                    categoryId={categoryId}
-                ></Filters>
-                <RankingTable
-                    rows={players}
-                    page={pageNumber}
-                    totalPages={totalPages}
+                    categoryId={Number(categoryId)}
+                />
+                <RankingList
+                    initialPlayers={initialPlayers}
+                    totalCount={totalCount}
+                    search={search}
+                    categoryId={catId}
+                    perPage={perPage}
                 />
             </div>
         </div>

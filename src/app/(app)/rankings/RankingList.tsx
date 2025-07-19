@@ -2,14 +2,13 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { RankingTable } from './RankingTable';
-import { fetchMorePlayers } from '@/lib/actions/points';
-import { PlayerWithPoints } from '@/types/points';
-
+import { fetchMorePlayers } from '@/lib/actions/stats';
+import { PlayerCategoryStatsPromotionsType } from '@/types/stats';
 interface RankingListProps {
-    initialPlayers: PlayerWithPoints[];
+    initialPlayers: PlayerCategoryStatsPromotionsType[];
     totalCount: number;
     search: string | undefined;
-    categoryId: number | undefined;
+    categoryId: number;
     perPage: number;
 }
 
@@ -20,7 +19,8 @@ export function RankingList({
     categoryId,
     perPage,
 }: RankingListProps) {
-    const [players, setPlayers] = useState<PlayerWithPoints[]>(initialPlayers);
+    const [players, setPlayers] =
+        useState<PlayerCategoryStatsPromotionsType[]>(initialPlayers);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(players.length < totalCount);
