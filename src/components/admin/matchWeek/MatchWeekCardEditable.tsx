@@ -8,7 +8,10 @@ import { Pencil, X } from 'lucide-react';
 
 import { MatchWeekWithMatchDaysType } from '@/types/matchWeek';
 
-import { deleteMatchDayAction } from '@/lib/actions/matchDay';
+import {
+    deleteMatchDayAction,
+    createMatchDayAction,
+} from '@/lib/actions/matchDay';
 
 import Modal from '@/components/Modal';
 import ConfirmModal from '@/components/ConfirmModal';
@@ -45,16 +48,15 @@ export default function MatchWeekCardEditable({
         router.refresh();
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const formData = {
             matchWeekId: week.id,
-            date: newDate,
+            date: new Date(newDate).toISOString(),
         };
-
-        console.log('data: ', formData);
-        setNewDate('');
+        await createMatchDayAction(formData);
+        router.refresh();
     };
 
     return (

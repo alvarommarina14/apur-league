@@ -32,7 +32,7 @@ model MatchDay {
   id          Int       @id @default(autoincrement())
   date        DateTime
   matchWeekId Int
-  matchWeek   MatchWeek @relation(fields: [matchWeekId], references: [id])
+  matchWeek   MatchWeek @relation(fields: [matchWeekId], references: [id], onDelete: Cascade)
   matches     Match[]
 }
 
