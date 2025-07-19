@@ -14,7 +14,7 @@ export default async function AdminMatchesPage({
 }: AdminMatchesPageType) {
     const categories = await getAllCategories();
     const clubs = await getAllClubs();
-    const { filterByCategory = categories[0].name } = await searchParams;
+    const { filterByCategory = String(categories[0].id) } = await searchParams;
 
     const { players } = await getAllPlayers({
         categoryId: Number(filterByCategory),

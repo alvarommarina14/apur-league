@@ -9,6 +9,8 @@ import {
     buildQueryParams,
 } from '@/lib/helpers/utils';
 
+import hoursOptions from '@/seed/hours.json';
+
 import { CategoryType } from '@/types/category';
 import { PlayerType } from '@/types/player';
 import { ClubWithCourtsType } from '@/types/club';
@@ -34,7 +36,7 @@ export default function CreateMatchForm({
 
     const [type, setType] = useState<'SINGLES' | 'DOUBLES'>('SINGLES');
     const [selectedCategory, setSelectedCategory] = useState(
-        selectedCategoryProp ?? ''
+        String(selectedCategoryProp) ?? ''
     );
     const [team1Players, setTeam1Players] = useState<(string | null)[]>([
         '',
@@ -46,6 +48,7 @@ export default function CreateMatchForm({
     ]);
     const [selectedClub, setSelectedClub] = useState<string | null>(null);
     const [selectedCourt, setSelectedCourt] = useState<string | null>(null);
+    const [selectedHour, setSelectedHour] = useState<string | null>(null);
 
     const categoryOptions = useMemo(
         () =>
@@ -92,6 +95,11 @@ export default function CreateMatchForm({
         [courtOptions, selectedCourt]
     );
 
+    const selectedHourOption = useMemo(
+        () => getSelectedOption(hoursOptions, selectedHour),
+        [selectedHour]
+    );
+
     useEffect(() => {
         const timeout = setTimeout(() => {
             const queryString = buildQueryParams({
@@ -106,8 +114,46 @@ export default function CreateMatchForm({
         return () => clearTimeout(timeout);
     }, [selectedCategory, pathname, router]);
 
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const formData = {
+            type,
+            categoryId: Number(selectedCategory),
+            team1PlayersId: team1Players.filter((p) => !!p).map(Number),
+            team2PlayersId: team2Players.filter((p) => !!p).map(Number),
+            clubId: Number(selectedClub),
+            courtId: Number(selectedCourt),
+            hour: selectedHour,
+            matchDayId: 1,
+        };
+
+        console.log('Form data:', formData);
+
+        setType('SINGLES');
+        setSelectedCategory('');
+        setTeam1Players(['', '']);
+        setTeam2Players(['', '']);
+        setSelectedClub(null);
+        setSelectedCourt(null);
+        setSelectedHour(null);
+    };
+
+    const expectedPlayers = type === 'SINGLES' ? 1 : 2;
+
+    const isFormValid =
+        !!selectedCategory &&
+        !!selectedClub &&
+        !!selectedCourt &&
+        !!selectedHour &&
+        team1Players.slice(0, expectedPlayers).every((p) => p) &&
+        team2Players.slice(0, expectedPlayers).every((p) => p);
+
     return (
-        <form className="w-full">
+        <form
+            onSubmit={handleSubmit}
+            className="w-7/10 bg-white p-8 rounded-xl"
+        >
             <label className="block text-sm font-medium text-gray-700 mb-1">
                 Categoría
             </label>
@@ -118,7 +164,6 @@ export default function CreateMatchForm({
                 instanceId="category"
                 placeholder="Seleccionar categoria"
             />
-
             <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                     Tipo de partido
@@ -148,7 +193,6 @@ export default function CreateMatchForm({
                     </button>
                 </div>
             </div>
-
             <div className="grid grid-cols-2 gap-6 mt-4">
                 <PlayerSelects
                     teamLabel="Equipo 1"
@@ -170,7 +214,6 @@ export default function CreateMatchForm({
                     isDisabled={!selectedCategoryOption}
                 />
             </div>
-
             <label className="block text-sm font-medium text-gray-700 mt-6 mb-1">
                 Club
             </label>
@@ -181,7 +224,6 @@ export default function CreateMatchForm({
                 instanceId="club"
                 placeholder="Seleccionar club"
             />
-
             <label className="block text-sm font-medium text-gray-700 mt-6 mb-1">
                 Cancha
             </label>
@@ -193,6 +235,26 @@ export default function CreateMatchForm({
                 isDisabled={!selectedClub}
                 placeholder="Seleccionar cancha"
             />
+
+            <label className="block text-sm font-medium text-gray-700 mt-6 mb-1">
+                Hora
+            </label>
+            <CustomSelect
+                value={selectedHourOption}
+                options={hoursOptions}
+                setValue={setSelectedHour}
+                instanceId="hour"
+                placeholder="Seleccionar horario"
+            />
+            <div className="mt-8 flex justify-end w-full">
+                <button
+                    type="submit"
+                    disabled={!isFormValid}
+                    className={`font-semibold px-6 py-2 rounded border transition shadow-md border-apur-green bg-apur-green text-white ${isFormValid ? 'cursor-pointer hover:bg-apur-green-hover hover:border-apur-green-hover' : 'opacity-30 cursor-not-allowed'}`}
+                >
+                    Crear partido
+                </button>
+            </div>
         </form>
     );
 }

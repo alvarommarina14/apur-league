@@ -63,11 +63,6 @@ export async function getAllPlayers({
                     match: true,
                 },
             },
-            categoryPoints: {
-                include: {
-                    category: true,
-                },
-            },
         },
     });
 
