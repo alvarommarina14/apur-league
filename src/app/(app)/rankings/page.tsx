@@ -22,11 +22,7 @@ export default async function RankingsPage({
     const perPage = 15;
     const categories = await getAllCategories();
 
-    const defaultCategory = categories.find(
-        (cat) => (cat.name = 'C1-Libre-Singles')
-    );
-
-    const catId = categoryId || defaultCategory!.id;
+    const catId = categoryId || categories[0].id;
 
     const initialPlayers = await getPlayerStatsByCategory({
         search,
