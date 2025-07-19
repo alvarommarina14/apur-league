@@ -12,10 +12,5 @@ export type PlayerType = Prisma.PlayerGetPayload<{
                 match: true;
             };
         };
-        categoryPoints: {
-            include: {
-                category: true;
-            };
-        };
     };
 }>;

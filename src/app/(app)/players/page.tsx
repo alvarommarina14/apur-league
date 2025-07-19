@@ -26,7 +26,7 @@ export default async function PlayersPage({
     const perPage = 25;
     const { players, totalCount } = await getAllPlayers({
         search,
-        filterByCategory,
+        categoryId: Number(filterByCategory),
         sortOrder,
         page: pageNumber,
         perPage,

@@ -7,7 +7,11 @@ import { CategoryType } from '@/types/category';
 import { MatchWeekType } from '@/types/matchWeek';
 import { ClubType } from '@/types/club';
 
-import { mapOptions, getSelectedOption, buildQueryParams } from '@/lib/helpers';
+import {
+    mapOptions,
+    getSelectedOption,
+    buildQueryParams,
+} from '@/lib/helpers/utils';
 
 import CustomSelect from '@/components/CustomSelect';
 

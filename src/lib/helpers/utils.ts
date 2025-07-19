@@ -68,9 +68,9 @@ export function mapOptions<T>(
 
 export function getSelectedOption(
     options: { value: string; label: string }[],
-    selectedValue: string
+    selectedValue: string | null
 ) {
-    return options.find((o) => o.value === selectedValue) ?? options[0] ?? null;
+    return options.find((o) => o.value === selectedValue) ?? null;
 }
 
 export function buildQueryParams(params: Record<string, string | undefined>) {

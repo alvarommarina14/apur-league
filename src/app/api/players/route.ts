@@ -9,8 +9,8 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
 
         const search = searchParams.get('search') ?? undefined;
-        const filterByCategory =
-            searchParams.get('filterByCategory') ?? undefined;
+        const categoryId =
+            Number(searchParams.get('filterByCategory')) ?? undefined;
         const sortOrder =
             (searchParams.get('sortOrder') as 'asc' | 'desc') ?? 'asc';
         const page = Number(searchParams.get('page')) || 1;
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 
         const players = await getAllPlayers({
             search,
-            filterByCategory,
+            categoryId,
             sortOrder,
             page,
             perPage,
