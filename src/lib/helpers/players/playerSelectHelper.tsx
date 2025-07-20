@@ -14,35 +14,6 @@ interface PlayerSelectsProps {
     isDisabled?: boolean;
 }
 
-const getPlayerOption = (
-    players: PlayerType[],
-    id: SelectValue
-): { label: string; value: string } | null => {
-    if (!id) return null;
-    const player = players.find((p) => String(p.id) === id);
-    if (!player) return null;
-    return {
-        label: `${player.firstName} ${player.lastName}`,
-        value: String(player.id),
-    };
-};
-
-const generatePlayerOptions = (
-    players: PlayerType[],
-    selected: SelectValue[],
-    otherSelected: SelectValue[]
-) => {
-    const usedValues = new Set([...selected, ...otherSelected].filter(Boolean));
-    return players.map((p) => {
-        const value = String(p.id);
-        return {
-            label: `${p.firstName} ${p.lastName}`,
-            value,
-            isDisabled: usedValues.has(value),
-        };
-    });
-};
-
 export const PlayerSelects: React.FC<PlayerSelectsProps> = ({
     teamLabel,
     teamPlayers,
@@ -52,30 +23,49 @@ export const PlayerSelects: React.FC<PlayerSelectsProps> = ({
     type,
     isDisabled,
 }) => {
-    const options = useMemo(() => {
-        const opts = generatePlayerOptions(
-            players,
-            teamPlayers,
-            otherTeamPlayers
-        );
-        return [
-            { label: 'Seleccionar jugador', value: '', isDisabled: true },
-            ...opts.map((o) =>
-                teamPlayers.includes(o.value) ? { ...o, isDisabled: false } : o
-            ),
-        ];
-    }, [players, teamPlayers, otherTeamPlayers]);
+    const playerMap = useMemo(
+        () => new Map(players.map((p) => [String(p.id), p])),
+        [players]
+    );
+
+    const getPlayerOption = (id: SelectValue) =>
+        id && playerMap.has(id)
+            ? {
+                  label: `${playerMap.get(id)!.firstName} ${playerMap.get(id)!.lastName}`,
+                  value: id,
+              }
+            : null;
+
+    const numberOfPlayers = type === 'SINGLES' ? 1 : 2;
 
     return (
         <div>
             <h3 className="text-sm font-semibold mb-2">{teamLabel}</h3>
-            {[0, 1].map((i) => {
-                if (type === 'SINGLES' && i === 1) return null;
+            {Array.from({ length: numberOfPlayers }).map((_, i) => {
+                const usedValues = new Set(
+                    [
+                        ...teamPlayers.filter((_, idx) => idx !== i),
+                        ...otherTeamPlayers,
+                    ].filter(Boolean)
+                );
+
+                const options = [
+                    {
+                        label: 'Seleccionar jugador',
+                        value: '',
+                        isDisabled: true,
+                    },
+                    ...players.map((p) => ({
+                        label: `${p.firstName} ${p.lastName}`,
+                        value: String(p.id),
+                        isDisabled: usedValues.has(String(p.id)),
+                    })),
+                ];
 
                 return (
                     <div key={`${teamLabel}-player-${i}`} className="mb-2">
                         <CustomSelect
-                            value={getPlayerOption(players, teamPlayers[i])}
+                            value={getPlayerOption(teamPlayers[i])}
                             options={options}
                             setValue={(val) => {
                                 const updated = [...teamPlayers];
