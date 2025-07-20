@@ -44,7 +44,7 @@ export default async function AdminMatchesPage({
     }
 
     return (
-        <div className="h-full md:p-6">
+        <div className="md:p-6">
             <MatchesToggle
                 players={players}
                 categories={categories}

@@ -115,7 +115,7 @@ export default function MatchCard({ match }: Props) {
     };
 
     return (
-        <div className="relative bg-white border border-gray-200 rounded-xl p-4 shadow-md w-full">
+        <div className="relative bg-white border border-gray-200 rounded-xl p-4 shadow-md hover:shadow-lg w-full transition">
             <button
                 onClick={() => setIsEditing((prev) => !prev)}
                 className={`absolute top-1 right-1 transition p-2 rounded-full cursor-pointer hover:text-apur-green hover:bg-gray-100 ${isEditing ? 'text-apur-green bg-gray-100' : 'text-gray-500'}`}

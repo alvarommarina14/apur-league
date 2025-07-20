@@ -33,6 +33,7 @@ export default function CustomSelect({
             isDisabled={isDisabled}
             placeholder={placeholder}
             closeMenuOnSelect
+            menuPlacement="auto"
             onChange={(option) => {
                 if (onChangeExtra) {
                     onChangeExtra(option);
