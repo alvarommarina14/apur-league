@@ -42,7 +42,7 @@ export function RankingTable({ rows }: RankingTableProps) {
                         {rows.length === 0 ? (
                             <tr>
                                 <td
-                                    colSpan={5}
+                                    colSpan={8}
                                     className="text-center py-6 text-neutral-500"
                                 >
                                     No se encontraron jugadores para esta

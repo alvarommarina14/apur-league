@@ -24,7 +24,7 @@ type CreateMatchFormProps = {
     categories: CategoryType[];
     clubs: ClubWithCourtsType[];
     selectedCategory: string;
-    matchDayId: string;
+    matchDayId: number;
 };
 
 export default function CreateMatchForm({
@@ -128,7 +128,7 @@ export default function CreateMatchForm({
             clubId: Number(selectedClub),
             courtId: Number(selectedCourt),
             hour: selectedHour,
-            matchDayId: Number(matchDayId),
+            matchDayId: matchDayId,
         };
 
         console.log('Form data:', formData);
@@ -155,7 +155,7 @@ export default function CreateMatchForm({
     return (
         <form
             onSubmit={handleSubmit}
-            className="w-full bg-white p-8 rounded-xl"
+            className="w-full bg-white p-8 rounded-xl shadow-md"
         >
             <label className="block text-sm font-medium text-gray-700 mb-1">
                 Categoría
@@ -196,7 +196,7 @@ export default function CreateMatchForm({
                     </button>
                 </div>
             </div>
-            <div className="grid grid-cols-2 gap-6 mt-4">
+            <div className="grid lg:grid-cols-2 gap-6 mt-4">
                 <PlayerSelects
                     teamLabel="Equipo 1"
                     teamPlayers={team1Players}

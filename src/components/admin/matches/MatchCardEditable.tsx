@@ -84,7 +84,7 @@ export default function MatchCard({ match }: Props) {
     });
 
     return (
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-md w-full sm:max-w-lg">
+        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-md w-full">
             <div className="flex justify-between text-sm text-gray-700 font-medium mb-2">
                 <span>
                     {match.court.club.name} - {match.court.name}
