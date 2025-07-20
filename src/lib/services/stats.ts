@@ -1,11 +1,11 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+import { Player, PlayerCategoryStats, Prisma as PrismaTypes } from '@/generated/prisma';
 import {
-    Player,
-    PlayerCategoryStats,
-    Prisma as PrismaTypes,
-} from '@/generated/prisma';
-import { PlayerCategoryStatsPromotionsType } from '@/types/stats';
+    PlayerCategoryStatsPromotionsType,
+    PlayerCategoryStatsCreateType,
+    PlayerCategoryStatsUpdateType,
+} from '@/types/stats';
 
 const playerAgeExtension = Prisma.defineExtension({
     result: {
@@ -20,10 +20,7 @@ const playerAgeExtension = Prisma.defineExtension({
                     const birthDate = new Date(player.dateOfBirth);
                     let age = today.getFullYear() - birthDate.getFullYear();
                     const m = today.getMonth() - birthDate.getMonth();
-                    if (
-                        m < 0 ||
-                        (m === 0 && today.getDate() < birthDate.getDate())
-                    ) {
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
                         age--;
                     }
                     return age;
@@ -35,7 +32,7 @@ const playerAgeExtension = Prisma.defineExtension({
 
 const prismaExtended = prisma.$extends(playerAgeExtension);
 
-export async function getPlayerStatsByCategory({
+export async function getPlayersStatsByCategory({
     search,
     categoryId,
     page = 1,
@@ -95,22 +92,16 @@ export async function getPlayerStatsByCategory({
         },
     });
 
-    const demotingAndPromotingPlayers =
-        await getDemotingAndPromotingPlayersByCategory(categoryId);
+    const demotingAndPromotingPlayers = await getDemotingAndPromotingPlayersByCategory(categoryId);
 
-    const promotingPlayerIds = demotingAndPromotingPlayers
-        .slice(0, 2)
-        .map((p) => p.playerId);
+    const promotingPlayerIds = demotingAndPromotingPlayers.slice(0, 2).map((p) => p.playerId);
 
-    const demotingPlayerIds = demotingAndPromotingPlayers
-        .slice(3, 5)
-        .map((p) => p.playerId);
+    const demotingPlayerIds = demotingAndPromotingPlayers.slice(3, 5).map((p) => p.playerId);
 
     const players = rawPlayers.map((p) => {
         const isPromoting = promotingPlayerIds.includes(p.player.id);
 
-        const isDemoting =
-            !isPromoting && demotingPlayerIds.includes(p.player.id);
+        const isDemoting = !isPromoting && demotingPlayerIds.includes(p.player.id);
 
         const { player, ...stats } = p;
         const result: PlayerCategoryStatsPromotionsType = {
@@ -127,10 +118,7 @@ export async function getPlayerStatsByCategory({
     return players;
 }
 
-export async function countPlayersByFilters(
-    categoryId?: number,
-    search?: string
-) {
+export async function countPlayersByFilters(categoryId?: number, search?: string) {
     return prisma.playerCategoryStats.count({
         where: {
             AND: [
@@ -160,9 +148,7 @@ export async function countPlayersByFilters(
     });
 }
 
-export async function getDemotingAndPromotingPlayersByCategory(
-    categoryId: number
-): Promise<PlayerCategoryStats[]> {
+export async function getDemotingAndPromotingPlayersByCategory(categoryId: number): Promise<PlayerCategoryStats[]> {
     return await prisma.$queryRaw`
         (SELECT "playerId" FROM "PlayerCategoryStats" 
          WHERE "categoryId" = ${categoryId}::integer 
@@ -174,4 +160,28 @@ export async function getDemotingAndPromotingPlayersByCategory(
          ORDER BY points ASC 
          LIMIT 3)
     `;
+}
+
+export async function getPlayerStatsByPlayerIdAndCategoryId(categoryId: number, playerId: number) {
+    return (
+        await prisma.playerCategoryStats.findMany({
+            where: {
+                categoryId: categoryId,
+                playerId: playerId,
+            },
+        })
+    )[0];
+}
+
+export async function createStats(data: PlayerCategoryStatsCreateType) {
+    return await prisma.playerCategoryStats.create({
+        data: data,
+    });
+}
+
+export async function updateStats(id: number, data: PlayerCategoryStatsUpdateType) {
+    return await prisma.playerCategoryStats.update({
+        where: { id: id },
+        data: data,
+    });
 }
