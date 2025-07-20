@@ -1,79 +1,59 @@
-import {
-    getMatchWeekWithMatches,
-    getAllMatchWeek,
-} from '@/lib/services/matchWeek';
-import { getAllCategories } from '@/lib/services/category';
-import { getAllClubs } from '@/lib/services/club';
-
 import { format } from '@formkit/tempo';
 
-import Filters from './Filters';
-import MatchCard from '@/components/matches/MatchCard';
+import { getAllPlayers } from '@/lib/services/player';
+import { getAllCategories } from '@/lib/services/category';
+import { getAllClubs } from '@/lib/services/club';
+import { getMatchWeekWithMatches } from '@/lib/services/matchWeek';
 
-interface Props {
+import CreateForm from '@/components/admin/matches/CreateForm';
+import MatchCardEditable from '@/components/admin/matches/MatchCardEditable';
+
+interface AdminMatchesPageType {
     searchParams: Promise<{
-        filterByMatchWeek?: string;
-        search?: string;
         filterByCategory?: string;
-        filterByClub?: string;
+    }>;
+    params: Promise<{
+        matchWeekId: string;
+        matchDayId: string;
     }>;
 }
 
-export default async function MatchesPage({ searchParams }: Props) {
-    const {
-        filterByMatchWeek,
-        search,
-        filterByCategory,
-        filterByClub = '1',
-    } = await searchParams;
-    const matchWeekId = filterByMatchWeek ? parseInt(filterByMatchWeek) : 1;
-    const categoryId = filterByCategory
-        ? parseInt(filterByCategory)
-        : undefined;
-    const searchValue = search ?? undefined;
+export default async function AdminMatchesPage({
+    searchParams,
+    params,
+}: AdminMatchesPageType) {
+    const categories = await getAllCategories();
+    const clubs = await getAllClubs();
+    const { filterByCategory = String(categories[0].id) } = await searchParams;
+    const { matchDayId, matchWeekId } = await params;
 
-    const selectedMatchWeek = await getMatchWeekWithMatches({
-        matchWeekId,
-        categoryId,
-        search: searchValue,
-        clubId: Number(filterByClub),
+    const { players } = await getAllPlayers({
+        categoryId: Number(filterByCategory),
     });
 
-    const categories = await getAllCategories();
-    const matchWeeks = await getAllMatchWeek();
-    const clubs = await getAllClubs();
-
-    if (!selectedMatchWeek) {
-        return <p>No se encontró la jornada seleccionada.</p>;
-    }
+    const selectedMatchWeek = await getMatchWeekWithMatches({
+        matchWeekId: Number(matchWeekId),
+        matchDayId: Number(matchDayId),
+    });
 
     return (
-        <div className="px-4 py-8 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
-            <div className="max-w-[85rem] mx-auto">
-                <div className="mb-8 text-center">
-                    <h1 className="text-4xl font-bold tracking-tight text-apur-green mb-2">
-                        {selectedMatchWeek.name}
-                    </h1>
-                    <p className="text-neutral-500 text-sm">
-                        Cronograma de partidos por día y categoría
-                    </p>
-                </div>
-                <Filters
+        <div className="flex flex-col items-center p-10">
+            <div className="w-7/10">
+                <CreateForm
+                    players={players}
                     categories={categories}
-                    matchWeeks={matchWeeks}
                     clubs={clubs}
-                    search={search}
                     selectedCategory={filterByCategory}
-                    selectedMatchWeek={filterByMatchWeek}
-                    selectedClub={filterByClub}
+                    matchDayId={matchDayId}
                 />
-
-                {selectedMatchWeek.matchDays.length === 0 ? (
+            </div>
+            <div className="w-full">
+                {selectedMatchWeek?.matchDays.length === 0 ? (
                     <p className="text-center text-gray-500 mt-10">
                         No hay partidos programados para esta jornada.
                     </p>
                 ) : (
-                    selectedMatchWeek.matchDays.map((day) => (
+                    selectedMatchWeek?.matchDays.map((day) => (
                         <section key={day.id} className="mt-10">
                             <div className="mb-4">
                                 <h2 className="text-xl font-semibold text-neutral-900">
@@ -96,7 +76,7 @@ export default async function MatchesPage({ searchParams }: Props) {
                             ) : (
                                 <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                                     {day.matches.map((match) => (
-                                        <MatchCard
+                                        <MatchCardEditable
                                             key={match.id}
                                             match={match}
                                         />
