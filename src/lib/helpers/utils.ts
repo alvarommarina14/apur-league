@@ -156,15 +156,15 @@ export function getPlayersMatchStats(result: string): PlayersMatchStatsType {
     });
 
     if (p1Sets === 2) {
-        stats.winnerGames = 2;
-        stats.winnerSets = p1Games;
-        stats.loserGames = p2Sets;
-        stats.loserSets = p2Games;
+        stats.winnerSets = 2;
+        stats.winnerGames = p1Games;
+        stats.loserSets = p2Sets;
+        stats.loserGames = p2Games;
     } else if (p2Sets === 2) {
-        stats.winnerGames = 2;
-        stats.winnerSets = p2Sets;
-        stats.loserGames = p1Sets;
-        stats.loserSets = p1Games;
+        stats.winnerSets = 2;
+        stats.winnerGames = p2Games;
+        stats.loserSets = p1Sets;
+        stats.loserGames = p1Games;
     }
 
     return stats;
