@@ -80,7 +80,7 @@ export default function MatchWeekCardEditable({
                         <div key={day.id} className="relative">
                             {!isEditing ? (
                                 <Link
-                                    href={`/admin/matchWeeks/${week.id}/${day.id}`}
+                                    href={`/admin/matchWeeks/${week.id}/${day.id}/matches`}
                                     className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-apur-green text-sm font-medium text-apur-green bg-white hover:bg-apur-green hover:text-white transition"
                                 >
                                     <time dateTime={dateStr}>

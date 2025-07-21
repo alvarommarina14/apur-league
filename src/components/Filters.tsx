@@ -86,7 +86,9 @@ export default function Filters({
             mapOptions(
                 clubs ?? [],
                 (c) => String(c.id),
-                (c) => c.name
+                (c) => c.name,
+                true,
+                'Todas las sedes'
             ),
         [clubs]
     );
