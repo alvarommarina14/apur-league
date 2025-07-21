@@ -36,7 +36,7 @@ export default function CustomSelect({
             unstyled
             classNames={{
                 control: ({ isFocused, isDisabled }) =>
-                    `${isDisabled ? 'opacity-30' : ''} bg-white rounded-md border py-2 pl-4 pr-2 flex flex-wrap gap-1 focus-within:ring-1 focus-within:ring-apur-green ${
+                    `${isDisabled ? 'opacity-30' : ''} bg-white rounded-md border py-2 pl-4 pr-2 flex gap-1 focus-within:ring-1 focus-within:ring-apur-green ${
                         isFocused ? 'border-apur-green' : 'border-gray-300'
                     }`,
                 menu: () => 'z-50 rounded-md shadow-lg bg-white mt-2 border border-gray-300 overflow-hidden',
@@ -44,9 +44,9 @@ export default function CustomSelect({
                     `cursor-pointer select-none px-4 py-2 ${isDisabled ? 'opacity-30' : ''} ${
                         isFocused || isSelected ? 'bg-apur-green text-white' : 'text-gray-900'
                     }`,
-                multiValue: () =>
-                    'mr-1 bg-apur-lightGreen text-apur-green rounded-full px-2 py-1 flex items-center text-sm',
+                multiValue: () => 'bg-apur-lightGreen text-apur-green rounded-full px-2 py-1 flex items-center text-sm',
                 multiValueLabel: () => 'pr-1 truncate',
+                valueContainer: () => 'flex gap-1',
                 multiValueRemove: () =>
                     'pl-1 text-apur-green hover:text-red-800 hover:bg-red-100 rounded-full p-1 cursor-pointer',
                 singleValue: () => 'truncate',
