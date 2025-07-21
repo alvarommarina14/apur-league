@@ -2,7 +2,7 @@ import { getAllPlayers } from '@/lib/services/player';
 import { getAllCategories } from '@/lib/services/category';
 
 import Filters from '@/components/Filters';
-import PlayersTable from './Table';
+import PlayersTable from '@/components/players/PlayersTable';
 
 interface PlayersSearchParamsType {
     searchParams: Promise<{
@@ -46,9 +46,7 @@ export default async function PlayersPage({ searchParams }: PlayersSearchParamsT
                             sortOrder={sortOrder}
                             sortOrderOptions={sortOrderOptions}
                             withSearch
-                            searchPlaceholder={
-                                'Buscar por nombre y apellido...'
-                            }
+                            searchPlaceholder={'Buscar por nombre y apellido...'}
                             showAllCategory
                             withSort
                         />
