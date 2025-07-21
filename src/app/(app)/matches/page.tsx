@@ -54,19 +54,21 @@ export default async function MatchesPage({ searchParams }: Props) {
                         Cronograma de partidos por día y categoría
                     </p>
                 </div>
-                <Filters
-                    matchWeeks={matchWeeks}
-                    categories={categories}
-                    clubs={clubs}
-                    search={search}
-                    searchPlaceholder="Buscar por nombre o apellido..."
-                    withSearch={true}
-                    selectedCategory={filterByCategory}
-                    selectedMatchWeek={String(matchWeekId)}
-                    selectedClub={filterByClub}
-                    showAllCategory
-                    showAllClub
-                />
+                <div className="w-full flex flex-col md:flex-row gap-4">
+                    <Filters
+                        matchWeeks={matchWeeks}
+                        categories={categories}
+                        clubs={clubs}
+                        search={search}
+                        searchPlaceholder="Buscar por nombre o apellido..."
+                        withSearch={true}
+                        selectedCategory={filterByCategory}
+                        selectedMatchWeek={String(matchWeekId)}
+                        selectedClub={filterByClub}
+                        showAllCategory
+                        showAllClub
+                    />
+                </div>
 
                 {selectedMatchWeek.matchDays.length === 0 ? (
                     <p className="text-center text-gray-500 mt-10">

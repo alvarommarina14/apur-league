@@ -147,7 +147,7 @@ export default function Filters({
     ]);
 
     return (
-        <div className="flex flex-col lg:flex-row gap-4 justify-center lg:items-center">
+        <>
             {withSearch && (
                 <Search
                     placeholder={searchPlaceholder}
@@ -200,6 +200,6 @@ export default function Filters({
                     />
                 </div>
             )}
-        </div>
+        </>
     );
 }
