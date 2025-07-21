@@ -1,46 +1,73 @@
+'use server';
 import {
     MatchCreateInputType,
     MatchUpdateInputType,
     MatchUpdateInputWithIdType,
+    MatchUpdateWithPlayerMatchesType,
 } from '@/types/matches';
+import {
+    updateMatchBulkService,
+    createMatchBulkService,
+    createMatchService,
+    deleteMatchBulkService,
+    updateMatchService,
+    deleteMatchService,
+} from '@/lib/services/matches';
+
+import { upsertStats } from '@/lib/actions/stats';
+import { UpsertStatsType } from '@/types/stats';
 
 export async function createMatch(data: MatchCreateInputType) {
-    return await fetch('api/matches', {
-        method: 'POST',
-        body: JSON.stringify(data),
-    });
+    return await createMatchService(data);
 }
 
 export async function createMatchBulk(data: MatchCreateInputType[]) {
-    return await fetch('api/matches', {
-        method: 'POST',
-        body: JSON.stringify(data),
-    });
+    return await createMatchBulkService(data);
 }
 
-export async function updateMatch(id: number, data: MatchUpdateInputType) {
-    return await fetch(`api/matches/'${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-    });
+export async function updateMatchResult(
+    id: number,
+    data: MatchUpdateWithPlayerMatchesType,
+    stats: UpsertStatsType[] = [],
+    categoryId: number,
+    previousResult: string | null,
+    previousWinnerId?: number
+) {
+    try {
+        const match: MatchUpdateInputType = {
+            result: data.result,
+            playerMatches: {
+                update: [
+                    ...data.playerMatches!.map((pm) => ({
+                        where: {
+                            playerId_matchId: {
+                                matchId: id,
+                                playerId: pm.playerId,
+                            },
+                        },
+                        data: {
+                            winner: pm.winner,
+                        },
+                    })),
+                ],
+            },
+        };
+        const updatedMatch = await updateMatchService(Number(id), match);
+        await upsertStats(stats, categoryId, data.result ?? '', previousResult, previousWinnerId);
+        return updatedMatch;
+    } catch (error) {
+        throw new Error('Failed to update match result ' + error);
+    }
 }
 
 export async function updateMatchBulk(data: MatchUpdateInputWithIdType[]) {
-    return await fetch('api/matches', {
-        method: 'PUT',
-        body: JSON.stringify(data),
-    });
+    return await updateMatchBulkService(data);
 }
 
 export async function deleteMatch(id: number) {
-    return await fetch(`api/matches/${id}`, {
-        method: 'DELETE',
-    });
+    return await deleteMatchService(Number(id));
 }
 
 export async function deleteMatchBulk(ids: number[]) {
-    return await fetch('api/matches', {
-        method: 'DELETE',
-        body: JSON.stringify({ ids }),
-    });
+    return await deleteMatchBulkService(ids);
 }

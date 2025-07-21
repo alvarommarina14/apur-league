@@ -134,26 +134,34 @@ export async function getDemotingAndPromotingPlayersByCategory(categoryId: numbe
     `;
 }
 
-export async function getPlayerStatsByPlayerIdAndCategoryId(categoryId: number, playerId: number) {
-    return (
-        await prisma.playerCategoryStats.findMany({
-            where: {
-                categoryId: categoryId,
-                playerId: playerId,
-            },
+export async function getPlayerStatsByPlayerIdsAndCategoryId(categoryId: number, playerIds: number[]) {
+    return await prisma.playerCategoryStats.findMany({
+        where: {
+            categoryId: categoryId,
+            playerId: { in: playerIds },
+        },
+    });
+}
+
+export async function createStatsBulk(data: PlayerCategoryStatsCreateType | PlayerCategoryStatsCreateType[]) {
+    if (Array.isArray(data)) {
+        return await prisma.playerCategoryStats.createMany({
+            data: data,
+        });
+    } else {
+        return await prisma.playerCategoryStats.create({
+            data: data,
+        });
+    }
+}
+
+export async function updateStatsBulk(data: PlayerCategoryStatsUpdateType[]) {
+    const transactionOperations = data.map((item) =>
+        prisma.playerCategoryStats.update({
+            where: { id: item.id },
+            data: item.data,
         })
-    )[0];
-}
+    );
 
-export async function createStats(data: PlayerCategoryStatsCreateType) {
-    return await prisma.playerCategoryStats.create({
-        data: data,
-    });
-}
-
-export async function updateStats(id: number, data: PlayerCategoryStatsUpdateType) {
-    return await prisma.playerCategoryStats.update({
-        where: { id: id },
-        data: data,
-    });
+    return await prisma.$transaction(transactionOperations);
 }

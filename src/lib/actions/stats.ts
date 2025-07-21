@@ -2,13 +2,14 @@
 
 import {
     getPlayersStatsByCategory,
-    getPlayerStatsByPlayerIdAndCategoryId,
-    createStats,
-    updateStats,
+    getPlayerStatsByPlayerIdsAndCategoryId,
+    createStatsBulk,
+    updateStatsBulk,
 } from '@/lib/services/stats';
 
 import { getPlayersMatchStats } from '@/lib/helpers/utils';
 import { POINTS_PER_LOSS, POINTS_PER_WIN } from '@/lib/constants';
+import { UpsertStatsType, PlayerCategoryStatsCreateType, PlayerCategoryStatsUpdateType } from '@/types/stats';
 
 interface GetPlayersParams {
     search?: string;
@@ -22,36 +23,71 @@ export async function fetchMorePlayers(params: GetPlayersParams) {
     return players;
 }
 
-export async function upsertStats(playerId: number, categoryId: number, result: string, isWinner: boolean) {
-    const stats = await getPlayerStatsByPlayerIdAndCategoryId(categoryId, playerId);
-    const playersMatchStats = getPlayersMatchStats(result);
+export async function upsertStats(
+    winnerById: UpsertStatsType[],
+    categoryId: number,
+    result: string,
+    previousResult: string | null,
+    previousWinnerId?: number
+) {
+    const statsToInsert: PlayerCategoryStatsCreateType[] = [];
+    const statsToUpdate: PlayerCategoryStatsUpdateType[] = [];
+    const playerIds = winnerById.map((s) => s.playerId);
+    const playersStats = await getPlayerStatsByPlayerIdsAndCategoryId(categoryId, playerIds);
+    const matchStatsPerPlayer = getPlayersMatchStats(result);
 
-    const { winnerGames, loserGames, winnerSets, loserSets } = playersMatchStats;
-    const gameDifference = isWinner ? winnerGames - loserGames : loserGames - winnerGames;
-    const setDifference = isWinner ? winnerSets - loserSets : loserSets - winnerSets;
+    if (previousResult) {
+        const previousMatchStatsPerPlayer = getPlayersMatchStats(previousResult);
+        const { winnerGames, loserGames, winnerSets, loserSets } = previousMatchStatsPerPlayer;
+        winnerById.forEach((stat) => {
+            const stats = playersStats.find((s) => s.playerId === stat.playerId);
+            if (stats) {
+                const wasWinner = stats.playerId === previousWinnerId;
+                const revertGames = wasWinner ? winnerGames - loserGames : loserGames - winnerGames;
+                const revertSets = wasWinner ? winnerSets - loserSets : loserSets - winnerSets;
 
-    const baseStats = {
-        points: isWinner ? POINTS_PER_WIN : POINTS_PER_LOSS,
-        matchesPlayed: 1,
-        matchesWon: isWinner ? 1 : 0,
-        diffGames: gameDifference,
-        diffSets: setDifference,
-    };
-
-    if (stats) {
-        return updateStats(stats.id, {
-            id: stats.id,
-            points: stats.points + baseStats.points,
-            matchesPlayed: stats.matchesPlayed + 1,
-            matchesWon: stats.matchesWon + baseStats.matchesWon,
-            diffGames: stats.diffGames + gameDifference,
-            diffSets: stats.diffSets + setDifference,
+                stats.points = wasWinner ? stats.points - POINTS_PER_WIN : stats.points - POINTS_PER_LOSS;
+                stats.matchesPlayed -= 1;
+                stats.matchesWon = wasWinner ? stats.matchesWon - 1 : stats.matchesWon;
+                stats.diffGames = stats.diffGames - revertGames;
+                stats.diffSets = stats.diffSets - revertSets;
+            }
         });
     }
 
-    return createStats({
-        playerId,
-        categoryId,
-        ...baseStats,
+    const { winnerGames, loserGames, winnerSets, loserSets } = matchStatsPerPlayer;
+    winnerById.map((stat) => {
+        const gameDifference = winnerGames - loserGames;
+        const setDifference = winnerSets - loserSets;
+        const stats = playersStats.find((s) => s.playerId === stat.playerId);
+        if (stats) {
+            statsToUpdate.push({
+                id: stats.id,
+                data: {
+                    ...stats,
+                    points: stats.points + (stat.isWinner ? POINTS_PER_WIN : POINTS_PER_LOSS),
+                    matchesPlayed: stats.matchesPlayed + 1,
+                    matchesWon: stats.matchesWon + (stat.isWinner ? 1 : 0),
+                    diffGames: stats.diffGames + (stat.isWinner ? gameDifference : -gameDifference),
+                    diffSets: stats.diffSets + (stat.isWinner ? setDifference : -setDifference),
+                },
+            });
+        } else {
+            statsToInsert.push({
+                playerId: stat.playerId,
+                categoryId,
+                points: stat.isWinner ? POINTS_PER_WIN : POINTS_PER_LOSS,
+                matchesPlayed: 1,
+                matchesWon: stat.isWinner ? 1 : 0,
+                diffGames: stat.isWinner ? gameDifference : -gameDifference,
+                diffSets: stat.isWinner ? setDifference : -setDifference,
+            });
+        }
     });
+    if (statsToInsert.length > 0) {
+        await createStatsBulk(statsToInsert);
+    }
+    if (statsToUpdate.length > 0) {
+        await updateStatsBulk(statsToUpdate);
+    }
 }

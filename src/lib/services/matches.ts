@@ -1,11 +1,7 @@
 import { prisma } from '@/lib/prisma';
-import {
-    MatchCreateInputType,
-    MatchUpdateInputType,
-    MatchUpdateInputWithIdType,
-} from '@/types/matches';
+import { MatchCreateInputType, MatchUpdateInputType, MatchUpdateInputWithIdType } from '@/types/matches';
 
-export async function getMatchById(id: number) {
+export async function getMatchByIdService(id: number) {
     prisma.match.findUnique({
         where: { id: Number(id) },
         include: {
@@ -19,13 +15,13 @@ export async function getMatchById(id: number) {
     });
 }
 
-export async function createMatch(data: MatchCreateInputType) {
+export async function createMatchService(data: MatchCreateInputType) {
     return prisma.match.create({
         data,
     });
 }
 
-export async function createMatchBulk(data: MatchCreateInputType[]) {
+export async function createMatchBulkService(data: MatchCreateInputType[]) {
     return prisma.$transaction(async (prisma) => {
         const createdMatches = await Promise.all(
             data.map(async (match: MatchCreateInputType) => {
@@ -38,14 +34,14 @@ export async function createMatchBulk(data: MatchCreateInputType[]) {
     });
 }
 
-export async function updateMatch(id: number, data: MatchUpdateInputType) {
+export async function updateMatchService(id: number, data: MatchUpdateInputType) {
     return prisma.match.update({
         where: { id: Number(id) },
         data,
     });
 }
 
-export async function updateMatchBulk(data: MatchUpdateInputWithIdType[]) {
+export async function updateMatchBulkService(data: MatchUpdateInputWithIdType[]) {
     return prisma.$transaction(async (prisma) => {
         data.map(async (match: MatchUpdateInputWithIdType) => {
             const { id, ...updateData } = match;
@@ -57,13 +53,13 @@ export async function updateMatchBulk(data: MatchUpdateInputWithIdType[]) {
     });
 }
 
-export async function deleteMatch(id: number) {
+export async function deleteMatchService(id: number) {
     return prisma.match.delete({
         where: { id: Number(id) },
     });
 }
 
-export async function deleteMatchBulk(ids: number[]) {
+export async function deleteMatchBulkService(ids: number[]) {
     return prisma.match.deleteMany({
         where: {
             id: {

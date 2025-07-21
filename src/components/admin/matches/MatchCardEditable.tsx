@@ -4,22 +4,23 @@ import { useState } from 'react';
 import { Pencil, Check } from 'lucide-react';
 import { format } from '@formkit/tempo';
 
-import { MatchWithPlayersAndCategoryType } from '@/types/matches';
-import {
-    parseResultToMatrix,
-    isSameScore,
-    determineWinner,
-} from '@/lib/helpers/utils';
+import { MatchUpdateResultType, MatchUpdateWithPlayerMatchesType } from '@/types/matches';
+import { parseResultToMatrix, isSameScore, determineWinner } from '@/lib/helpers/utils';
 
 import ScoreEditor from '@/components/admin/matches/ScoreEditor';
 import ScoreViewer from '@/components/admin/matches/ScoreViewer';
 import CategoryTag from '@/components/CategoryTag';
+import { updateMatchResult } from '@/lib/actions/matches';
+import { showErrorToast, showSuccessToast } from '@/components/Toast';
 
+import { useRouter } from 'next/navigation';
+import { validateScore } from '@/lib/helpers/utils';
 interface Props {
-    match: MatchWithPlayersAndCategoryType;
+    match: MatchUpdateResultType;
 }
 
 export default function MatchCard({ match }: Props) {
+    const router = useRouter();
     const winnerTeam = match.playerMatches.find((pm) => pm.winner)?.team;
     const teams = {
         EQUIPO_1: match.playerMatches.filter((pm) => pm.team === 'EQUIPO_1'),
@@ -38,22 +39,13 @@ export default function MatchCard({ match }: Props) {
     );
 
     const originalScore = parseResultToMatrix(match.result ?? '', winnerTeam);
+
     const isScoreChanged = !isSameScore(editedScore, originalScore);
 
-    const handleScoreChange = (
-        setIndex: number,
-        teamIndex: number,
-        value: string
-    ) => {
+    const handleScoreChange = (setIndex: number, teamIndex: number, value: string) => {
         setEditedScore((prev) => {
             const updated = prev.map((set, i) =>
-                i === setIndex
-                    ? [
-                          ...set.slice(0, teamIndex),
-                          value,
-                          ...set.slice(teamIndex + 1),
-                      ]
-                    : set
+                i === setIndex ? [...set.slice(0, teamIndex), value, ...set.slice(teamIndex + 1)] : set
             );
             return updated;
         });
@@ -63,8 +55,7 @@ export default function MatchCard({ match }: Props) {
         <div className="flex items-center gap-2">
             <div className="flex space-x-1">
                 {players.map((p) => {
-                    const initials =
-                        `${p.player.firstName[0]}${p.player.lastName[0]}`.toUpperCase();
+                    const initials = `${p.player.firstName[0]}${p.player.lastName[0]}`.toUpperCase();
                     return (
                         <div
                             key={p.player.id}
@@ -77,25 +68,23 @@ export default function MatchCard({ match }: Props) {
                 })}
             </div>
             <span className="text-sm md:text-base text-neutral-700 font-semibold">
-                {players
-                    .map((p) => `${p.player.firstName} ${p.player.lastName}`)
-                    .join(' / ')}
+                {players.map((p) => `${p.player.firstName} ${p.player.lastName}`).join(' / ')}
             </span>
-            {players.some((p) => p.winner) && (
-                <Check className="w-4 h-4 text-green-600 ml-1" />
-            )}
+            {players.some((p) => p.winner) && <Check className="w-4 h-4 text-green-600 ml-1" />}
         </div>
     );
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const validatedScore = validateScore(editedScore);
+        if (!validatedScore.isValid) {
+            showErrorToast(validatedScore.message);
+            return;
+        }
         const computedWinner = determineWinner(editedScore);
-
         const cleanedResult = editedScore
             .filter(([a, b]) => a !== '' || b !== '')
-            .map(([a, b]) =>
-                computedWinner === 'EQUIPO_2' ? `${b}/${a}` : `${a}/${b}`
-            )
+            .map(([a, b]) => (computedWinner === 'EQUIPO_2' ? `${b}/${a}` : `${a}/${b}`))
             .join(' ');
 
         const updatedPlayerMatches = match.playerMatches.map((pm) => ({
@@ -104,13 +93,30 @@ export default function MatchCard({ match }: Props) {
             winner: pm.team === computedWinner,
         }));
 
-        const formData = {
-            matchId: match.id,
+        const playerStats = updatedPlayerMatches.map((pm) => ({
+            playerId: pm.playerId,
+            isWinner: pm.winner,
+        }));
+        const formData: MatchUpdateWithPlayerMatchesType = {
             result: cleanedResult,
             playerMatches: updatedPlayerMatches,
         };
-
-        console.log(formData);
+        const previousWinnerId = match.playerMatches.find((pm) => pm.winner)?.playerId;
+        try {
+            await updateMatchResult(
+                match.id,
+                formData,
+                playerStats,
+                match.category!.id,
+                match.result,
+                previousWinnerId
+            );
+            showSuccessToast('Resultado actualizado correctamente');
+            router.refresh();
+        } catch (error) {
+            console.error('Error updating match result:', error);
+            showErrorToast('Error al actualizar el resultado del partido. Por favor, inténtalo de nuevo más tarde.');
+        }
         setIsEditing(false);
     };
 
@@ -125,8 +131,7 @@ export default function MatchCard({ match }: Props) {
 
             <div className="flex text-sm text-gray-700 font-medium mb-2">
                 <span>
-                    {match.court.club.name} - {match.court.name} -{' '}
-                    {timeFormatted}
+                    {match.court.club.name} - {match.court.name} - {timeFormatted}
                 </span>
             </div>
 
@@ -141,18 +146,10 @@ export default function MatchCard({ match }: Props) {
                         onSubmit={handleSubmit}
                         className="flex flex-col gap-1 text-sm min-w-[3.5rem] items-end justify-between"
                     >
-                        <ScoreEditor
-                            score={editedScore}
-                            onChange={handleScoreChange}
-                        />
+                        <ScoreEditor score={editedScore} onChange={handleScoreChange} />
                     </form>
                 ) : (
-                    match.result && (
-                        <ScoreViewer
-                            result={match.result}
-                            winnerTeam={winnerTeam}
-                        />
-                    )
+                    match.result && <ScoreViewer result={match.result} winnerTeam={winnerTeam} />
                 )}
             </div>
 
