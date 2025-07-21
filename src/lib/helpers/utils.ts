@@ -169,3 +169,113 @@ export function getPlayersMatchStats(result: string): PlayersMatchStatsType {
 
     return stats;
 }
+
+export function isScoreValid(setIndex: number, teamIndex: number, score: string[][]) {
+    const valueStr = score[setIndex]?.[teamIndex];
+    const value = valueStr === '' ? undefined : parseInt(valueStr, 10);
+    const opponentValueStr = score[setIndex]?.[1 - teamIndex] ?? '0';
+    const opponentValue = opponentValueStr === '' ? 0 : parseInt(opponentValueStr, 10);
+
+    if (value === undefined) return true;
+
+    if (setIndex < 2) {
+        // invalid set values
+        if (value < 0 || value > 7) return false;
+        if (opponentValue < 0 || opponentValue > 7) return false;
+
+        // validate set values for 7 games sets
+        if (value === 7) {
+            return opponentValue === 5 || opponentValue === 6 || opponentValue === 0;
+        }
+        if (opponentValue === 7) {
+            return value === 5 || value === 6;
+        }
+
+        // validate set values for 6 games sets
+        if (value === 6 && opponentValue < 5) return true;
+        if (opponentValue === 6 && value < 5) return true;
+
+        return false;
+    } else {
+        const nonEmptySets = score.filter((set) => set[0] !== '' && set[1] !== '');
+
+        if (nonEmptySets.length >= 2) {
+            const firstTwoSets = nonEmptySets.slice(0, 2);
+            const team1Wins = firstTwoSets.filter((set) => {
+                const team1Score = set[0] === '' ? 0 : parseInt(set[0]);
+                const team2Score = set[1] === '' ? 0 : parseInt(set[1]);
+                return team1Score > team2Score;
+            }).length;
+
+            const team2Wins = 2 - team1Wins;
+
+            if ((team1Wins === 2 || team2Wins === 2) && nonEmptySets.length > 2) {
+                return false;
+            }
+            if (value === 10 && value - opponentValue >= 2) {
+                return true;
+            }
+            if (opponentValue === 10 && opponentValue - value >= 2) {
+                return true;
+            }
+            if (value > 10 && value - opponentValue == 2) {
+                return true;
+            }
+            if (opponentValue > 10 && opponentValue - value == 2) {
+                return true;
+            }
+
+            return false;
+        }
+    }
+}
+
+export function validateScore(score: string[][]) {
+    for (let setIndex = 0; setIndex < score.length; setIndex++) {
+        for (let teamIndex = 0; teamIndex < score[setIndex].length; teamIndex++) {
+            if (!isScoreValid(setIndex, teamIndex, score)) {
+                return {
+                    isValid: false,
+                    message: 'Resultado invalido',
+                };
+            }
+        }
+    }
+
+    const nonEmptySets = score.filter((set) => set[0] !== '' && set[1] !== '');
+
+    if (nonEmptySets.length < 2)
+        return {
+            isValid: false,
+            message: 'Resultado invalido',
+        };
+
+    if (nonEmptySets.length >= 2) {
+        const firstTwoSets = nonEmptySets.slice(0, 2);
+        const team1Wins = firstTwoSets.filter((set) => {
+            const team1Score = set[0] === '' ? 0 : parseInt(set[0]);
+            const team2Score = set[1] === '' ? 0 : parseInt(set[1]);
+            return team1Score > team2Score;
+        }).length;
+
+        const team2Wins = 2 - team1Wins;
+
+        if ((team1Wins === 2 || team2Wins === 2) && nonEmptySets.length > 2) {
+            return {
+                isValid: false,
+                message: 'No se puede añadir supertiebreak si ya hay un ganador',
+            };
+        }
+        if (team1Wins === 1 && team2Wins === 1 && nonEmptySets.length === 2) {
+            return {
+                isValid: false,
+                message: 'Añade un ganador al supertiebreak antes de guardar',
+            };
+        }
+    }
+
+    return {
+        isValid: true,
+        message: '',
+    };
+}

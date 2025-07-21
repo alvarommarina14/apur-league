@@ -23,15 +23,40 @@ export async function fetchMorePlayers(params: GetPlayersParams) {
     return players;
 }
 
-export async function upsertStats(stats: UpsertStatsType[], categoryId: number, result: string) {
+export async function upsertStats(
+    winnerById: UpsertStatsType[],
+    categoryId: number,
+    result: string,
+    previousResult: string | null,
+    previousWinnerId?: number
+) {
     const statsToInsert: PlayerCategoryStatsCreateType[] = [];
     const statsToUpdate: PlayerCategoryStatsUpdateType[] = [];
-    const playerIds = stats.map((s) => s.playerId);
+    const playerIds = winnerById.map((s) => s.playerId);
     const playersStats = await getPlayerStatsByPlayerIdsAndCategoryId(categoryId, playerIds);
     const matchStatsPerPlayer = getPlayersMatchStats(result);
 
+    if (previousResult) {
+        const previousMatchStatsPerPlayer = getPlayersMatchStats(previousResult);
+        const { winnerGames, loserGames, winnerSets, loserSets } = previousMatchStatsPerPlayer;
+        winnerById.forEach((stat) => {
+            const stats = playersStats.find((s) => s.playerId === stat.playerId);
+            if (stats) {
+                const wasWinner = stats.playerId === previousWinnerId;
+                const revertGames = wasWinner ? winnerGames - loserGames : loserGames - winnerGames;
+                const revertSets = wasWinner ? winnerSets - loserSets : loserSets - winnerSets;
+
+                stats.points = wasWinner ? stats.points - POINTS_PER_WIN : stats.points - POINTS_PER_LOSS;
+                stats.matchesPlayed -= 1;
+                stats.matchesWon = wasWinner ? stats.matchesWon - 1 : stats.matchesWon;
+                stats.diffGames = stats.diffGames - revertGames;
+                stats.diffSets = stats.diffSets - revertSets;
+            }
+        });
+    }
+
     const { winnerGames, loserGames, winnerSets, loserSets } = matchStatsPerPlayer;
-    stats.map((stat) => {
+    winnerById.map((stat) => {
         const gameDifference = winnerGames - loserGames;
         const setDifference = winnerSets - loserSets;
         const stats = playersStats.find((s) => s.playerId === stat.playerId);

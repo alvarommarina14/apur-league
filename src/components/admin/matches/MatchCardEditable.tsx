@@ -11,8 +11,10 @@ import ScoreEditor from '@/components/admin/matches/ScoreEditor';
 import ScoreViewer from '@/components/admin/matches/ScoreViewer';
 import CategoryTag from '@/components/CategoryTag';
 import { updateMatchResult } from '@/lib/actions/matches';
-import { toast, Toaster } from 'react-hot-toast';
+import { showErrorToast, showSuccessToast } from '@/components/Toast';
+
 import { useRouter } from 'next/navigation';
+import { validateScore } from '@/lib/helpers/utils';
 interface Props {
     match: MatchUpdateResultType;
 }
@@ -37,6 +39,7 @@ export default function MatchCard({ match }: Props) {
     );
 
     const originalScore = parseResultToMatrix(match.result ?? '', winnerTeam);
+
     const isScoreChanged = !isSameScore(editedScore, originalScore);
 
     const handleScoreChange = (setIndex: number, teamIndex: number, value: string) => {
@@ -73,6 +76,11 @@ export default function MatchCard({ match }: Props) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const validatedScore = validateScore(editedScore);
+        if (!validatedScore.isValid) {
+            showErrorToast(validatedScore.message);
+            return;
+        }
         const computedWinner = determineWinner(editedScore);
         const cleanedResult = editedScore
             .filter(([a, b]) => a !== '' || b !== '')
@@ -93,46 +101,21 @@ export default function MatchCard({ match }: Props) {
             result: cleanedResult,
             playerMatches: updatedPlayerMatches,
         };
-
+        const previousWinnerId = match.playerMatches.find((pm) => pm.winner)?.playerId;
         try {
-            await updateMatchResult(match.id, formData, playerStats, match.category!.id);
-            toast.success('Resultado actualizado correctamente', {
-                position: 'top-center',
-                duration: 3000,
-                style: {
-                    background: '#D1FAE5',
-                    color: '#065F46',
-                    border: '1px solid #10B981',
-                    fontWeight: '600',
-                    padding: '16px',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-                },
-                iconTheme: {
-                    primary: '#10B981',
-                    secondary: '#FFFFFF',
-                },
-            });
+            await updateMatchResult(
+                match.id,
+                formData,
+                playerStats,
+                match.category!.id,
+                match.result,
+                previousWinnerId
+            );
+            showSuccessToast('Resultado actualizado correctamente');
             router.refresh();
         } catch (error) {
             console.error('Error updating match result:', error);
-            toast.error('Error updating match result', {
-                position: 'top-center',
-                duration: 3000,
-                style: {
-                    background: '#FEE2E2',
-                    color: '#A00000',
-                    border: '1px solid #EF4444',
-                    fontWeight: '600',
-                    padding: '16px',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-                },
-                iconTheme: {
-                    primary: '#EF4444',
-                    secondary: '#FFFFFF',
-                },
-            });
+            showErrorToast('Error al actualizar el resultado del partido. Por favor, inténtalo de nuevo más tarde.');
         }
         setIsEditing(false);
     };
@@ -183,7 +166,6 @@ export default function MatchCard({ match }: Props) {
                     </button>
                 )}
             </div>
-            <Toaster />
         </div>
     );
 }

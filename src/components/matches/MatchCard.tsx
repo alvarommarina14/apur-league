@@ -1,11 +1,11 @@
 import { format } from '@formkit/tempo';
 import { Check } from 'lucide-react';
-import { MatchWithPlayersAndCategoryType } from '@/types/matches';
+import { MatchUpdateResultType } from '@/types/matches';
 
 import CategoryTag from '@/components/CategoryTag';
 
 interface Props {
-    match: MatchWithPlayersAndCategoryType;
+    match: MatchUpdateResultType;
 }
 
 export default function MatchCard({ match }: Props) {
@@ -20,8 +20,7 @@ export default function MatchCard({ match }: Props) {
         <div className="flex items-center gap-2">
             <div className="flex space-x-1">
                 {players.map((p) => {
-                    const initials =
-                        `${p.player.firstName[0]}${p.player.lastName[0]}`.toUpperCase();
+                    const initials = `${p.player.firstName[0]}${p.player.lastName[0]}`.toUpperCase();
                     return (
                         <div
                             key={p.player.id}
@@ -34,13 +33,9 @@ export default function MatchCard({ match }: Props) {
                 })}
             </div>
             <span className="text-sm md:text-base  text-neutral-700 font-semibold">
-                {players
-                    .map((p) => `${p.player.firstName} ${p.player.lastName}`)
-                    .join(' / ')}
+                {players.map((p) => `${p.player.firstName} ${p.player.lastName}`).join(' / ')}
             </span>
-            {players.some((p) => p.winner) && (
-                <Check className="w-4 h-4 text-green-600 ml-1" />
-            )}
+            {players.some((p) => p.winner) && <Check className="w-4 h-4 text-green-600 ml-1" />}
         </div>
     );
 
@@ -50,12 +45,8 @@ export default function MatchCard({ match }: Props) {
         const sets = match.result.split(' ');
         const setPairs = sets.map((set) => set.split('/'));
 
-        const scoreTeam1 = setPairs.map((s) =>
-            winnerTeam === 'EQUIPO_2' ? s[1] : s[0]
-        );
-        const scoreTeam2 = setPairs.map((s) =>
-            winnerTeam === 'EQUIPO_2' ? s[0] : s[1]
-        );
+        const scoreTeam1 = setPairs.map((s) => (winnerTeam === 'EQUIPO_2' ? s[1] : s[0]));
+        const scoreTeam2 = setPairs.map((s) => (winnerTeam === 'EQUIPO_2' ? s[0] : s[1]));
 
         return (
             <div className="flex flex-col gap-1 text-sm min-w-[3.5rem] items-end justify-between">

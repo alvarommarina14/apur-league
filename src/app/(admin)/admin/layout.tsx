@@ -4,6 +4,7 @@ import '@/app/globals.css';
 
 import Header from '@/components/Header';
 import Sidebar from '@/components/admin/Sidebar';
+import { Toaster } from 'react-hot-toast';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -17,8 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
     title: 'Admin | Liga Tenis Apur',
-    description:
-        'Administrador para gestionar las diferentes entidades de la liga',
+    description: 'Administrador para gestionar las diferentes entidades de la liga',
     icons: {
         icon: '/logo-apur.png',
         shortcut: '/logo-apur.png',
@@ -36,6 +36,7 @@ export default function RootLayout({
                 <Header />
                 <main className="flex min-h-[calc(100dvh-4rem)]">
                     <Sidebar />
+                    <Toaster />
                     <div className="flex-1 p-4 bg-neutral-100">{children}</div>
                 </main>
             </body>

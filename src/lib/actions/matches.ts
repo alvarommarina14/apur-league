@@ -29,7 +29,9 @@ export async function updateMatchResult(
     id: number,
     data: MatchUpdateWithPlayerMatchesType,
     stats: UpsertStatsType[] = [],
-    categoryId: number
+    categoryId: number,
+    previousResult: string | null,
+    previousWinnerId?: number
 ) {
     try {
         const match: MatchUpdateInputType = {
@@ -51,7 +53,7 @@ export async function updateMatchResult(
             },
         };
         const updatedMatch = await updateMatchService(Number(id), match);
-        await upsertStats(stats, categoryId, data.result ?? '');
+        await upsertStats(stats, categoryId, data.result ?? '', previousResult, previousWinnerId);
         return updatedMatch;
     } catch (error) {
         throw new Error('Failed to update match result ' + error);
