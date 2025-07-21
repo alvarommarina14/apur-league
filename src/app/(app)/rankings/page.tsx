@@ -47,7 +47,7 @@ export default async function RankingsPage({
                     la fecha
                 </p>
                 <div className="flex justify-center mt-6">
-                    <div className="w-full lg:w-6/10">
+                    <div className="w-full lg:w-7/10 flex flex-col md:flex-row gap-4">
                         <Filters
                             categories={categories}
                             search={search}

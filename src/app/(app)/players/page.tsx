@@ -48,8 +48,8 @@ export default async function PlayersPage({
                     Todas las inscripciones activas de la liga
                 </p>
 
-                <div className="flex justify-center">
-                    <div className="mt-4 w-full lg:w-7/10">
+                <div className="flex justify-center mt-6">
+                    <div className="w-full lg:w-7/10 flex flex-col md:flex-row gap-4">
                         <Filters
                             categories={categories}
                             search={search}

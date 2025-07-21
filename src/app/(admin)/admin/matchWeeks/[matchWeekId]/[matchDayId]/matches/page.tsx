@@ -82,18 +82,20 @@ export default async function AdminMatchesPage({
                             )}
                         </time>
                     </h2>
-                    <Filters
-                        categories={categories}
-                        clubs={clubs}
-                        search={search}
-                        searchPlaceholder="Buscar por nombre o apellido..."
-                        withSearch={true}
-                        selectedCategory={filterByCategory}
-                        selectedMatchWeek={String(selectedMatchWeek.id)}
-                        selectedClub={filterByClub}
-                        showAllCategory
-                        showAllClub
-                    />
+                    <div className="flex flex-col lg:flex-row gap-4">
+                        <Filters
+                            categories={categories}
+                            clubs={clubs}
+                            search={search}
+                            searchPlaceholder="Buscar por nombre o apellido..."
+                            withSearch={true}
+                            selectedCategory={filterByCategory}
+                            selectedMatchWeek={String(selectedMatchWeek.id)}
+                            selectedClub={filterByClub}
+                            showAllCategory
+                            showAllClub
+                        />
+                    </div>
                 </div>
 
                 {selectedMatchWeek.matchDays[0].matches.length === 0 ? (
