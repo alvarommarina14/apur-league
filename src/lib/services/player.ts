@@ -63,6 +63,11 @@ export async function getAllPlayers({
                     match: true,
                 },
             },
+            categoryStats: {
+                include: {
+                    category: true,
+                },
+            },
         },
     });
 
@@ -88,6 +93,11 @@ export async function getPlayerById(id: number) {
             playerMatches: {
                 include: {
                     match: true,
+                },
+            },
+            categoryStats: {
+                include: {
+                    category: true,
                 },
             },
         },

@@ -1,5 +1,5 @@
 import {
-    getPlayerStatsByCategory,
+    getPlayersStatsByCategory,
     countPlayersByFilters,
 } from '@/lib/services/stats';
 
@@ -27,7 +27,7 @@ export default async function RankingsPage({
 
     const catId = filterByCategory || categories[0].id;
 
-    const initialPlayers = await getPlayerStatsByCategory({
+    const initialPlayers = await getPlayersStatsByCategory({
         search,
         categoryId: Number(catId),
         page: initialPage,

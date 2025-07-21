@@ -12,5 +12,10 @@ export type PlayerType = Prisma.PlayerGetPayload<{
                 match: true;
             };
         };
+        categoryStats: {
+            include: {
+                category: true;
+            };
+        };
     };
 }>;
