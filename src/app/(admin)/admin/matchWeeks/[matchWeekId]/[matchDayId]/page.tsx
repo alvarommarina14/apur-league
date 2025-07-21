@@ -8,6 +8,7 @@ import MatchesToggle from './MatchesToggle';
 interface AdminMatchesPageType {
     searchParams: Promise<{
         filterByCategory?: string;
+        search?: string;
     }>;
     params: Promise<{
         matchWeekId: string;
@@ -21,8 +22,11 @@ export default async function AdminMatchesPage({
 }: AdminMatchesPageType) {
     const categories = await getAllCategories();
     const clubs = await getAllClubs();
-    const { filterByCategory = String(categories[0].id) } = await searchParams;
+    const { filterByCategory = String(categories[0].id), search } =
+        await searchParams;
     const { matchDayId, matchWeekId } = await params;
+
+    const searchValue = search ?? undefined;
 
     const { players } = await getAllPlayers({
         categoryId: Number(filterByCategory),
@@ -31,6 +35,7 @@ export default async function AdminMatchesPage({
     const selectedMatchWeek = await getMatchWeekWithMatches({
         matchWeekId: Number(matchWeekId),
         matchDayId: Number(matchDayId),
+        search: searchValue,
     });
 
     if (!selectedMatchWeek) {
@@ -50,7 +55,9 @@ export default async function AdminMatchesPage({
                 categories={categories}
                 clubs={clubs}
                 selectedCategory={filterByCategory}
-                selectedMatchDay={selectedMatchWeek?.matchDays[0]}
+                selectedMatchWeek={String(selectedMatchWeek.id)}
+                selectedMatchDay={selectedMatchWeek.matchDays[0]}
+                search={search}
             />
         </div>
     );
