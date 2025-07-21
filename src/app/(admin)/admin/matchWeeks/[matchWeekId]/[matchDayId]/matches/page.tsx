@@ -91,6 +91,8 @@ export default async function AdminMatchesPage({
                         selectedCategory={filterByCategory}
                         selectedMatchWeek={String(selectedMatchWeek.id)}
                         selectedClub={filterByClub}
+                        showAllCategory
+                        showAllClub
                     />
                 </div>
 

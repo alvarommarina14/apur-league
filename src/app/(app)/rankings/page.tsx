@@ -1,15 +1,18 @@
-import Filters from './Filters';
-import { getAllCategories } from '@/lib/services/category';
 import {
     getPlayerStatsByCategory,
     countPlayersByFilters,
 } from '@/lib/services/stats';
+
+import { getAllCategories } from '@/lib/services/category';
+
+import Filters from '@/components/Filters';
+
 import { RankingList } from './RankingList';
 
 interface CategoryPlayersSearchParamsType {
     searchParams: Promise<{
         search?: string;
-        categoryId?: number;
+        filterByCategory?: string;
         page?: string;
     }>;
 }
@@ -17,21 +20,21 @@ interface CategoryPlayersSearchParamsType {
 export default async function RankingsPage({
     searchParams,
 }: CategoryPlayersSearchParamsType) {
-    const { search, categoryId } = await searchParams;
+    const { search, filterByCategory } = await searchParams;
     const initialPage = 1;
     const perPage = 15;
     const categories = await getAllCategories();
 
-    const catId = categoryId || categories[0].id;
+    const catId = filterByCategory || categories[0].id;
 
     const initialPlayers = await getPlayerStatsByCategory({
         search,
-        categoryId: catId,
+        categoryId: Number(catId),
         page: initialPage,
         perPage,
     });
 
-    const totalCount = await countPlayersByFilters(catId, search);
+    const totalCount = await countPlayersByFilters(Number(catId), search);
 
     return (
         <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
@@ -43,16 +46,22 @@ export default async function RankingsPage({
                     Lista de jugadores ordenada por puntos obtenidos al dia de
                     la fecha
                 </p>
-                <Filters
-                    categories={categories}
-                    search={search}
-                    categoryId={Number(categoryId)}
-                />
+                <div className="flex justify-center mt-6">
+                    <div className="w-full lg:w-6/10">
+                        <Filters
+                            categories={categories}
+                            search={search}
+                            searchPlaceholder="Buscar por nombre o apellido..."
+                            withSearch={true}
+                            selectedCategory={String(catId)}
+                        />
+                    </div>
+                </div>
                 <RankingList
                     initialPlayers={initialPlayers}
                     totalCount={totalCount}
                     search={search}
-                    categoryId={catId}
+                    categoryId={Number(catId)}
                     perPage={perPage}
                 />
             </div>

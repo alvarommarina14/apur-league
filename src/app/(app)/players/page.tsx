@@ -1,7 +1,7 @@
 import { getAllPlayers } from '@/lib/services/player';
 import { getAllCategories } from '@/lib/services/category';
 
-import Filters from './Filters';
+import Filters from '@/components/Filters';
 import PlayersTable from './Table';
 
 interface PLayersSearchParamsType {
@@ -48,13 +48,23 @@ export default async function PlayersPage({
                     Todas las inscripciones activas de la liga
                 </p>
 
-                <Filters
-                    categories={categories}
-                    search={search}
-                    selectedCategory={filterByCategory}
-                    sortOrder={sortOrder}
-                    sortOrderOptions={sortOrderOptions}
-                />
+                <div className="flex justify-center">
+                    <div className="mt-4 w-full lg:w-7/10">
+                        <Filters
+                            categories={categories}
+                            search={search}
+                            selectedCategory={filterByCategory}
+                            sortOrder={sortOrder}
+                            sortOrderOptions={sortOrderOptions}
+                            withSearch
+                            searchPlaceholder={
+                                'Buscar por nombre y apellido...'
+                            }
+                            showAllCategory
+                            withSort
+                        />
+                    </div>
+                </div>
 
                 <PlayersTable
                     rows={players}

@@ -7,7 +7,7 @@ import { getAllClubs } from '@/lib/services/club';
 
 import { format } from '@formkit/tempo';
 
-import Filters from './Filters';
+import Filters from '@/components/Filters';
 import MatchCard from '@/components/matches/MatchCard';
 
 interface Props {
@@ -20,27 +20,23 @@ interface Props {
 }
 
 export default async function MatchesPage({ searchParams }: Props) {
-    const {
-        filterByMatchWeek,
-        search,
-        filterByCategory,
-        filterByClub = '1',
-    } = await searchParams;
-    const matchWeekId = filterByMatchWeek ? parseInt(filterByMatchWeek) : 1;
-    const categoryId = filterByCategory
-        ? parseInt(filterByCategory)
-        : undefined;
+    const { filterByMatchWeek, search, filterByCategory, filterByClub } =
+        await searchParams;
+
+    const matchWeeks = await getAllMatchWeek();
+    const matchWeekId = filterByMatchWeek
+        ? filterByMatchWeek
+        : matchWeeks[0].id;
     const searchValue = search ?? undefined;
 
     const selectedMatchWeek = await getMatchWeekWithMatches({
-        matchWeekId,
-        categoryId,
+        matchWeekId: Number(matchWeekId),
+        categoryId: Number(filterByCategory),
         search: searchValue,
         clubId: Number(filterByClub),
     });
 
     const categories = await getAllCategories();
-    const matchWeeks = await getAllMatchWeek();
     const clubs = await getAllClubs();
 
     if (!selectedMatchWeek) {
@@ -59,13 +55,17 @@ export default async function MatchesPage({ searchParams }: Props) {
                     </p>
                 </div>
                 <Filters
-                    categories={categories}
                     matchWeeks={matchWeeks}
+                    categories={categories}
                     clubs={clubs}
                     search={search}
+                    searchPlaceholder="Buscar por nombre o apellido..."
+                    withSearch={true}
                     selectedCategory={filterByCategory}
-                    selectedMatchWeek={filterByMatchWeek}
+                    selectedMatchWeek={String(matchWeekId)}
                     selectedClub={filterByClub}
+                    showAllCategory
+                    showAllClub
                 />
 
                 {selectedMatchWeek.matchDays.length === 0 ? (

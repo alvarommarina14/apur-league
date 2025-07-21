@@ -8,7 +8,7 @@ interface RankingTableProps {
 export function RankingTable({ rows }: RankingTableProps) {
     return (
         <>
-            <div className="w-full sm:w-[90%] mx-auto mt-8 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm hidden sm:block">
+            <div className="w-full mt-6 overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm hidden sm:block">
                 <table className="min-w-full text-neutral-800 table-auto sm:table-fixed text-sm">
                     <thead>
                         <tr className="bg-apur-green text-xs font-semibold text-white uppercase tracking-wide rounded-t-2xl">
