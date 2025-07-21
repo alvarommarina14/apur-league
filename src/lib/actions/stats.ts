@@ -7,8 +7,8 @@ import {
     updateStats,
 } from '@/lib/services/stats';
 
-import { getPlayersMatchStats } from '@/lib/helpers';
-import { POINTS_PER_LOSS, POINTS_PER_WIN } from '../constants';
+import { getPlayersMatchStats } from '@/lib/helpers/utils';
+import { POINTS_PER_LOSS, POINTS_PER_WIN } from '@/lib/constants';
 
 interface GetPlayersParams {
     search?: string;

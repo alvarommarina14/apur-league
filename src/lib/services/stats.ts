@@ -1,36 +1,10 @@
-import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import { Player, PlayerCategoryStats, Prisma as PrismaTypes } from '@/generated/prisma';
+import { PlayerCategoryStats, Prisma as PrismaTypes } from '@/generated/prisma';
 import {
     PlayerCategoryStatsPromotionsType,
     PlayerCategoryStatsCreateType,
     PlayerCategoryStatsUpdateType,
 } from '@/types/stats';
-
-const playerAgeExtension = Prisma.defineExtension({
-    result: {
-        player: {
-            age: {
-                needs: { dateOfBirth: true },
-                compute(player: Player) {
-                    if (!player.dateOfBirth) {
-                        return null;
-                    }
-                    const today = new Date();
-                    const birthDate = new Date(player.dateOfBirth);
-                    let age = today.getFullYear() - birthDate.getFullYear();
-                    const m = today.getMonth() - birthDate.getMonth();
-                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                        age--;
-                    }
-                    return age;
-                },
-            },
-        },
-    },
-});
-
-const prismaExtended = prisma.$extends(playerAgeExtension);
 
 export async function getPlayersStatsByCategory({
     search,
@@ -69,7 +43,7 @@ export async function getPlayersStatsByCategory({
         ],
     };
 
-    const rawPlayers = await prismaExtended.playerCategoryStats.findMany({
+    const rawPlayers = await prisma.playerCategoryStats.findMany({
         where: filters,
         orderBy: [
             { points: 'desc' },
@@ -86,7 +60,6 @@ export async function getPlayersStatsByCategory({
                     id: true,
                     firstName: true,
                     lastName: true,
-                    age: true,
                 },
             },
         },
@@ -108,7 +81,6 @@ export async function getPlayersStatsByCategory({
             ...stats,
             firstName: player.firstName,
             lastName: player.lastName,
-            age: player.age,
             isDemoting,
             isPromoting,
         };

@@ -12,41 +12,20 @@ export function RankingTable({ rows }: RankingTableProps) {
                 <table className="min-w-full text-neutral-800 table-auto sm:table-fixed text-sm">
                     <thead>
                         <tr className="bg-apur-green text-xs font-semibold text-white uppercase tracking-wide rounded-t-2xl">
-                            <th className="px-6 py-4 text-left rounded-tl-2xl whitespace-nowrap">
-                                Rank.
-                            </th>
-                            <th className="px-6 py-4 text-left whitespace-nowrap">
-                                Jugador
-                            </th>
-                            <th className="px-6 py-4 text-left whitespace-nowrap">
-                                Edad
-                            </th>
-                            <th className="px-6 py-4 text-left whitespace-nowrap">
-                                Partidos jugados
-                            </th>
-                            <th className="px-6 py-4 text-left whitespace-nowrap">
-                                Partidos ganados
-                            </th>
-                            <th className="px-6 py-4 text-left whitespace-nowrap">
-                                Diff sets +/-
-                            </th>
-                            <th className="px-6 py-4 text-left whitespace-nowrap">
-                                Diff games +/-
-                            </th>
-                            <th className="px-6 py-4 text-left rounded-tr-2xl whitespace-nowrap">
-                                Puntos
-                            </th>
+                            <th className="px-6 py-4 text-left rounded-tl-2xl whitespace-nowrap">Rank.</th>
+                            <th className="px-6 py-4 text-left whitespace-nowrap">Jugador</th>
+                            <th className="px-6 py-4 text-left whitespace-nowrap">Partidos jugados</th>
+                            <th className="px-6 py-4 text-left whitespace-nowrap">Partidos ganados</th>
+                            <th className="px-6 py-4 text-left whitespace-nowrap">Diff sets +/-</th>
+                            <th className="px-6 py-4 text-left whitespace-nowrap">Diff games +/-</th>
+                            <th className="px-6 py-4 text-left rounded-tr-2xl whitespace-nowrap">Puntos</th>
                         </tr>
                     </thead>
                     <tbody>
                         {rows.length === 0 ? (
                             <tr>
-                                <td
-                                    colSpan={8}
-                                    className="text-center py-6 text-neutral-500"
-                                >
-                                    No se encontraron jugadores para esta
-                                    categoria
+                                <td colSpan={8} className="text-center py-6 text-neutral-500">
+                                    No se encontraron jugadores para esta categoria
                                 </td>
                             </tr>
                         ) : (
@@ -65,36 +44,19 @@ export function RankingTable({ rows }: RankingTableProps) {
                                                     {row.isPromoting && (
                                                         <ChevronUp className="w-4 h-4 text-green-700" />
                                                     )}
-                                                    {row.isDemoting && (
-                                                        <ChevronDown className="w-4 h-4 text-red-600" />
-                                                    )}
+                                                    {row.isDemoting && <ChevronDown className="w-4 h-4 text-red-600" />}
                                                 </span>
-                                                <span className="font-bold">
-                                                    {index + 1}
-                                                </span>
+                                                <span className="font-bold">{index + 1}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             {row.firstName + ' ' + row.lastName}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {row.age}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {row.matchesPlayed}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {row.matchesWon}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {row.diffSets}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {row.diffGames}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {row.points}
-                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{row.matchesPlayed}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{row.matchesWon}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{row.diffSets}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{row.diffGames}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{row.points}</td>
                                     </tr>
                                 );
                             })
@@ -105,17 +67,10 @@ export function RankingTable({ rows }: RankingTableProps) {
 
             <div className="flex flex-col gap-4 mt-8 sm:hidden px-4">
                 {rows.map((row, index) => {
-                    const bgClass = row.isPromoting
-                        ? 'bg-green-50'
-                        : row.isDemoting
-                          ? 'bg-red-50'
-                          : 'bg-white';
+                    const bgClass = row.isPromoting ? 'bg-green-50' : row.isDemoting ? 'bg-red-50' : 'bg-white';
 
                     return (
-                        <div
-                            key={row.id}
-                            className={`rounded-xl border border-gray-200 p-4 shadow-sm ${bgClass}`}
-                        >
+                        <div key={row.id} className={`rounded-xl border border-gray-200 p-4 shadow-sm ${bgClass}`}>
                             <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-0">
                                     <span className="text-2xl font-extrabold text-neutral-800 w-8 text-center">
@@ -146,39 +101,23 @@ export function RankingTable({ rows }: RankingTableProps) {
                                     Estadísticas:
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="font-medium">Edad:</span>
-                                    <span>
-                                        {row.age !== null ? row.age : 'N/A'}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="font-medium">
-                                        Jugados:
-                                    </span>
+                                    <span className="font-medium">Jugados:</span>
                                     <span>{row.matchesPlayed}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="font-medium">
-                                        Ganados:
-                                    </span>
+                                    <span className="font-medium">Ganados:</span>
                                     <span>{row.matchesWon}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="font-medium">
-                                        Diff sets:
-                                    </span>
+                                    <span className="font-medium">Diff sets:</span>
                                     <span>{row.diffSets}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="font-medium">
-                                        Diff games:
-                                    </span>
+                                    <span className="font-medium">Diff games:</span>
                                     <span>{row.diffGames}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="font-medium">
-                                        Puntos totales:
-                                    </span>
+                                    <span className="font-medium">Puntos totales:</span>
                                     <span>{row.points}</span>
                                 </div>
                             </div>

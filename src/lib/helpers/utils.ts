@@ -114,6 +114,7 @@ export function determineWinner(scoreMatrix: string[][]): TeamType {
 
     return winsTeam1 > winsTeam2 ? 'EQUIPO_1' : 'EQUIPO_2';
 }
+
 export function getPlayersMatchStats(result: string): PlayersMatchStatsType {
     const sets = result.trim().split(' ');
     let p1Sets = 0;
