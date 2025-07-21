@@ -37,7 +37,7 @@ export default function Sidebar() {
                         <div>
                             <Link
                                 href="/admin"
-                                className={`${pathname === '/admin' && 'bg-neutral-100'} text-sm font-semibold flex items-center hover:bg-admin-grey-hover gap-4 p-2 rounded-md`}
+                                className={`${pathname === '/admin' && 'bg-neutral-100'} font-semibold flex items-center hover:bg-admin-grey-hover gap-4 p-2 rounded-md`}
                                 onClick={closeSidebar}
                             >
                                 <span>
@@ -46,18 +46,8 @@ export default function Sidebar() {
                                 Dashboard
                             </Link>
                             <Link
-                                href="/admin/players"
-                                className={`${pathname.startsWith('/admin/players') && 'bg-neutral-100'} text-sm font-semibold flex items-center hover:bg-admin-grey-hover gap-4 p-2 rounded-md`}
-                                onClick={closeSidebar}
-                            >
-                                <span>
-                                    <Users size={18} />
-                                </span>
-                                Jugadores
-                            </Link>
-                            <Link
                                 href="/admin/matchWeeks"
-                                className={`${pathname.startsWith('/admin/matches') && 'bg-neutral-100'} text-sm font-semibold flex items-center hover:bg-admin-grey-hover gap-4 p-2 rounded-md`}
+                                className={`${pathname.startsWith('/admin/matchWeeks') && 'bg-neutral-100'} font-semibold flex items-center hover:bg-admin-grey-hover gap-4 p-2 rounded-md`}
                                 onClick={closeSidebar}
                             >
                                 <span>
@@ -65,10 +55,20 @@ export default function Sidebar() {
                                 </span>
                                 Partidos
                             </Link>
+                            <Link
+                                href="/admin/players"
+                                className={`${pathname.startsWith('/admin/players') && 'bg-neutral-100'} font-semibold flex items-center hover:bg-admin-grey-hover gap-4 p-2 rounded-md`}
+                                onClick={closeSidebar}
+                            >
+                                <span>
+                                    <Users size={18} />
+                                </span>
+                                Jugadores
+                            </Link>
                         </div>
                         <button
                             onClick={() => signOut({ callbackUrl: '/login' })}
-                            className={`text-sm font-semibold flex items-center hover:bg-admin-grey-hover gap-4 p-2 rounded-md cursor-pointer`}
+                            className={`font-semibold flex items-center hover:bg-admin-grey-hover gap-4 p-2 rounded-md cursor-pointer`}
                         >
                             <span>
                                 <LogOut size={18} />

@@ -1,3 +1,5 @@
+import { TeamType } from '@/types/team';
+
 export function getPaginationPages(
     currentPage: number,
     totalPages: number,
@@ -80,4 +82,54 @@ export function buildQueryParams(params: Record<string, string | undefined>) {
         if (value) query.set(key, value);
     }
     return query.toString();
+}
+
+export function parseResultToMatrix(
+    result: string,
+    winnerTeam?: string
+): string[][] {
+    const sets = result?.split(' ') ?? [];
+    const matrix = sets.map((s) => {
+        const [raw1 = '', raw2 = ''] = s.split('/');
+        const [s1, s2] =
+            winnerTeam === 'EQUIPO_2' ? [raw2, raw1] : [raw1, raw2];
+        return [s1, s2];
+    });
+
+    return matrix.length === 3
+        ? matrix
+        : [...matrix, ...Array(3 - matrix.length).fill(['', ''])];
+}
+
+export function formatMatrixToResult(
+    matrix: string[][],
+    winnerTeam?: string
+): string {
+    return matrix
+        .map(([t1, t2]) =>
+            winnerTeam === 'EQUIPO_2' ? `${t2}/${t1}` : `${t1}/${t2}`
+        )
+        .join(' ');
+}
+
+export const isSameScore = (a: string[][], b: string[][]): boolean => {
+    if (a.length !== b.length) return false;
+    return a.every((set, i) => set[0] === b[i][0] && set[1] === b[i][1]);
+};
+
+export function determineWinner(scoreMatrix: string[][]): TeamType {
+    let winsTeam1 = 0;
+    let winsTeam2 = 0;
+
+    for (const [a, b] of scoreMatrix) {
+        const score1 = parseInt(a);
+        const score2 = parseInt(b);
+
+        if (isNaN(score1) || isNaN(score2)) continue;
+
+        if (score1 > score2) winsTeam1++;
+        else winsTeam2++;
+    }
+
+    return winsTeam1 > winsTeam2 ? 'EQUIPO_1' : 'EQUIPO_2';
 }
