@@ -16,9 +16,7 @@ export default function ScoreEditor({ score, onChange }: ScoreEditorProps) {
                             maxLength={1}
                             className="w-6 text-center border border-gray-300 rounded-sm p-1 focus:outline-none focus:ring-1 focus:ring-apur-green focus:border-apur-green"
                             value={score[setIndex]?.[teamIndex] || ''}
-                            onChange={(e) =>
-                                onChange(setIndex, teamIndex, e.target.value)
-                            }
+                            onChange={(e) => onChange(setIndex, teamIndex, e.target.value)}
                         />
                     ))}
                 </div>

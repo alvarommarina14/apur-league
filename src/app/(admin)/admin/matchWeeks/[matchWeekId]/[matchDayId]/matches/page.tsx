@@ -21,10 +21,7 @@ interface AdminMatchesPageType {
     }>;
 }
 
-export default async function AdminMatchesPage({
-    searchParams,
-    params,
-}: AdminMatchesPageType) {
+export default async function AdminMatchesPage({ searchParams, params }: AdminMatchesPageType) {
     const categories = await getAllCategories();
     const clubs = await getAllClubs();
     const { matchDayId, matchWeekId } = await params;
@@ -43,9 +40,7 @@ export default async function AdminMatchesPage({
     if (!selectedMatchWeek) {
         return (
             <div className="p-6">
-                <p className="text-center text-gray-500">
-                    No se encontró la fecha seleccionada.
-                </p>
+                <p className="text-center text-gray-500">No se encontró la fecha seleccionada.</p>
             </div>
         );
     }
@@ -62,24 +57,14 @@ export default async function AdminMatchesPage({
                     href={`/admin/matchWeeks/${matchWeekId}/${matchDayId}/matches/new`}
                     className={`font-semibold px-6 py-2 rounded border border-apur-green hover:bg-apur-green hover:border-apur-green hover:text-white transition shadow-md bg-white text-apur-green cursor-pointer`}
                 >
-                    Formulario
+                    Crear partido
                 </Link>
             </div>
             <section>
                 <div className="mb-10 lg:mb-4 flex flex-col lg:flex-row justify-between lg:items-center">
                     <h2 className="mb-4 lg:mb-0 text-center lg:text-left text-xl font-semibold text-neutral-700">
-                        <time
-                            dateTime={format(
-                                selectedMatchWeek.matchDays[0].date,
-                                'DD/MM/YYYY',
-                                'es'
-                            )}
-                        >
-                            {format(
-                                selectedMatchWeek.matchDays[0].date,
-                                'MMMM D, YYYY',
-                                'es'
-                            )}
+                        <time dateTime={format(selectedMatchWeek.matchDays[0].date, 'DD/MM/YYYY', 'es')}>
+                            {format(selectedMatchWeek.matchDays[0].date, 'MMMM D, YYYY', 'es')}
                         </time>
                     </h2>
                     <div className="flex flex-col lg:flex-row gap-4">
@@ -99,9 +84,7 @@ export default async function AdminMatchesPage({
                 </div>
 
                 {selectedMatchWeek.matchDays[0].matches.length === 0 ? (
-                    <p className="text-sm text-gray-500">
-                        No hay partidos en este día.
-                    </p>
+                    <p className="text-sm text-gray-500">No hay partidos en este día.</p>
                 ) : (
                     <ul className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6 w-full">
                         {selectedMatchWeek.matchDays[0].matches.map((match) => (

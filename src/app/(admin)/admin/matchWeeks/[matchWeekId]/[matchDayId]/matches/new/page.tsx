@@ -15,10 +15,7 @@ interface AdminMatchesPageType {
     }>;
 }
 
-export default async function AdminMatchesCreatePage({
-    searchParams,
-    params,
-}: AdminMatchesPageType) {
+export default async function AdminMatchesCreatePage({ searchParams, params }: AdminMatchesPageType) {
     const categories = await getAllCategories();
     const clubs = await getAllClubs();
     const { matchDayId, matchWeekId } = await params;
@@ -40,7 +37,7 @@ export default async function AdminMatchesCreatePage({
                 <span
                     className={`cursor-default font-semibold px-6 py-2 rounded border border-apur-green hover:bg-apur-green hover:border-apur-green hover:text-white transition shadow-md bg-apur-green text-white`}
                 >
-                    Formulario
+                    Crear partido
                 </span>
             </div>
             <div className="w-full md:w-7/10 mx-auto">

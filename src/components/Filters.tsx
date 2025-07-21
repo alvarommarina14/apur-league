@@ -3,15 +3,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
+import { OptionType } from '@/types/forms';
 import { CategoryType } from '@/types/category';
 import { MatchWeekType } from '@/types/matchWeek';
 import { ClubType } from '@/types/club';
 
-import {
-    mapOptions,
-    getSelectedOption,
-    buildQueryParams,
-} from '@/lib/helpers/utils';
+import { mapOptions, getSelectedOption, buildQueryParams } from '@/lib/helpers/utils';
 
 import CustomSelect from '@/components/CustomSelect';
 import Search from '@/components/Search';
@@ -55,12 +52,8 @@ export default function Filters({
     const pathname = usePathname();
 
     const [search, setSearch] = useState(searchProp ?? '');
-    const [selectedCategory, setSelectedCategory] = useState(
-        selectedCategoryProp ?? ''
-    );
-    const [selectedMatchWeek, setSelectedMatchWeek] = useState(
-        selectedMatchWeekProp ?? ''
-    );
+    const [selectedCategory, setSelectedCategory] = useState(selectedCategoryProp ?? '');
+    const [selectedMatchWeek, setSelectedMatchWeek] = useState(selectedMatchWeekProp ?? '');
     const [selectedClub, setSelectedClub] = useState(selectedClubProp ?? '');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | undefined>(
         withSort ? (sortOrderProp ?? 'asc') : undefined
@@ -109,10 +102,7 @@ export default function Filters({
             ),
         [clubs, showAllClub]
     );
-    const selectedClubOption = useMemo(
-        () => getSelectedOption(clubOptions, selectedClub),
-        [clubOptions, selectedClub]
-    );
+    const selectedClubOption = useMemo(() => getSelectedOption(clubOptions, selectedClub), [clubOptions, selectedClub]);
 
     const selectedSortOrderOption = useMemo(() => {
         if (!withSort || !sortOrderOptions) return null;
@@ -129,38 +119,23 @@ export default function Filters({
                 ...(withSort && sortOrder ? { sortOrder } : {}),
             });
 
-            router.replace(
-                `${pathname}${queryString ? '?' + queryString : ''}`
-            );
+            router.replace(`${pathname}${queryString ? '?' + queryString : ''}`);
         }, 300);
 
         return () => clearTimeout(timeout);
-    }, [
-        search,
-        selectedCategory,
-        selectedMatchWeek,
-        selectedClub,
-        sortOrder,
-        pathname,
-        router,
-        withSort,
-    ]);
+    }, [search, selectedCategory, selectedMatchWeek, selectedClub, sortOrder, pathname, router, withSort]);
 
     return (
         <>
-            {withSearch && (
-                <Search
-                    placeholder={searchPlaceholder}
-                    value={search}
-                    setValue={setSearch}
-                />
-            )}
+            {withSearch && <Search placeholder={searchPlaceholder} value={search} setValue={setSearch} />}
             {matchWeeks && (
                 <div className="w-full xl:min-w-56">
                     <CustomSelect
                         value={selectedMatchWeekOption}
                         options={matchWeekOptions}
-                        setValue={setSelectedMatchWeek}
+                        onChange={(newValue) => {
+                            setSelectedMatchWeek((newValue as OptionType | null)?.value ?? '');
+                        }}
                         instanceId="matchweek"
                     />
                 </div>
@@ -170,7 +145,9 @@ export default function Filters({
                     <CustomSelect
                         value={selectedCategoryOption}
                         options={categoryOptions}
-                        setValue={setSelectedCategory}
+                        onChange={(newValue) => {
+                            setSelectedCategory((newValue as OptionType | null)?.value ?? '');
+                        }}
                         instanceId="category"
                     />
                 </div>
@@ -180,7 +157,9 @@ export default function Filters({
                     <CustomSelect
                         value={selectedClubOption}
                         options={clubOptions}
-                        setValue={setSelectedClub}
+                        onChange={(newValue) => {
+                            setSelectedClub((newValue as OptionType | null)?.value ?? '');
+                        }}
                         instanceId="club"
                     />
                 </div>
@@ -190,13 +169,8 @@ export default function Filters({
                     <CustomSelect
                         value={selectedSortOrderOption}
                         options={sortOrderOptions}
-                        setValue={() => {}}
                         instanceId="sortorder"
-                        onChangeExtra={(option) =>
-                            setSortOrder(
-                                option?.value === 'asc' ? 'asc' : 'desc'
-                            )
-                        }
+                        onChange={(option) => setSortOrder((option as OptionType)?.value === 'asc' ? 'asc' : 'desc')}
                     />
                 </div>
             )}

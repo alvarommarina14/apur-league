@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
+
 import { PlayerType } from '@/types/player';
+import { OptionType } from '@/types/forms';
+
 import CustomSelect from '@/components/CustomSelect';
 
 type SelectValue = string | null;
@@ -23,10 +26,7 @@ export const PlayerSelects: React.FC<PlayerSelectsProps> = ({
     type,
     isDisabled,
 }) => {
-    const playerMap = useMemo(
-        () => new Map(players.map((p) => [String(p.id), p])),
-        [players]
-    );
+    const playerMap = useMemo(() => new Map(players.map((p) => [String(p.id), p])), [players]);
 
     const getPlayerOption = (id: SelectValue) =>
         id && playerMap.has(id)
@@ -43,10 +43,7 @@ export const PlayerSelects: React.FC<PlayerSelectsProps> = ({
             <h3 className="text-sm font-semibold mb-2">{teamLabel}</h3>
             {Array.from({ length: numberOfPlayers }).map((_, i) => {
                 const usedValues = new Set(
-                    [
-                        ...teamPlayers.filter((_, idx) => idx !== i),
-                        ...otherTeamPlayers,
-                    ].filter(Boolean)
+                    [...teamPlayers.filter((_, idx) => idx !== i), ...otherTeamPlayers].filter(Boolean)
                 );
 
                 const options = [
@@ -67,7 +64,8 @@ export const PlayerSelects: React.FC<PlayerSelectsProps> = ({
                         <CustomSelect
                             value={getPlayerOption(teamPlayers[i])}
                             options={options}
-                            setValue={(val) => {
+                            onChange={(newValue) => {
+                                const val = (newValue as OptionType | null)?.value ?? null;
                                 const updated = [...teamPlayers];
                                 updated[i] = val !== '' ? val : null;
                                 setTeamPlayers(updated);
