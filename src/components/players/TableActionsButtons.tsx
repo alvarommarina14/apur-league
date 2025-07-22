@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { Trash, Pencil } from 'lucide-react';
 
 import { PlayerType } from '@/types/player';
-import { deletePlayerByIdAction } from '@/lib/actions/players';
+import { updatePlayerStatusAction } from '@/lib/actions/players';
 
 import { showSuccessToast } from '@/components/Toast';
 
@@ -19,6 +20,7 @@ interface PlayerCardProps {
 }
 
 export default function TableActionsButtons({ row }: PlayerCardProps) {
+    const router = useRouter();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const label = `${row.firstName} ${row.lastName}`;
 
@@ -26,8 +28,9 @@ export default function TableActionsButtons({ row }: PlayerCardProps) {
         setIsModalOpen(false);
 
         try {
-            const response = await deletePlayerByIdAction(row.id);
+            const response = await updatePlayerStatusAction(row.id);
             showSuccessToast(response.message);
+            router.refresh();
         } catch (err) {
             console.error(err);
         }

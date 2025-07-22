@@ -6,12 +6,14 @@ export async function getAllPlayers({
     sortOrder = 'asc',
     page = 1,
     perPage = 50,
+    isActive = true,
 }: {
     search?: string;
     categoryId?: number;
     sortOrder?: 'asc' | 'desc';
     page?: number;
     perPage?: number;
+    isActive?: boolean;
 }) {
     const filters = {
         AND: [
@@ -42,6 +44,7 @@ export async function getAllPlayers({
                       },
                   }
                 : {},
+            { isActive },
         ].filter(Boolean),
     };
 
@@ -81,9 +84,9 @@ export async function getAllPlayers({
     };
 }
 
-export async function getPlayerById(id: number) {
+export async function getPlayerById(id: number, isActive: boolean = true) {
     return prisma.player.findUnique({
-        where: { id },
+        where: { id, isActive },
         include: {
             playerCategories: {
                 include: {
@@ -92,7 +95,12 @@ export async function getPlayerById(id: number) {
             },
             playerMatches: {
                 include: {
-                    match: true,
+                    match: {
+                        include: {
+                            category: true,
+                            matchDay: true,
+                        },
+                    },
                 },
             },
             categoryStats: {
@@ -102,6 +110,18 @@ export async function getPlayerById(id: number) {
             },
         },
     });
+}
+
+export async function updatePlayerStatus(id: number) {
+    const result = await prisma.player.update({
+        where: { id: id },
+        data: { isActive: false },
+    });
+
+    return {
+        result,
+        message: 'Player was successfully disabled',
+    };
 }
 
 export async function deletePlayerById(id: number) {
