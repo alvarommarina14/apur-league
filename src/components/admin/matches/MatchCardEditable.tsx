@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Pencil, Check } from 'lucide-react';
+import { Pencil, Check, X } from 'lucide-react';
 import { format } from '@formkit/tempo';
 
 import { MatchUpdateResultType, MatchUpdateWithPlayerMatchesType } from '@/types/matches';
@@ -124,9 +124,9 @@ export default function MatchCardEditable({ match }: Props) {
         <div className="relative bg-white border border-gray-200 rounded-xl p-4 shadow-md hover:shadow-lg w-full transition">
             <button
                 onClick={() => setIsEditing((prev) => !prev)}
-                className={`absolute top-1 right-1 transition p-2 rounded-full cursor-pointer hover:text-apur-green hover:bg-gray-100 ${isEditing ? 'text-apur-green bg-gray-100' : 'text-gray-500'}`}
+                className={`absolute top-1 right-1 transition p-2 rounded-full cursor-pointer ${isEditing ? 'text-apur-green bg-gray-100 hover:bg-apur-lightGreen' : 'text-gray-500 hover:text-apur-green hover:bg-gray-100'}`}
             >
-                <Pencil size={18} />
+                {isEditing ? <X size={18} /> : <Pencil size={18} />}
             </button>
 
             <div className="flex text-sm text-gray-700 font-medium mb-2">
