@@ -1,6 +1,6 @@
 import { TeamType } from '@/types/team';
-
 import { PlayersMatchStatsType } from '@/types/stats';
+
 export function getPaginationPages(currentPage: number, totalPages: number, maxPagesToShow = 5): (number | 'dots')[] {
     const pages: (number | 'dots')[] = [];
 

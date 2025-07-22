@@ -1,10 +1,10 @@
 import { prisma } from '@/lib/prisma';
 import { MatchCreateInputType, MatchUpdateInputType, MatchUpdateInputWithIdType } from '@/types/matches';
 import { getMatchDayById } from '@/lib/services/matchDay';
-import { HOUR_AND_HALF_MS } from '@/lib/constants';
+import { HOUR_AND_HALF_MINUTES } from '@/lib/constants';
 import { PlayerMatchTeamsWithPlayersType } from '@/types/playerMatch';
 import { Team } from '@/generated/prisma';
-
+import { addMinute } from '@formkit/tempo';
 export async function getMatchById(id: number) {
     prisma.match.findUnique({
         where: { id: Number(id) },
@@ -73,31 +73,24 @@ export async function deleteMatchBulk(ids: number[]) {
     });
 }
 
-export async function getMatchByCourtAndHour(courtId: number, hour: string | Date, matchDayId: number) {
+export async function getMatchByCourtAndHour(courtId: number, hour: Date, matchDayId: number) {
     const matchDay = await getMatchDayById(matchDayId);
     if (!matchDay) {
         throw new Error('Match day not found');
     }
-    if (typeof hour === 'string') {
-        const [hours, minutes] = hour.split(':').map(Number);
-        const date = new Date(0);
-        date.setUTCHours(hours);
-        date.setUTCMinutes(minutes);
-        date.setUTCSeconds(0);
-        date.setUTCMilliseconds(0);
-        const startHour = new Date(date.getTime() - HOUR_AND_HALF_MS);
-        const endHour = new Date(date.getTime() + HOUR_AND_HALF_MS);
-        return prisma.match.count({
-            where: {
-                courtId: courtId,
-                matchDayId: matchDay.id,
-                hour: {
-                    gt: startHour,
-                    lt: endHour,
-                },
+
+    const startHour = addMinute(hour, -HOUR_AND_HALF_MINUTES);
+    const endHour = addMinute(hour, HOUR_AND_HALF_MINUTES);
+    return prisma.match.count({
+        where: {
+            courtId: courtId,
+            matchDayId: matchDay.id,
+            hour: {
+                gt: startHour,
+                lt: endHour,
             },
-        });
-    }
+        },
+    });
 }
 
 export async function getMatchByPlayerIdAndCategoryAndDay(playerIds: number[], categoryId: number, matchDayId: number) {
@@ -121,15 +114,15 @@ export async function getMatchByPlayerIdAndCategoryAndDay(playerIds: number[], c
     });
 }
 
-export async function getMatchesByHourAndPlayerId(playerIds: number[], date: Date, matchDayId: number) {
+export async function getMatchesByHourAndPlayerId(playerIds: number[], hour: Date, matchDayId: number) {
     const matchDay = await getMatchDayById(matchDayId);
 
     if (!matchDay) {
         throw new Error('Match day not found');
     }
 
-    const startHour = new Date(date.getTime() - HOUR_AND_HALF_MS);
-    const endHour = new Date(date.getTime() + HOUR_AND_HALF_MS);
+    const startHour = addMinute(hour, -HOUR_AND_HALF_MINUTES);
+    const endHour = addMinute(hour, HOUR_AND_HALF_MINUTES);
     return prisma.match.findMany({
         where: {
             matchDayId: matchDay.id,

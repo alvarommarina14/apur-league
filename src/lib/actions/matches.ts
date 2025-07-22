@@ -144,6 +144,7 @@ export async function validateMatchAction(data: ValidateMatchType) {
             .flat();
         throw new Error('Los siguientes jugadores ya jugaron en contra en esta categoria: ' + names.join(', '));
     }
+
     return {
         hour,
         matchDayId,

@@ -18,6 +18,7 @@ import { PlayerSelects } from '@/lib/helpers/players/playerSelectHelper';
 import { createMatchAction } from '@/lib/actions/matches';
 import { showErrorToast, showSuccessToast } from '@/components/Toast';
 import { hourToDefaultUTCDate } from '@/lib/helpers/utils';
+import { LoaderCircle } from 'lucide-react';
 
 type CreateMatchFormProps = {
     players: PlayerType[];
@@ -25,6 +26,7 @@ type CreateMatchFormProps = {
     clubs: ClubWithCourtsType[];
     selectedCategory: string;
     matchDayId: number;
+    mode?: 'create' | 'edit';
 };
 
 export default function CreateMatchForm({
@@ -33,6 +35,7 @@ export default function CreateMatchForm({
     clubs,
     selectedCategory: selectedCategoryProp,
     matchDayId,
+    mode = 'create',
 }: CreateMatchFormProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -44,6 +47,7 @@ export default function CreateMatchForm({
     const [selectedClub, setSelectedClub] = useState<string | null>(null);
     const [selectedCourt, setSelectedCourt] = useState<string | null>(null);
     const [selectedHour, setSelectedHour] = useState<string>('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const categoryOptions = useMemo(
         () =>
@@ -112,6 +116,7 @@ export default function CreateMatchForm({
             matchDayId: matchDayId,
         };
         try {
+            setIsLoading(true);
             await createMatchAction(
                 formData,
                 team1Players.filter((p) => !!p).map(Number),
@@ -133,6 +138,7 @@ export default function CreateMatchForm({
             setSelectedClub(null);
             setSelectedCourt(null);
             setSelectedHour('');
+            setIsLoading(false);
         }
     };
 
@@ -240,7 +246,13 @@ export default function CreateMatchForm({
                     disabled={!isFormValid}
                     className={`font-semibold px-6 py-2 rounded border transition shadow-md border-apur-green bg-apur-green text-white ${isFormValid ? 'cursor-pointer hover:bg-apur-green-hover hover:border-apur-green-hover' : 'opacity-30 cursor-not-allowed'}`}
                 >
-                    Guardar
+                    {isLoading ? (
+                        <LoaderCircle size={24} className="animate-spin" />
+                    ) : mode === 'edit' ? (
+                        'Actualizar'
+                    ) : (
+                        'Guardar'
+                    )}
                 </button>
             </div>
         </form>
