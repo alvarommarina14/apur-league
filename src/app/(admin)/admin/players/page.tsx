@@ -38,7 +38,7 @@ export default async function AdminPlayersPage({ searchParams }: PlayersSearchPa
                 <h1 className="text-4xl font-bold tracking-tight text-apur-green text-center">Listado de Jugadores</h1>
                 <p className="text-center text-neutral-500 text-sm mt-2">Todas las inscripciones activas de la liga</p>
 
-                <div className="flex justify-between mt-6">
+                <div className="flex flex-col gap-4 lg:flex-row justify-between mt-6">
                     <div className="w-full lg:w-7/10 flex flex-col md:flex-row gap-4">
                         <Filters
                             categories={categories}
@@ -54,13 +54,13 @@ export default async function AdminPlayersPage({ searchParams }: PlayersSearchPa
                     </div>
                     <Link
                         href={`/admin/players/new`}
-                        className={`font-semibold px-6 py-2 rounded border border-apur-green hover:bg-apur-green hover:border-apur-green hover:text-white transition shadow-md bg-white text-apur-green cursor-pointer`}
+                        className={`self-end lg:self-center w-fit text-center font-semibold px-6 py-2 rounded-md border bg-apur-green hover:bg-apur-green-hover transition shadow-md text-white cursor-pointer`}
                     >
                         Crear Jugador
                     </Link>
                 </div>
 
-                <PlayersTable rows={players} page={pageNumber} totalPages={totalPages} />
+                <PlayersTable rows={players} page={pageNumber} totalPages={totalPages} isEditable cardsMobile />
             </div>
         </div>
     );
