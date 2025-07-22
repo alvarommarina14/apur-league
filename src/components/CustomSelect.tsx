@@ -11,6 +11,7 @@ interface CustomSelectProps {
     isDisabled?: boolean;
     isMulti?: boolean;
     placeholder?: string;
+    isError?: boolean;
 }
 
 export default function CustomSelect({
@@ -21,6 +22,7 @@ export default function CustomSelect({
     isDisabled,
     isMulti = false,
     placeholder,
+    isError = false,
 }: CustomSelectProps) {
     return (
         <Select
@@ -35,10 +37,15 @@ export default function CustomSelect({
             onChange={onChange}
             unstyled
             classNames={{
-                control: ({ isFocused, isDisabled }) =>
-                    `${isDisabled ? 'opacity-30' : ''} bg-white rounded-md border py-2 pl-4 pr-2 flex gap-1 focus-within:ring-1 focus-within:ring-apur-green ${
-                        isFocused ? 'border-apur-green' : 'border-gray-300'
-                    }`,
+                control: ({ isFocused, isDisabled }) => {
+                    const baseClasses = `${isDisabled && 'opacity-30'} rounded-md ${isError ? 'bg-red-50' : 'bg-white'} border py-2 pl-4 pr-2 flex gap-1 focus-within:ring-1 focus-within:ring-apur-green`;
+                    const borderColor = isError
+                        ? 'border-red-700 focus-within:ring-red-700 focus-within:border-red-700'
+                        : isFocused
+                          ? 'border-apur-green'
+                          : 'border-gray-300';
+                    return `${baseClasses} ${borderColor}`;
+                },
                 menu: () => 'z-50 rounded-md shadow-lg bg-white mt-2 border border-gray-300 overflow-hidden',
                 option: ({ isFocused, isSelected, isDisabled }) =>
                     `cursor-pointer select-none px-4 py-2 ${isDisabled ? 'opacity-30' : ''} ${
