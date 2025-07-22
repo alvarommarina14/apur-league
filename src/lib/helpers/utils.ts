@@ -279,3 +279,13 @@ export function validateScore(score: string[][]) {
         message: '',
     };
 }
+
+export function hourToDefaultUTCDate(hour: string): Date {
+    const [hours, minutes] = hour.split(':').map(Number);
+    const date = new Date(0);
+    date.setUTCHours(hours);
+    date.setUTCMinutes(minutes);
+    date.setUTCSeconds(0);
+    date.setUTCMilliseconds(0);
+    return date;
+}

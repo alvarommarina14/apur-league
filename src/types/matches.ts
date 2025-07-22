@@ -1,7 +1,11 @@
 import { Prisma } from '@/generated/prisma';
 import { Type } from '@/generated/prisma';
+import { PlayerMatchTeamsWithPlayersType } from '@/types/playerMatch';
 
-export type MatchCreateInputType = Prisma.MatchCreateInput;
+export type MatchCreateInputType = Omit<Prisma.MatchUncheckedCreateInput, 'hour'> & {
+    hour: Date;
+};
+
 export type MatchUpdateInputType = Prisma.MatchUpdateInput;
 export type MatchUpdateInputWithIdType = Prisma.MatchUncheckedUpdateInput;
 export type MatchUpdateWithPlayerMatchesType = {
@@ -30,3 +34,7 @@ export type MatchUpdateResultType = Prisma.MatchGetPayload<{
 }>;
 
 export type MatchModeType = Type;
+
+export type ValidateMatchType = MatchCreateInputType & {
+    teamsWithPlayerIds: PlayerMatchTeamsWithPlayersType[];
+};
