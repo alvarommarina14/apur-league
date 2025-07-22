@@ -74,8 +74,8 @@ model Category {
 model PlayerCategory {
   playerId   Int
   categoryId Int
-  player     Player   @relation(fields: [playerId], references: [id])
-  category   Category @relation(fields: [categoryId], references: [id])
+  player     Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([playerId, categoryId])
 }

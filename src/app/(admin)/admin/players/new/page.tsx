@@ -1,6 +1,6 @@
 import { getAllCategories } from '@/lib/services/category';
 
-import CreatePlayerForm from '@/components/players/CreatePlayerForm';
+import PlayerForm from '@/components/players/PlayerForm';
 
 export default async function CreatePlayerPage() {
     const categories = await getAllCategories();
@@ -13,7 +13,7 @@ export default async function CreatePlayerPage() {
             </p>
             <div className="flex justify-center">
                 <div className="mt-6 w-full sm:w-7/10 lg:w-5/10 2xl:w-4/10">
-                    <CreatePlayerForm categories={categories} />
+                    <PlayerForm categories={categories} />
                 </div>
             </div>
         </div>

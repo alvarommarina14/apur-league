@@ -112,6 +112,56 @@ export async function getPlayerById(id: number, isActive: boolean = true) {
     });
 }
 
+export async function createPlayer(data: { firstName: string; lastName: string; categoryIds: number[] }) {
+    const newPlayer = await prisma.player.create({
+        data: {
+            firstName: data.firstName,
+            lastName: data.lastName,
+        },
+    });
+
+    await prisma.playerCategory.createMany({
+        data: data.categoryIds.map((catId) => ({
+            playerId: newPlayer.id,
+            categoryId: catId,
+        })),
+    });
+
+    return {
+        result: newPlayer,
+        message: 'Player was successfully created',
+    };
+}
+
+export async function updatePlayerData(
+    id: number,
+    data: { firstName: string; lastName: string; categoryIds: number[] }
+) {
+    const [updatedPlayer] = await prisma.$transaction([
+        prisma.player.update({
+            where: { id },
+            data: {
+                firstName: data.firstName,
+                lastName: data.lastName,
+            },
+        }),
+        prisma.playerCategory.deleteMany({
+            where: { playerId: id },
+        }),
+        prisma.playerCategory.createMany({
+            data: data.categoryIds.map((catId) => ({
+                playerId: id,
+                categoryId: catId,
+            })),
+        }),
+    ]);
+
+    return {
+        result: updatedPlayer,
+        message: 'Player was successfully updated',
+    };
+}
+
 export async function updatePlayerStatus(id: number) {
     const result = await prisma.player.update({
         where: { id: id },
