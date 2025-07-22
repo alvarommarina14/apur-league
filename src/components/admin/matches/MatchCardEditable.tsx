@@ -19,7 +19,7 @@ interface Props {
     match: MatchUpdateResultType;
 }
 
-export default function MatchCard({ match }: Props) {
+export default function MatchCardEditable({ match }: Props) {
     const router = useRouter();
     const winnerTeam = match.playerMatches.find((pm) => pm.winner)?.team;
     const teams = {
