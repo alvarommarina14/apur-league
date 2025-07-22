@@ -53,7 +53,7 @@ export default async function PlayersPage({ searchParams }: PlayersSearchParamsT
                     </div>
                 </div>
 
-                <PlayersTable rows={players} page={pageNumber} totalPages={totalPages} />
+                <PlayersTable rows={players} page={pageNumber} totalPages={totalPages} cardsMobile />
             </div>
         </div>
     );
