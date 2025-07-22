@@ -1,15 +1,21 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+import { LoaderCircle } from 'lucide-react';
 
 import { OptionType } from '@/types/forms';
 import { CategoryType } from '@/types/category';
 import { mapOptions } from '@/lib/helpers/utils';
 import { showErrorToast, showSuccessToast } from '@/components/Toast';
 
+import { updatePlayerDataAction, createPlayerAction } from '@/lib/actions/players';
+
 import CustomSelect from '@/components/CustomSelect';
 
 type Props = {
+    playerId?: number;
     categories: CategoryType[];
     selectedFirstName?: string;
     selectedLastName?: string;
@@ -18,12 +24,14 @@ type Props = {
 };
 
 export default function PlayerForm({
+    playerId,
     categories,
     selectedFirstName,
     selectedLastName,
     preSelectedCategories,
     mode = 'create',
 }: Props) {
+    const router = useRouter();
     const [firstName, setFirstName] = useState(selectedFirstName || '');
     const [lastName, setLastName] = useState(selectedLastName || '');
     const [selectedCategories, setSelectedCategories] = useState<OptionType[]>([]);
@@ -32,6 +40,7 @@ export default function PlayerForm({
     const [touched, setTouched] = useState({ firstName: false, lastName: false, categories: false });
 
     const [isFormValid, setIsFormValid] = useState(false);
+    const [isLoading, setIsloading] = useState(false);
 
     const categoryOptions = useMemo(
         () =>
@@ -61,8 +70,9 @@ export default function PlayerForm({
         setIsFormValid(!Object.values(newErrors).some((msg) => msg !== ''));
     }, [firstName, lastName, selectedCategories]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsloading(true);
 
         if (!isFormValid) {
             showErrorToast('Error al enviar el formulario');
@@ -72,13 +82,23 @@ export default function PlayerForm({
         const data = {
             firstName,
             lastName,
-            categoryIds: selectedCategories.map((cat) => cat.value),
+            categoryIds: selectedCategories.map((cat) => Number(cat.value)),
         };
 
-        if (mode === 'edit') {
-            console.log('Editando jugador:', data);
-        } else {
-            console.log('Creando jugador:', data);
+        try {
+            if (mode === 'edit' && playerId) {
+                const response = await updatePlayerDataAction(playerId, data);
+                showSuccessToast(response.message);
+                router.push('/admin/players');
+            } else {
+                const response = await createPlayerAction(data);
+                showSuccessToast(response.message);
+                router.push('/admin/players');
+            }
+        } catch {
+            showErrorToast('Error al enviar el formulario, intente nuevamente');
+        } finally {
+            setIsloading(false);
         }
     };
 
@@ -143,10 +163,18 @@ export default function PlayerForm({
                     type="submit"
                     disabled={!isFormValid}
                     className={`font-semibold px-6 py-2 rounded border transition shadow-md bg-apur-green text-white ${
-                        isFormValid ? 'hover:bg-apur-green-hover cursor-pointer' : 'opacity-30 cursor-not-allowed'
+                        isFormValid && !isLoading
+                            ? 'hover:bg-apur-green-hover cursor-pointer'
+                            : 'opacity-30 cursor-not-allowed'
                     }`}
                 >
-                    {mode === 'edit' ? 'Actualizar' : 'Guardar'}
+                    {isLoading ? (
+                        <LoaderCircle size={24} className="animate-spin" />
+                    ) : mode === 'edit' ? (
+                        'Actualizar'
+                    ) : (
+                        'Guardar'
+                    )}
                 </button>
             </div>
         </form>

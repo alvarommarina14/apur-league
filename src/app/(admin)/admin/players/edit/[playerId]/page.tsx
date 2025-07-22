@@ -34,6 +34,7 @@ export default async function CreatePlayerPage({ params }: ParamsType) {
             <div className="flex justify-center">
                 <div className="mt-6 w-full sm:w-7/10 lg:w-5/10 2xl:w-4/10">
                     <PlayerForm
+                        playerId={Number(playerId)}
                         categories={categories}
                         preSelectedCategories={playerCategories}
                         selectedFirstName={player.firstName}
