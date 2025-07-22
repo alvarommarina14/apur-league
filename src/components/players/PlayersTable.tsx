@@ -1,11 +1,10 @@
 import { PlayerType } from '@/types/player';
 
-import { Trash, Pencil } from 'lucide-react';
-
 import Link from 'next/link';
 import Pagination from '@/components/Pagination';
 import CategoryTag from '@/components/CategoryTag';
 import PlayerCard from '@/components/players/PlayerCard';
+import TableActionsButtons from '@/components/players/TableActionsButtons';
 
 interface PlayersTableProps {
     rows: PlayerType[];
@@ -86,18 +85,7 @@ export default function PlayersTable({
                                     {isEditable && (
                                         <td className="px-4 py-3 text-center">
                                             <div className="flex items-center justify-center gap-2">
-                                                <Link
-                                                    href={`/admin/players/edit/${row.id}`}
-                                                    className="hover:bg-apur-green hover:text-white rounded-full p-2 transition"
-                                                >
-                                                    <Pencil size={16} />
-                                                </Link>
-                                                <Link
-                                                    href={`/players/${row.id}`}
-                                                    className="hover:bg-red-200 hover:text-red-700 rounded-full p-2 transition"
-                                                >
-                                                    <Trash size={16} />
-                                                </Link>
+                                                <TableActionsButtons row={row} />
                                             </div>
                                         </td>
                                     )}

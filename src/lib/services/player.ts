@@ -103,3 +103,14 @@ export async function getPlayerById(id: number) {
         },
     });
 }
+
+export async function deletePlayerById(id: number) {
+    const result = await prisma.player.delete({
+        where: { id },
+    });
+
+    return {
+        result,
+        message: 'Player deleted successfully',
+    };
+}

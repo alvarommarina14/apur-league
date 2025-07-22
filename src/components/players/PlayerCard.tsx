@@ -1,8 +1,6 @@
-import { Trash, Pencil } from 'lucide-react';
-import Link from 'next/link';
-
 import { PlayerType } from '@/types/player';
 import CategoryTag from '@/components/CategoryTag';
+import TableActionsButtons from '@/components/players/TableActionsButtons';
 
 interface PlayerCardProps {
     row: PlayerType;
@@ -20,20 +18,7 @@ export default function PlayerCard({ row, isEditable = false }: PlayerCardProps)
                 </div>
                 {isEditable && (
                     <div className="flex gap-2">
-                        <Link
-                            href={`/admin/players/edit/${row.id}`}
-                            className="p-2 rounded-full hover:bg-apur-green hover:text-white text-gray-600 transition-colors"
-                            title="Editar jugador"
-                        >
-                            <Pencil size={18} />
-                        </Link>
-                        <Link
-                            href={`/players/${row.id}`}
-                            className="p-2 rounded-full hover:bg-red-100 hover:text-red-600 text-gray-600 transition-colors"
-                            title="Eliminar jugador"
-                        >
-                            <Trash size={18} />
-                        </Link>
+                        <TableActionsButtons row={row} />
                     </div>
                 )}
             </div>
