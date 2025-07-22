@@ -10,7 +10,7 @@ import { parseResultToMatrix, isSameScore, determineWinner } from '@/lib/helpers
 import ScoreEditor from '@/components/admin/matches/ScoreEditor';
 import ScoreViewer from '@/components/admin/matches/ScoreViewer';
 import CategoryTag from '@/components/CategoryTag';
-import { updateMatchResult } from '@/lib/actions/matches';
+import { updateMatchResultAction } from '@/lib/actions/matches';
 import { showErrorToast, showSuccessToast } from '@/components/Toast';
 
 import { useRouter } from 'next/navigation';
@@ -103,7 +103,7 @@ export default function MatchCard({ match }: Props) {
         };
         const previousWinnerId = match.playerMatches.find((pm) => pm.winner)?.playerId;
         try {
-            await updateMatchResult(
+            await updateMatchResultAction(
                 match.id,
                 formData,
                 playerStats,

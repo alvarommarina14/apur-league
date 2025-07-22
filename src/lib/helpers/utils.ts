@@ -1,6 +1,6 @@
 import { TeamType } from '@/types/team';
-
 import { PlayersMatchStatsType } from '@/types/stats';
+
 export function getPaginationPages(currentPage: number, totalPages: number, maxPagesToShow = 5): (number | 'dots')[] {
     const pages: (number | 'dots')[] = [];
 
@@ -278,4 +278,14 @@ export function validateScore(score: string[][]) {
         isValid: true,
         message: '',
     };
+}
+
+export function hourToDefaultUTCDate(hour: string): Date {
+    const [hours, minutes] = hour.split(':').map(Number);
+    const date = new Date(0);
+    date.setUTCHours(hours);
+    date.setUTCMinutes(minutes);
+    date.setUTCSeconds(0);
+    date.setUTCMilliseconds(0);
+    return date;
 }

@@ -6,9 +6,14 @@ export async function deleteMatchDay(id: number) {
     });
 }
 
-export async function createMatchDay(data: {
-    matchWeekId: number;
-    date: Date;
-}) {
+export async function createMatchDay(data: { matchWeekId: number; date: Date }) {
     return await prisma.matchDay.create({ data });
+}
+
+export async function getMatchDayById(id: number) {
+    return prisma.matchDay.findFirst({
+        where: {
+            id: id,
+        },
+    });
 }

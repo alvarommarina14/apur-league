@@ -12,6 +12,11 @@ export const showErrorToast = (message: string, options?: ToastOptions) => {
             padding: '16px',
             borderRadius: '12px',
             boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+            maxWidth: 'none',
+            width: 'auto',
+            minWidth: '300px',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
         },
         iconTheme: {
             primary: '#EF4444',
