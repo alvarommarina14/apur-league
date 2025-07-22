@@ -25,10 +25,11 @@ interface FiltersProps {
     selectedClub?: string;
     withSort?: boolean;
     sortOrder?: 'asc' | 'desc';
-    sortOrderOptions?: { value: string; label: string }[];
     showAllCategory?: boolean;
     showAllMatchWeek?: boolean;
     showAllClub?: boolean;
+    withStatus?: boolean;
+    status?: 'activo' | 'inactivo';
 }
 
 export default function Filters({
@@ -43,13 +44,30 @@ export default function Filters({
     selectedClub: selectedClubProp,
     withSort = false,
     sortOrder: sortOrderProp,
-    sortOrderOptions,
     showAllCategory = false,
     showAllMatchWeek = false,
     showAllClub = false,
+    withStatus = false,
+    status: statusProp,
 }: FiltersProps) {
     const router = useRouter();
     const pathname = usePathname();
+
+    const sortOrderOptions = useMemo(() => {
+        if (!withSort) return null;
+        return [
+            { value: 'asc', label: 'Ordenar: A-Z' },
+            { value: 'desc', label: 'Ordenar: Z-A' },
+        ];
+    }, [withSort]);
+
+    const statusOptions = useMemo(() => {
+        if (!withStatus) return null;
+        return [
+            { value: 'activo', label: 'Activo' },
+            { value: 'inactivo', label: 'Inactivo' },
+        ];
+    }, [withStatus]);
 
     const [search, setSearch] = useState(searchProp ?? '');
     const [selectedCategory, setSelectedCategory] = useState(selectedCategoryProp ?? '');
@@ -57,6 +75,10 @@ export default function Filters({
     const [selectedClub, setSelectedClub] = useState(selectedClubProp ?? '');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | undefined>(
         withSort ? (sortOrderProp ?? 'asc') : undefined
+    );
+
+    const [status, setStatus] = useState<'activo' | 'inactivo' | undefined>(
+        withStatus ? (statusProp ?? 'activo') : undefined
     );
 
     const matchWeekOptions = useMemo(
@@ -109,6 +131,11 @@ export default function Filters({
         return getSelectedOption(sortOrderOptions, sortOrder ?? null);
     }, [withSort, sortOrder, sortOrderOptions]);
 
+    const selectedStatusOption = useMemo(() => {
+        if (!withStatus || !statusOptions) return null;
+        return getSelectedOption(statusOptions, status ?? null);
+    }, [withStatus, status, statusOptions]);
+
     useEffect(() => {
         const timeout = setTimeout(() => {
             const queryString = buildQueryParams({
@@ -117,13 +144,25 @@ export default function Filters({
                 filterByMatchWeek: selectedMatchWeek,
                 filterByClub: selectedClub,
                 ...(withSort && sortOrder ? { sortOrder } : {}),
+                ...(withStatus && status ? { status } : {}),
             });
 
             router.replace(`${pathname}${queryString ? '?' + queryString : ''}`);
         }, 300);
 
         return () => clearTimeout(timeout);
-    }, [search, selectedCategory, selectedMatchWeek, selectedClub, sortOrder, pathname, router, withSort]);
+    }, [
+        search,
+        selectedCategory,
+        selectedMatchWeek,
+        selectedClub,
+        sortOrder,
+        pathname,
+        router,
+        withSort,
+        withStatus,
+        status,
+    ]);
 
     return (
         <>
@@ -171,6 +210,18 @@ export default function Filters({
                         options={sortOrderOptions}
                         instanceId="sortorder"
                         onChange={(option) => setSortOrder((option as OptionType)?.value === 'asc' ? 'asc' : 'desc')}
+                    />
+                </div>
+            )}
+            {withStatus && statusOptions && (
+                <div className="w-full xl:min-w-56">
+                    <CustomSelect
+                        value={selectedStatusOption}
+                        options={statusOptions}
+                        instanceId="sortorder"
+                        onChange={(option) =>
+                            setStatus((option as OptionType)?.value === 'activo' ? 'activo' : 'inactivo')
+                        }
                     />
                 </div>
             )}

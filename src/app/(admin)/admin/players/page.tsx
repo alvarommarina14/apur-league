@@ -10,27 +10,25 @@ interface PlayersSearchParamsType {
         search?: string;
         filterByCategory?: string;
         sortOrder?: 'asc' | 'desc';
+        status?: 'activo' | 'inactivo';
         page?: string;
     }>;
 }
 
 export default async function AdminPlayersPage({ searchParams }: PlayersSearchParamsType) {
-    const { search, filterByCategory, sortOrder = 'asc', page = '1' } = await searchParams;
+    const { search, filterByCategory, sortOrder = 'asc', status = 'activo', page = '1' } = await searchParams;
     const pageNumber = Number(page) || 1;
     const perPage = 25;
     const { players, totalCount } = await getAllPlayers({
         search,
         categoryId: Number(filterByCategory),
         sortOrder,
+        isActive: status === 'activo' ? true : false,
         page: pageNumber,
         perPage,
     });
     const totalPages = perPage > 0 ? Math.ceil(totalCount / perPage) : 1;
     const categories = await getAllCategories();
-    const sortOrderOptions = [
-        { value: 'asc', label: 'Ordenar: A-Z' },
-        { value: 'desc', label: 'Ordenar: Z-A' },
-    ];
 
     return (
         <div className="px-4 py-8 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
@@ -45,11 +43,12 @@ export default async function AdminPlayersPage({ searchParams }: PlayersSearchPa
                             search={search}
                             selectedCategory={filterByCategory}
                             sortOrder={sortOrder}
-                            sortOrderOptions={sortOrderOptions}
                             withSearch
                             searchPlaceholder={'Buscar por nombre y apellido...'}
                             showAllCategory
                             withSort
+                            withStatus
+                            status={status}
                         />
                     </div>
                     <Link
