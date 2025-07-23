@@ -22,8 +22,8 @@ export async function updatePlayerDataAction(
     return await updatePlayerData(id, data);
 }
 
-export async function updatePlayerStatusAction(id: number) {
-    return await updatePlayerStatus(id);
+export async function updatePlayerStatusAction(id: number, newStatus: boolean) {
+    return await updatePlayerStatus(id, newStatus);
 }
 
 export async function deletePlayerByIdAction(id: number) {
