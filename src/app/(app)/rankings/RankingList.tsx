@@ -12,15 +12,8 @@ interface RankingListProps {
     perPage: number;
 }
 
-export function RankingList({
-    initialPlayers,
-    totalCount,
-    search,
-    categoryId,
-    perPage,
-}: RankingListProps) {
-    const [players, setPlayers] =
-        useState<PlayerCategoryStatsPromotionsType[]>(initialPlayers);
+export function RankingList({ initialPlayers, totalCount, search, categoryId, perPage }: RankingListProps) {
+    const [players, setPlayers] = useState<PlayerCategoryStatsPromotionsType[]>(initialPlayers);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(players.length < totalCount);
@@ -54,16 +47,7 @@ export function RankingList({
         } finally {
             setLoading(false);
         }
-    }, [
-        page,
-        loading,
-        hasMore,
-        search,
-        categoryId,
-        perPage,
-        players.length,
-        totalCount,
-    ]);
+    }, [page, loading, hasMore, search, categoryId, perPage, players.length, totalCount]);
 
     const handleObserver = useCallback(
         (entries: IntersectionObserverEntry[]) => {
@@ -99,15 +83,9 @@ export function RankingList({
     return (
         <>
             <RankingTable rows={players} />
-            {loading && (
-                <div className="text-center py-4 text-neutral-500">
-                    Cargando más jugadores...
-                </div>
-            )}
+            {loading && <div className="text-center py-4 text-neutral-500">Cargando más jugadores...</div>}
             {!hasMore && players.length > 0 && (
-                <div className="text-center py-4 text-neutral-500">
-                    Todos los jugadores cargados.
-                </div>
+                <div className="text-center py-4 text-neutral-500">Todos los jugadores cargados.</div>
             )}
             {hasMore && <div ref={loader} className="h-10 invisible" />}
         </>

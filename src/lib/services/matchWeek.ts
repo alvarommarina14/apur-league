@@ -95,7 +95,7 @@ export async function getAllMatchWeek() {
 export async function getAllMatchWeekWithMatchDays() {
     const weeks = await prisma.matchWeek.findMany({
         orderBy: {
-            order: 'asc',
+            order: 'desc',
         },
         include: {
             matchDays: true,
