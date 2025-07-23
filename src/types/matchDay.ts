@@ -6,8 +6,13 @@ export type MatchDayWithMatchesType = Prisma.MatchDayGetPayload<{
             include: {
                 playerMatches: {
                     include: {
-                        player: true;
+                        player: {
+                            include: {
+                                categoryStats: true;
+                            };
+                        };
                     };
+                    team: true;
                 };
                 category: true;
                 court: {

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Pencil, X, Share } from 'lucide-react';
 
 import { MatchWeekWithMatchDaysType } from '@/types/matchWeek';
+import { ClubWithCourtsType } from '@/types/club';
 
 import { deleteMatchDayAction, createMatchDayAction } from '@/lib/actions/matchDay';
 
@@ -14,11 +15,14 @@ import Modal from '@/components/Modal';
 import ConfirmModal from '@/components/ConfirmModal';
 
 import { pdf } from '@react-pdf/renderer';
-import MatchWeekPDF from '@/components/admin/pdf/MatchWeekPDF';
+import { MatchWeekPDF } from '@/components/admin/pdf/MatchWeekPDF';
 import { getMatchWeekWithMatchesAction } from '@/lib/actions/matchWeek';
+
+import { showErrorToast } from '@/components/Toast';
 
 interface MatchWeekCardEditableProp {
     week: MatchWeekWithMatchDaysType;
+    clubs: ClubWithCourtsType[];
 }
 
 interface DateToDeleteType {
@@ -26,8 +30,7 @@ interface DateToDeleteType {
     date: string;
 }
 
-export default function MatchWeekCardEditable({ week }: MatchWeekCardEditableProp) {
-    console.log(week);
+export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEditableProp) {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -59,29 +62,41 @@ export default function MatchWeekCardEditable({ week }: MatchWeekCardEditablePro
 
     const exportMatchWeekToPDF = async () => {
         const matchWeekWithMatches = await getMatchWeekWithMatchesAction(week.id);
-        const apurMatches = matchWeekWithMatches?.matchDays.map((day) => {
-            return day.matches.filter((match) => match.court.club.name === 'APUR');
-        });
-        const palosVerdesMatches = matchWeekWithMatches?.matchDays.map((day) => {
-            return day.matches.filter((match) => match.court.club.name === 'PALOS VERDES');
-        });
+        if (!matchWeekWithMatches) {
+            showErrorToast('Error al intentar descargar la fecha, intente nuevamente.');
+            return;
+        }
 
-        const talleresMatches = matchWeekWithMatches?.matchDays.map((day) => {
-            return day.matches.filter((match) => match.court.club.name === 'TALLERES');
-        });
+        const apurMatchDays = matchWeekWithMatches!.matchDays.map((day) => ({
+            ...day,
+            matches: day.matches.filter((match) => match.court.club.name === 'APUR'),
+        }));
 
-        console.log(matchWeekWithMatches);
-        console.log(apurMatches);
-        console.log(palosVerdesMatches);
-        console.log(talleresMatches);
-        // const blob = await pdf(<MatchWeekPDF />).toBlob();
-        // const url = URL.createObjectURL(blob);
+        const palosVerdesMatchDays = matchWeekWithMatches!.matchDays.map((day) => ({
+            ...day,
+            matches: day.matches.filter((match) => match.court.club.name === 'PALOS VERDES'),
+        }));
 
-        // const a = document.createElement('a');
-        // a.href = url;
-        // a.download = `jornada-${week.name}.pdf`; // Establece el nombre del archivo
-        // a.click();
-        // URL.revokeObjectURL(url);
+        const talleresMatchDays = matchWeekWithMatches!.matchDays.map((day) => ({
+            ...day,
+            matches: day.matches.filter((match) => match.court.club.name === 'TALLERES'),
+        }));
+
+        const blob = await pdf(
+            <MatchWeekPDF
+                clubCourts={clubs}
+                apurMatches={apurMatchDays}
+                palosVerdesMatches={palosVerdesMatchDays}
+                talleresMatches={talleresMatchDays}
+            />
+        ).toBlob();
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `jornada-${week.name}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
     };
 
     return (

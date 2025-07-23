@@ -13,7 +13,7 @@ interface PlayerSelectsProps {
     setTeamPlayers: (players: SelectValue[]) => void;
     otherTeamPlayers: SelectValue[];
     players: PlayerType[] | [];
-    type: 'SINGLES' | 'DOUBLES';
+    type: 'SINGLES' | 'DOBLES';
     isDisabled?: boolean;
     isLoading?: boolean;
 }

@@ -111,7 +111,7 @@ model Court {
 
 enum Type {
   SINGLES
-  DOUBLES
+  DOBLES
 }
 
 enum Team {

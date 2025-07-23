@@ -8,7 +8,11 @@ export type PlayerMatchTeamsWithPlayersType = {
 
 export type PlayerMatchWithPlayersType = Prisma.PlayerMatchGetPayload<{
     include: {
-        player: true;
+        player: {
+            include: {
+                categoryStats?: true;
+            };
+        };
         team: true;
     };
 }>;
