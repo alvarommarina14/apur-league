@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { mapOptions, getSelectedOption, buildQueryParams } from '@/lib/helpers/utils';
+import { mapOptions, getSelectedOption } from '@/lib/helpers/utils';
 
 import hoursOptions from '@/seed/hours.json';
 
@@ -16,38 +16,30 @@ import { MatchModeType } from '@/types/matches';
 import CustomSelect from '@/components/CustomSelect';
 import { PlayerSelects } from '@/lib/helpers/players/playerSelectHelper';
 import { createMatchAction } from '@/lib/actions/matches';
+import { getAllPlayersAction } from '@/lib/actions/players';
 import { showErrorToast, showSuccessToast } from '@/components/Toast';
 import { hourToDefaultUTCDate } from '@/lib/helpers/utils';
 import { LoaderCircle } from 'lucide-react';
 
 type CreateMatchFormProps = {
-    players: PlayerType[];
     categories: CategoryType[];
     clubs: ClubWithCourtsType[];
-    selectedCategory: string;
     matchDayId: number;
-    mode?: 'create' | 'edit';
 };
 
-export default function CreateMatchForm({
-    categories,
-    players,
-    clubs,
-    selectedCategory: selectedCategoryProp,
-    matchDayId,
-    mode = 'create',
-}: CreateMatchFormProps) {
+export default function CreateMatchForm({ categories, clubs, matchDayId }: CreateMatchFormProps) {
     const router = useRouter();
-    const pathname = usePathname();
 
     const [type, setType] = useState<MatchModeType>('SINGLES');
-    const [selectedCategory, setSelectedCategory] = useState(String(selectedCategoryProp) ?? '');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [players, setPlayers] = useState<PlayerType[] | []>([]);
     const [team1Players, setTeam1Players] = useState<(string | null)[]>(['', '']);
     const [team2Players, setTeam2Players] = useState<(string | null)[]>(['', '']);
     const [selectedClub, setSelectedClub] = useState<string | null>(null);
     const [selectedCourt, setSelectedCourt] = useState<string | null>(null);
     const [selectedHour, setSelectedHour] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isSelectLoading, setIsLoadingSelect] = useState(false);
 
     const categoryOptions = useMemo(
         () =>
@@ -93,18 +85,6 @@ export default function CreateMatchForm({
 
     const selectedHourOption = useMemo(() => getSelectedOption(hoursOptions, selectedHour), [selectedHour]);
 
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            const queryString = buildQueryParams({
-                filterByCategory: selectedCategory,
-            });
-
-            router.replace(`${pathname}${queryString ? '?' + queryString : ''}`);
-        }, 300);
-
-        return () => clearTimeout(timeout);
-    }, [selectedCategory, pathname, router]);
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -142,6 +122,13 @@ export default function CreateMatchForm({
         }
     };
 
+    const handleCategoryChange = async (categoryId: string) => {
+        setIsLoadingSelect(true);
+        const { players } = await getAllPlayersAction(Number(categoryId));
+        setPlayers(players);
+        setIsLoadingSelect(false);
+    };
+
     const expectedPlayers = type === 'SINGLES' ? 1 : 2;
 
     const isFormValid =
@@ -160,6 +147,7 @@ export default function CreateMatchForm({
                 options={categoryOptions}
                 onChange={(newValue) => {
                     setSelectedCategory((newValue as OptionType | null)?.value ?? '');
+                    handleCategoryChange((newValue as OptionType | null)?.value ?? '');
                 }}
                 instanceId="category"
                 placeholder="Seleccionar categoria"
@@ -196,6 +184,7 @@ export default function CreateMatchForm({
                     players={players}
                     type={type}
                     isDisabled={!selectedCategoryOption}
+                    isLoading={isSelectLoading}
                 />
 
                 <PlayerSelects
@@ -206,6 +195,7 @@ export default function CreateMatchForm({
                     players={players}
                     type={type}
                     isDisabled={!selectedCategoryOption}
+                    isLoading={isSelectLoading}
                 />
             </div>
             <label className="block text-sm font-medium text-gray-700 mt-6 mb-1">Club</label>
@@ -243,16 +233,10 @@ export default function CreateMatchForm({
             <div className="mt-8 flex justify-end w-full">
                 <button
                     type="submit"
-                    disabled={!isFormValid}
-                    className={`font-semibold px-6 py-2 rounded border transition shadow-md border-apur-green bg-apur-green text-white ${isFormValid ? 'cursor-pointer hover:bg-apur-green-hover hover:border-apur-green-hover' : 'opacity-30 cursor-not-allowed'}`}
+                    disabled={!isFormValid || isLoading}
+                    className={`font-semibold px-6 py-2 rounded border transition shadow-md border-apur-green bg-apur-green text-white ${isFormValid && !isLoading ? 'cursor-pointer hover:bg-apur-green-hover hover:border-apur-green-hover' : 'opacity-30 cursor-not-allowed'}`}
                 >
-                    {isLoading ? (
-                        <LoaderCircle size={24} className="animate-spin" />
-                    ) : mode === 'edit' ? (
-                        'Actualizar'
-                    ) : (
-                        'Guardar'
-                    )}
+                    {isLoading ? <LoaderCircle size={24} className="animate-spin" /> : <span>Guardar</span>}
                 </button>
             </div>
         </form>

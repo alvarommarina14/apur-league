@@ -1,7 +1,6 @@
 import { getAllCategories } from '@/lib/services/category';
 import { getAllClubs } from '@/lib/services/club';
 import { getMatchWeekWithMatches } from '@/lib/services/matchWeek';
-import { getAllPlayers } from '@/lib/services/player';
 
 import ToggleMatchViews from './ToggleMatchViews';
 
@@ -21,7 +20,7 @@ export default async function AdminMatchesPage({ searchParams, params }: AdminMa
     const categories = await getAllCategories();
     const clubs = await getAllClubs();
     const { matchDayId, matchWeekId } = await params;
-    const { filterByCategory = String(categories[0].id), search, filterByClub } = await searchParams;
+    const { filterByCategory, search, filterByClub } = await searchParams;
 
     const searchValue = search ?? undefined;
 
@@ -45,10 +44,6 @@ export default async function AdminMatchesPage({ searchParams, params }: AdminMa
         );
     }
 
-    const { players } = await getAllPlayers({
-        categoryId: Number(filterByCategory),
-    });
-
     return (
         <ToggleMatchViews
             selectedMatchWeekId={String(selectedMatchWeek.id)}
@@ -58,7 +53,6 @@ export default async function AdminMatchesPage({ searchParams, params }: AdminMa
             search={search}
             selectedCategory={filterByCategory}
             selectedClub={filterByClub}
-            players={players}
             matchDayId={Number(matchDayId)}
         />
     );

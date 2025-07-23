@@ -1,5 +1,15 @@
 'use server';
-import { deletePlayerById, updatePlayerStatus, updatePlayerData, createPlayer } from '@/lib/services/player';
+import {
+    deletePlayerById,
+    updatePlayerStatus,
+    updatePlayerData,
+    createPlayer,
+    getAllPlayers,
+} from '@/lib/services/player';
+
+export async function getAllPlayersAction(categoryId: number) {
+    return await getAllPlayers({ categoryId });
+}
 
 export async function createPlayerAction(data: { firstName: string; lastName: string; categoryIds: number[] }) {
     return await createPlayer(data);
