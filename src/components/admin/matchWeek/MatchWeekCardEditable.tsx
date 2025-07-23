@@ -4,17 +4,25 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from '@formkit/tempo';
 import Link from 'next/link';
-import { Pencil, X } from 'lucide-react';
+import { Pencil, X, Share } from 'lucide-react';
 
 import { MatchWeekWithMatchDaysType } from '@/types/matchWeek';
+import { ClubWithCourtsType } from '@/types/club';
 
 import { deleteMatchDayAction, createMatchDayAction } from '@/lib/actions/matchDay';
 
 import Modal from '@/components/Modal';
 import ConfirmModal from '@/components/ConfirmModal';
 
+import { pdf } from '@react-pdf/renderer';
+import { MatchWeekPDF } from '@/components/admin/pdf/MatchWeekPDF';
+import { getMatchWeekWithMatchesAction } from '@/lib/actions/matchWeek';
+
+import { showErrorToast } from '@/components/Toast';
+
 interface MatchWeekCardEditableProp {
     week: MatchWeekWithMatchDaysType;
+    clubs: ClubWithCourtsType[];
 }
 
 interface DateToDeleteType {
@@ -22,7 +30,7 @@ interface DateToDeleteType {
     date: string;
 }
 
-export default function MatchWeekCardEditable({ week }: MatchWeekCardEditableProp) {
+export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEditableProp) {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -50,6 +58,45 @@ export default function MatchWeekCardEditable({ week }: MatchWeekCardEditablePro
         };
         await createMatchDayAction(formData);
         router.refresh();
+    };
+
+    const exportMatchWeekToPDF = async () => {
+        const matchWeekWithMatches = await getMatchWeekWithMatchesAction(week.id);
+        if (!matchWeekWithMatches) {
+            showErrorToast('Error al intentar descargar la fecha, intente nuevamente.');
+            return;
+        }
+
+        const apurMatchDays = matchWeekWithMatches!.matchDays.map((day) => ({
+            ...day,
+            matches: day.matches.filter((match) => match.court.club.name === 'APUR'),
+        }));
+
+        const palosVerdesMatchDays = matchWeekWithMatches!.matchDays.map((day) => ({
+            ...day,
+            matches: day.matches.filter((match) => match.court.club.name === 'PALOS VERDES'),
+        }));
+
+        const talleresMatchDays = matchWeekWithMatches!.matchDays.map((day) => ({
+            ...day,
+            matches: day.matches.filter((match) => match.court.club.name === 'TALLERES'),
+        }));
+
+        const blob = await pdf(
+            <MatchWeekPDF
+                clubCourts={clubs}
+                apurMatches={apurMatchDays}
+                palosVerdesMatches={palosVerdesMatchDays}
+                talleresMatches={talleresMatchDays}
+            />
+        ).toBlob();
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `jornada-${week.name}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
     };
 
     return (
@@ -135,6 +182,12 @@ export default function MatchWeekCardEditable({ week }: MatchWeekCardEditablePro
                     />
                 </Modal>
             )}
+            <button
+                onClick={() => exportMatchWeekToPDF()}
+                className={`absolute bottom-4 right-4 transition p-2 rounded-full cursor-pointer hover:text-apur-green hover:bg-gray-100  ${isEditing ? 'hidden' : 'text-gray-500'}`}
+            >
+                <Share size={18} />
+            </button>
         </div>
     );
 }

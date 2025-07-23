@@ -94,7 +94,7 @@ export async function getMatchByCourtAndHour(courtId: number, hour: Date, matchD
 }
 
 export async function getMatchByPlayerIdAndCategoryAndDay(playerIds: number[], categoryId: number, matchDayId: number) {
-    return prisma.match.findMany({
+    return await prisma.match.findMany({
         where: {
             categoryId: categoryId,
             matchDayId: matchDayId,
@@ -106,6 +106,9 @@ export async function getMatchByPlayerIdAndCategoryAndDay(playerIds: number[], c
         },
         include: {
             playerMatches: {
+                where: {
+                    playerId: { in: playerIds },
+                },
                 include: {
                     player: true,
                 },
@@ -138,6 +141,9 @@ export async function getMatchesByHourAndPlayerId(playerIds: number[], hour: Dat
         },
         include: {
             playerMatches: {
+                where: {
+                    playerId: { in: playerIds },
+                },
                 include: {
                     player: true,
                 },
@@ -201,6 +207,7 @@ export async function getMatchesByPlayerIdsAndCategory(
         },
         include: {
             playerMatches: {
+                where: { OR: [{ playerId: { in: groupA_players } }, { playerId: { in: groupB_players } }] },
                 include: {
                     player: true,
                 },

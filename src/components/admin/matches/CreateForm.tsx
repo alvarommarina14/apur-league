@@ -157,7 +157,12 @@ export default function CreateMatchForm({ categories, clubs, matchDayId }: Creat
                 <div className="flex gap-4">
                     <button
                         type="button"
-                        onClick={() => setType('SINGLES')}
+                        onClick={() => {
+                            setType('SINGLES');
+
+                            setTeam1Players([team1Players[0], '']);
+                            setTeam2Players([team2Players[0], '']);
+                        }}
                         className={`font-semibold px-6 py-2 rounded border border-apur-green hover:bg-apur-green hover:border-apur-green hover:text-white transition shadow-md ${
                             type === 'SINGLES' ? 'bg-apur-green text-white' : 'bg-white text-apur-green cursor-pointer'
                         }`}
@@ -166,9 +171,9 @@ export default function CreateMatchForm({ categories, clubs, matchDayId }: Creat
                     </button>
                     <button
                         type="button"
-                        onClick={() => setType('DOUBLES')}
+                        onClick={() => setType('DOBLES')}
                         className={`font-semibold px-6 py-2 rounded border border-apur-green hover:bg-apur-green hover:border-apur-green hover:text-white transition shadow-md ${
-                            type === 'DOUBLES' ? 'bg-apur-green text-white' : 'bg-white text-apur-green cursor-pointer'
+                            type === 'DOBLES' ? 'bg-apur-green text-white' : 'bg-white text-apur-green cursor-pointer'
                         }`}
                     >
                         Dobles

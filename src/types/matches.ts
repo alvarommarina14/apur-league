@@ -21,7 +21,11 @@ export type MatchUpdateResultType = Prisma.MatchGetPayload<{
     include: {
         playerMatches: {
             include: {
-                player: true;
+                player: {
+                    include: {
+                        categoryStats: true;
+                    };
+                };
             };
         };
         category: true;

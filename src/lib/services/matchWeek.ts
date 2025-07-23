@@ -61,7 +61,11 @@ export async function getMatchWeekWithMatches({
                         include: {
                             playerMatches: {
                                 include: {
-                                    player: true,
+                                    player: {
+                                        include: {
+                                            categoryStats: true,
+                                        },
+                                    },
                                 },
                             },
                             category: true,
