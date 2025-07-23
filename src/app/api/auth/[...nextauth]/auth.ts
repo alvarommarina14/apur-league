@@ -21,14 +21,13 @@ export const authOptions: AuthOptions = {
                 });
 
                 if (!userFound) {
-                    throw new Error('No user found');
+                    throw new Error('Usuario no encontrado');
                 }
 
-                const matchPassword =
-                    credentials.password === userFound.password;
+                const matchPassword = credentials.password === userFound.password;
 
                 if (!matchPassword) {
-                    throw new Error('Wrong password');
+                    throw new Error('Contraseña incorrecta');
                 }
 
                 return {

@@ -3,8 +3,10 @@
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+
+import { showErrorToast } from '@/components/Toast';
+
 import Image from 'next/image';
-import { toast, Toaster } from 'react-hot-toast';
 import Link from 'next/link';
 
 type LoginFormData = {
@@ -21,113 +23,92 @@ export default function Login() {
 
     const router = useRouter();
 
-    const onSubmit = async (data: { email: string; password: string }) => {
+    const onSubmit = async (data: LoginFormData) => {
         const res = await signIn('credentials', {
             email: data.email,
             password: data.password,
             redirect: false,
         });
 
-        if (res?.error) {
-            toast.error('Contraseña incorrecta', {
-                position: 'top-center',
-                duration: 3000,
-                style: {
-                    background: '#FEE2E2',
-                    color: '#A00000',
-                    border: '1px solid #EF4444',
-                    fontWeight: '600',
-                    padding: '16px',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-                },
-                iconTheme: {
-                    primary: '#EF4444',
-                    secondary: '#FFFFFF',
-                },
-            });
+        if (!res?.ok) {
+            showErrorToast(String(res?.error));
         } else {
             router.push('/admin');
         }
     };
 
     return (
-        <main className="flex flex-col md:flex-row min-h-screen">
+        <div className="flex flex-col md:flex-row min-h-screen bg-white">
             <div className="hidden md:block md:w-8/12 h-screen">
                 <Image
                     src="/home-image.jpg"
                     alt="Fondo de cancha de tenis"
                     width={2000}
                     height={2000}
+                    priority
                     className="w-full h-full object-cover"
                 />
             </div>
 
-            <div className="w-full md:w-4/12 flex flex-col items-center justify-center p-6 md:px-12 bg-neutral-50">
-                <div className="w-full max-w-sm flex flex-col">
-                    <Link className="cursor-pointer" href="/">
+            <div className="w-full md:w-4/12 min-h-screen flex flex-col justify-center px-8 py-12 bg-neutral-50">
+                <div className="w-full max-w-sm mx-auto">
+                    <Link href="/" className="block text-center mb-8">
                         <Image
                             src="/logo-apur.png"
                             alt="Logo de la liga"
                             width={300}
                             height={300}
-                            className="w-56 sm:w-72 md:w-full h-auto self-center mb-6"
+                            className="w-56 mx-auto"
                         />
                     </Link>
-                    <h1 className="text-xl sm:text-2xl font-semibold mb-6 text-left text-apur-green">
-                        Login
-                    </h1>
-                    <form
-                        onSubmit={handleSubmit(onSubmit)}
-                        className="flex flex-col w-full"
-                    >
-                        <div className="flex flex-col gap-2 w-full mb-4">
+
+                    <h1 className="text-2xl md:text-3xl font-bold mb-2 text-center text-apur-green">Iniciar sesión</h1>
+                    <p className="text-sm text-neutral-500 text-center mb-6">Ingresá tus credenciales para continuar</p>
+
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                        <div>
                             <input
-                                id="email-input"
-                                {...register('email', {
-                                    required: 'Email is required',
-                                })}
                                 type="email"
-                                className="border-2 border-neutral-600 rounded-lg p-3 focus:border-apur-green focus:ring-2 focus:ring-apur-green focus:outline-none transition-colors"
+                                {...register('email', { required: 'Email es requerido' })}
                                 placeholder="Email"
+                                className={`w-full text-gray-900 px-4 py-3 rounded-md border ${
+                                    errors.email
+                                        ? 'border-red-700 bg-red-50 focus:ring-red-700 focus:border-red-700'
+                                        : 'border-gray-300 bg-white focus:ring-apur-green focus:border-apur-green'
+                                } focus:outline-none focus:ring-1`}
                             />
-                            {errors.email && (
-                                <p className="text-red-500 text-sm">
-                                    {errors.email.message}
-                                </p>
-                            )}
+                            {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>}
                         </div>
-                        <div className="flex flex-col gap-2 w-full mb-6">
+
+                        <div>
                             <input
-                                id="password-input"
+                                type="password"
                                 {...register('password', {
-                                    required: 'Password is required',
+                                    required: 'Contraseña es requerida',
                                     minLength: {
                                         value: 8,
-                                        message:
-                                            'Password must have at least 8 characters',
+                                        message: 'Debe tener al menos 8 caracteres',
                                     },
                                 })}
-                                type="password"
-                                className="border-2 border-neutral-600 rounded-lg p-3 focus:border-apur-green focus:ring-2 focus:ring-apur-green focus:outline-none transition-colors"
-                                placeholder="Password"
+                                placeholder="Contraseña"
+                                className={`w-full text-gray-900 px-4 py-3 rounded-md border ${
+                                    errors.password
+                                        ? 'border-red-700 bg-red-50 focus:ring-red-700 focus:border-red-700'
+                                        : 'border-gray-300 bg-white focus:ring-apur-green focus:border-apur-green'
+                                } focus:outline-none focus:ring-1`}
                             />
-                            {errors.password && (
-                                <p className="text-red-500 text-sm">
-                                    {errors.password.message}
-                                </p>
-                            )}
+                            {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>}
                         </div>
+
                         <button
                             type="submit"
-                            className="bg-apur-green hover:bg-apur-green-hover font-semibold cursor-pointer w-full p-3 rounded-lg text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-apur-green hover:bg-apur-green-hover text-white font-medium py-3 rounded-md shadow-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Ingresar
                         </button>
                     </form>
-                    <Toaster />
                 </div>
             </div>
-        </main>
+        </div>
     );
 }
