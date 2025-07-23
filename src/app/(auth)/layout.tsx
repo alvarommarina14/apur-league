@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '@/app/globals.css';
 
+import { Toaster } from 'react-hot-toast';
+
 const geistSans = Geist({
     variable: '--font-geist-sans',
     subsets: ['latin'],
@@ -29,7 +31,10 @@ export default function LoginLayout({
     return (
         <html lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable}`}>
-                <main>{children}</main>
+                <main>
+                    <Toaster />
+                    {children}
+                </main>
             </body>
         </html>
     );

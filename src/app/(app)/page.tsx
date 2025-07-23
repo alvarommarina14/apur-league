@@ -1,9 +1,14 @@
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { KeyRound } from 'lucide-react';
+import { KeyRound, Settings } from 'lucide-react';
 
-export default function Home() {
+export default async function Home() {
+    const session = await getServerSession(authOptions);
+
     return (
         <div className="relative">
             <Image
@@ -44,11 +49,11 @@ export default function Home() {
                         Rankings
                     </Link>
                     <Link
-                        href="/login"
+                        href={session ? '/admin' : '/login'}
                         className="fixed bottom-4 right-4 z-50 bg-yellow-300 text-neutral-900 p-3 rounded-full shadow-md transition-all duration-300 ease-in-out hover:bg-yellow-400 hover:scale-105 hover:shadow-lg"
                         aria-label="Acceso administrador"
                     >
-                        <KeyRound className="w-5 h-5" />
+                        {session ? <Settings className="w-5 h-5" /> : <KeyRound className="w-5 h-5" />}
                     </Link>
                 </div>
             </div>
