@@ -31,6 +31,7 @@ interface DateToDeleteType {
 }
 
 export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEditableProp) {
+    console.log(week);
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -56,6 +57,7 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
             matchWeekId: week.id,
             date: new Date(newDate).toISOString(),
         };
+        console.log();
         await createMatchDayAction(formData);
         router.refresh();
     };
@@ -112,7 +114,7 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
 
             <div className="flex flex-wrap gap-3">
                 {week.matchDays.map((day) => {
-                    const dateStr = format(day.date, 'YYYY-MM-DD');
+                    const dateStr = format({ date: day.date, format: 'DD/MM/YYYY', tz: 'UTC' });
 
                     return (
                         <div key={day.id} className="relative">
@@ -121,11 +123,11 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
                                     href={`/admin/matchWeeks/${week.id}/${day.id}/matches`}
                                     className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-apur-green text-sm font-medium text-apur-green bg-white hover:bg-apur-green hover:text-white transition"
                                 >
-                                    <time dateTime={dateStr}>{format(day.date, 'DD/MM/YYYY', 'es')}</time>
+                                    <time dateTime={dateStr}>{dateStr}</time>
                                 </Link>
                             ) : (
                                 <div className="cursor-default inline-flex items-center justify-center px-4 py-2 rounded-full border border-apur-green text-sm font-medium text-apur-green bg-white">
-                                    <time dateTime={dateStr}>{format(day.date, 'DD/MM/YYYY', 'es')}</time>
+                                    <time dateTime={dateStr}>{dateStr}</time>
                                 </div>
                             )}
 
