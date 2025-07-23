@@ -12,6 +12,7 @@ interface CustomSelectProps {
     isMulti?: boolean;
     placeholder?: string;
     isError?: boolean;
+    isLoading?: boolean;
 }
 
 export default function CustomSelect({
@@ -23,6 +24,7 @@ export default function CustomSelect({
     isMulti = false,
     placeholder,
     isError = false,
+    isLoading = false,
 }: CustomSelectProps) {
     return (
         <Select
@@ -34,6 +36,7 @@ export default function CustomSelect({
             placeholder={placeholder}
             closeMenuOnSelect={!isMulti}
             menuPlacement="auto"
+            isLoading={isLoading}
             onChange={onChange}
             unstyled
             classNames={{
@@ -63,6 +66,7 @@ export default function CustomSelect({
                 indicatorSeparator: () => 'bg-gray-300',
                 clearIndicator: () =>
                     'text-neutral-500 mx-1 p-1 rounded-full hover:text-neutral-700 hover:bg-gray-200 cursor-pointer',
+                loadingIndicator: () => 'mr-3! text-neutral-500',
             }}
         />
     );

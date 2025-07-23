@@ -19,11 +19,12 @@ export default async function AdminPlayersPage({ searchParams }: PlayersSearchPa
     const { search, filterByCategory, sortOrder = 'asc', status = 'activo', page = '1' } = await searchParams;
     const pageNumber = Number(page) || 1;
     const perPage = 25;
+    const isActive = status === 'activo';
     const { players, totalCount } = await getAllPlayers({
         search,
         categoryId: Number(filterByCategory),
         sortOrder,
-        isActive: status === 'activo' ? true : false,
+        isActive,
         page: pageNumber,
         perPage,
     });
@@ -59,7 +60,14 @@ export default async function AdminPlayersPage({ searchParams }: PlayersSearchPa
                     </Link>
                 </div>
 
-                <PlayersTable rows={players} page={pageNumber} totalPages={totalPages} isEditable cardsMobile />
+                <PlayersTable
+                    rows={players}
+                    page={pageNumber}
+                    totalPages={totalPages}
+                    isEditable
+                    cardsMobile
+                    isActive={isActive}
+                />
             </div>
         </div>
     );

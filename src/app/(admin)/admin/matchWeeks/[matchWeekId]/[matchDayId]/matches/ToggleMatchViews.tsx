@@ -8,7 +8,6 @@ import MatchCardEditable from '@/components/admin/matches/MatchCardEditable';
 import CreateMatchForm from '@/components/admin/matches/CreateForm';
 import { CategoryType } from '@/types/category';
 import { ClubWithCourtsType } from '@/types/club';
-import { PlayerType } from '@/types/player';
 import { MatchDayWithMatchesType } from '@/types/matchDay';
 
 interface ToggleMatchViewsType {
@@ -17,9 +16,8 @@ interface ToggleMatchViewsType {
     categories: CategoryType[];
     clubs: ClubWithCourtsType[];
     search?: string;
-    selectedCategory: string;
+    selectedCategory?: string;
     selectedClub: string;
-    players: PlayerType[];
     matchDayId: number;
 }
 
@@ -31,7 +29,6 @@ export default function ToggleMatchViews({
     search,
     selectedCategory,
     selectedClub,
-    players,
     matchDayId,
 }: ToggleMatchViewsType) {
     const [showForm, setShowForm] = useState(false);
@@ -78,6 +75,7 @@ export default function ToggleMatchViews({
                             selectedMatchWeek={selectedMatchWeekId}
                             selectedClub={selectedClub}
                             showAllClub
+                            showAllCategory
                         />
                     </div>
                 </div>
@@ -93,13 +91,7 @@ export default function ToggleMatchViews({
                 )}
             </section>
             <section className={`w-full md:w-7/10 mx-auto ${!showForm && 'hidden'}`}>
-                <CreateMatchForm
-                    players={players}
-                    categories={categories}
-                    clubs={clubs}
-                    selectedCategory={selectedCategory}
-                    matchDayId={matchDayId}
-                />
+                <CreateMatchForm categories={categories} clubs={clubs} matchDayId={matchDayId} />
             </section>
         </div>
     );

@@ -12,9 +12,10 @@ interface PlayerSelectsProps {
     teamPlayers: SelectValue[];
     setTeamPlayers: (players: SelectValue[]) => void;
     otherTeamPlayers: SelectValue[];
-    players: PlayerType[];
+    players: PlayerType[] | [];
     type: 'SINGLES' | 'DOUBLES';
     isDisabled?: boolean;
+    isLoading?: boolean;
 }
 
 export const PlayerSelects: React.FC<PlayerSelectsProps> = ({
@@ -25,6 +26,7 @@ export const PlayerSelects: React.FC<PlayerSelectsProps> = ({
     players,
     type,
     isDisabled,
+    isLoading = false,
 }) => {
     const playerMap = useMemo(() => new Map(players.map((p) => [String(p.id), p])), [players]);
 
@@ -72,7 +74,8 @@ export const PlayerSelects: React.FC<PlayerSelectsProps> = ({
                             }}
                             instanceId={`${teamLabel}-player-${i}`}
                             placeholder="Seleccionar jugador"
-                            isDisabled={isDisabled}
+                            isDisabled={isDisabled || isLoading}
+                            isLoading={isLoading}
                         />
                     </div>
                 );

@@ -129,7 +129,7 @@ export async function createPlayer(data: { firstName: string; lastName: string; 
 
     return {
         result: newPlayer,
-        message: 'Player was successfully created',
+        message: 'El jugador se creo correctamente',
     };
 }
 
@@ -158,19 +158,19 @@ export async function updatePlayerData(
 
     return {
         result: updatedPlayer,
-        message: 'Player was successfully updated',
+        message: 'El jugador se actualizo correctamente',
     };
 }
 
-export async function updatePlayerStatus(id: number) {
+export async function updatePlayerStatus(id: number, newStatus: boolean) {
     const result = await prisma.player.update({
         where: { id: id },
-        data: { isActive: false },
+        data: { isActive: newStatus },
     });
 
     return {
         result,
-        message: 'Player was successfully disabled',
+        message: newStatus ? 'El status del jugador fue actualizado' : 'El jugador fue desactivado con exito',
     };
 }
 
@@ -181,6 +181,6 @@ export async function deletePlayerById(id: number) {
 
     return {
         result,
-        message: 'Player deleted successfully',
+        message: 'Jugador eliminado con exito',
     };
 }

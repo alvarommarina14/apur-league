@@ -12,6 +12,7 @@ interface PlayersTableProps {
     totalPages: number;
     isEditable?: boolean;
     cardsMobile?: boolean;
+    isActive?: boolean;
 }
 
 export default function PlayersTable({
@@ -20,6 +21,7 @@ export default function PlayersTable({
     totalPages,
     isEditable = false,
     cardsMobile = false,
+    isActive = true,
 }: PlayersTableProps) {
     const generateCell = (id: string | number, val: string) => {
         return isEditable ? (
@@ -85,7 +87,7 @@ export default function PlayersTable({
                                     {isEditable && (
                                         <td className="px-4 py-3 text-center">
                                             <div className="flex items-center justify-center gap-2">
-                                                <TableActionsButtons row={row} />
+                                                <TableActionsButtons isActive={isActive} row={row} />
                                             </div>
                                         </td>
                                     )}
