@@ -96,7 +96,7 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = `jornada-${week.name}.pdf`;
+        a.download = `Fecha-${week.name}.pdf`;
         a.click();
         URL.revokeObjectURL(url);
     };

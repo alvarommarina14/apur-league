@@ -19,7 +19,7 @@ export default function CreateButton() {
                 type="submit"
                 className="cursor-pointer bg-apur-green hover:bg-apur-green-hover text-white font-semibold px-4 py-2 rounded-md transition"
             >
-                Crear jornada
+                Crear fecha
             </button>
         </form>
     );
