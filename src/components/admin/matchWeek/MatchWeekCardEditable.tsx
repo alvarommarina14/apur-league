@@ -176,7 +176,7 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
                 >
                     <ConfirmModal
                         entity={'la fecha'}
-                        entityItem={dateToDelete?.date || ''}
+                        entityItem={dateToDelete ? format(dateToDelete?.date, 'DD/MM/YYYY') : ''}
                         onClose={() => setIsOpen(false)}
                         onTrigger={handleDelete}
                     />
