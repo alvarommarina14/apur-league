@@ -81,7 +81,7 @@ export async function getAllPlayers({
 }
 
 export async function getPlayerById(id: number, isActive: boolean = true) {
-    return prisma.player.findUnique({
+    return prisma.player.findFirst({
         where: { id, isActive },
         include: {
             playerCategories: {

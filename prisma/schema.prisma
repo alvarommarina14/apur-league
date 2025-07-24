@@ -19,6 +19,9 @@ model Player {
   playerMatches    PlayerMatch[]
   playerCategories PlayerCategory[]
   categoryStats    PlayerCategoryStats[]
+
+  @@index([firstName])
+  @@index([lastName])
 }
 
 model MatchWeek {
@@ -49,6 +52,12 @@ model Match {
   matchDayId Int?
 
   playerMatches PlayerMatch[]
+
+  @@index([matchDayId])
+  @@index([categoryId])
+  @@index([courtId])
+  @@index([matchDayId, hour])
+  @@index([courtId, hour])
 }
 
 model PlayerMatch {
@@ -60,6 +69,9 @@ model PlayerMatch {
   match    Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
 
   @@id([playerId, matchId])
+
+  @@index([matchId, team])
+  @@index([playerId, team])
 }
 
 model Category {
@@ -97,6 +109,8 @@ model PlayerCategoryStats {
   diffGames     Int      @default(0)
   player        Player   @relation(fields: [playerId], references: [id])
   category      Category @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId, points])
 }
 
 model Court {
