@@ -13,3 +13,12 @@ export async function getCategoryById(id: number) {
         where: { id },
     });
 }
+
+export async function createPlayerCategoryBulk(playerId: number, categoryIds: number[]) {
+    await prisma.playerCategory.createMany({
+        data: categoryIds.map((categoryId) => ({
+            playerId: playerId,
+            categoryId: categoryId,
+        })),
+    });
+}
