@@ -1,26 +1,18 @@
 'use server';
+import { MatchCreateInputType, MatchUpdateInputType, MatchUpdateWithPlayerMatchesType } from '@/types/match';
 import {
-    MatchCreateInputType,
-    MatchUpdateInputType,
-    MatchUpdateInputWithIdType,
-    MatchUpdateWithPlayerMatchesType,
-} from '@/types/matches';
-import {
-    updateMatchBulk,
-    createMatchBulk,
     createMatch,
-    deleteMatchBulk,
     updateMatch,
     deleteMatch,
     getMatchByCourtAndHour,
     getMatchByPlayerIdAndCategoryAndDay,
     getMatchesByHourAndPlayerId,
     getMatchesByPlayerIdsAndCategory,
-} from '@/lib/services/matches';
+} from '@/lib/services/match';
 
 import { upsertStats } from '@/lib/actions/stats';
 import { UpsertStatsType } from '@/types/stats';
-import { ValidateMatchType } from '@/types/matches';
+import { ValidateMatchType } from '@/types/match';
 import { createPlayerMatch } from '@/lib/services/playerMatch';
 import { Team } from '@/generated/prisma';
 import { PlayerMatchTeamsWithPlayersType } from '@/types/playerMatch';
@@ -54,10 +46,6 @@ export async function createMatchAction(data: MatchCreateInputType, team1Ids: nu
     }
 }
 
-export async function createMatchBulkAction(data: MatchCreateInputType[]) {
-    return await createMatchBulk(data);
-}
-
 export async function updateMatchResultAction(
     id: number,
     data: MatchUpdateWithPlayerMatchesType,
@@ -89,20 +77,12 @@ export async function updateMatchResultAction(
         await upsertStats(stats, categoryId, data.result ?? '', previousResult, previousWinnerId);
         return updatedMatch;
     } catch (error) {
-        throw new Error('Failed to update match result ' + error);
+        throw new Error('Error al actualizar el resultado: ' + error);
     }
-}
-
-export async function updateMatchBulkAction(data: MatchUpdateInputWithIdType[]) {
-    return await updateMatchBulk(data);
 }
 
 export async function deleteMatchAction(id: number) {
     return await deleteMatch(Number(id));
-}
-
-export async function deleteMatchBulkAction(ids: number[]) {
-    return await deleteMatchBulk(ids);
 }
 
 export async function validateMatchAction(data: ValidateMatchType) {
@@ -184,6 +164,6 @@ async function validatePreviousMatches(
 class MatchValidationError extends Error {
     constructor(message: string) {
         super(message);
-        this.name = 'MatchValidationError';
+        this.name = 'Match Validation Error';
     }
 }

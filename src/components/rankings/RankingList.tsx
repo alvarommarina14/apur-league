@@ -45,7 +45,7 @@ export function RankingList({ initialPlayers, totalCount, search, categoryId, pe
             });
             setPage(nextPage);
         } catch (error) {
-            console.error('Failed to load more players:', error);
+            console.error('Error al cargar mas jugadores: ', error);
         } finally {
             setLoading(false);
         }

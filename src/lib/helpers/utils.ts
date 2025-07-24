@@ -263,13 +263,13 @@ export function validateScore(score: string[][]) {
         if ((team1Wins === 2 || team2Wins === 2) && nonEmptySets.length > 2) {
             return {
                 isValid: false,
-                message: 'No se puede añadir supertiebreak si ya hay un ganador',
+                message: 'No se puede añadir super tiebreak si ya hay un ganador',
             };
         }
         if (team1Wins === 1 && team2Wins === 1 && nonEmptySets.length === 2) {
             return {
                 isValid: false,
-                message: 'Añade un ganador al supertiebreak antes de guardar',
+                message: 'Añade un ganador al super tiebreak antes de guardar',
             };
         }
     }

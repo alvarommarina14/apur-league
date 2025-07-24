@@ -2,7 +2,7 @@ import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 import { MatchDayWithMatchesType } from '@/types/matchDay';
 import { format } from '@formkit/tempo';
 import { PlayerMatchWithPlayersType } from '@/types/playerMatch';
-import { MatchUpdateResultType } from '@/types/matches';
+import { MatchUpdateResultType } from '@/types/match';
 import { ClubWithCourtsType } from '@/types/club';
 import { Fragment } from 'react';
 
