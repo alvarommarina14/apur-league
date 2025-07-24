@@ -38,16 +38,18 @@ export function RankingList({ initialPlayers, totalCount, search, categoryId, pe
                 page: nextPage,
                 perPage,
             });
-
-            setPlayers((prevPlayers) => [...prevPlayers, ...newPlayers]);
+            setPlayers((prevPlayers) => {
+                const updatedPlayers = [...prevPlayers, ...newPlayers];
+                setHasMore(updatedPlayers.length < totalCount);
+                return updatedPlayers;
+            });
             setPage(nextPage);
-            setHasMore(players.length + newPlayers.length < totalCount);
         } catch (error) {
             console.error('Failed to load more players:', error);
         } finally {
             setLoading(false);
         }
-    }, [page, loading, hasMore, search, categoryId, perPage, players.length, totalCount]);
+    }, [page, loading, hasMore, search, categoryId, perPage, totalCount]);
 
     const handleObserver = useCallback(
         (entries: IntersectionObserverEntry[]) => {
@@ -77,6 +79,7 @@ export function RankingList({ initialPlayers, totalCount, search, categoryId, pe
             if (currentLoader) {
                 observer.unobserve(currentLoader);
             }
+            observer.disconnect();
         };
     }, [handleObserver, hasMore]);
 
