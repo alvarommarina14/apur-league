@@ -4,14 +4,21 @@ import { useRouter } from 'next/navigation';
 
 import { createMatchWeekAction } from '@/lib/actions/matchWeek';
 
+import { showErrorToast, showSuccessToast } from '@/components/Toast';
+
 export default function CreateButton() {
     const router = useRouter();
 
     const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        await createMatchWeekAction();
-        router.refresh();
+        try {
+            await createMatchWeekAction();
+            showSuccessToast('Fecha creada con exito');
+            router.refresh();
+        } catch (error) {
+            showErrorToast(String(error));
+        }
     };
     return (
         <form onSubmit={handleCreate} className="flex justify-center mt-4">
