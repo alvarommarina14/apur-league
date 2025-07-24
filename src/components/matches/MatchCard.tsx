@@ -1,6 +1,6 @@
 import { format } from '@formkit/tempo';
 import { Check } from 'lucide-react';
-import { MatchUpdateResultType } from '@/types/matches';
+import { MatchUpdateResultType } from '@/types/match';
 
 import CategoryTag from '@/components/CategoryTag';
 

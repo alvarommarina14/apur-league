@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { createPlayerCategoryBulk } from '@/lib/services/category';
 
 export async function getAllPlayers({
     search,
@@ -61,11 +62,6 @@ export async function getAllPlayers({
                     category: true,
                 },
             },
-            playerMatches: {
-                include: {
-                    match: true,
-                },
-            },
             categoryStats: {
                 include: {
                     category: true,
@@ -85,7 +81,7 @@ export async function getAllPlayers({
 }
 
 export async function getPlayerById(id: number, isActive: boolean = true) {
-    return prisma.player.findUnique({
+    return prisma.player.findFirst({
         where: { id, isActive },
         include: {
             playerCategories: {
@@ -120,17 +116,9 @@ export async function createPlayer(data: { firstName: string; lastName: string; 
         },
     });
 
-    await prisma.playerCategory.createMany({
-        data: data.categoryIds.map((catId) => ({
-            playerId: newPlayer.id,
-            categoryId: catId,
-        })),
-    });
+    await createPlayerCategoryBulk(newPlayer.id, data.categoryIds);
 
-    return {
-        result: newPlayer,
-        message: 'El jugador se creo correctamente',
-    };
+    return newPlayer;
 }
 
 export async function updatePlayerData(
@@ -156,31 +144,18 @@ export async function updatePlayerData(
         }),
     ]);
 
-    return {
-        result: updatedPlayer,
-        message: 'El jugador se actualizo correctamente',
-    };
+    return updatedPlayer;
 }
 
 export async function updatePlayerStatus(id: number, newStatus: boolean) {
-    const result = await prisma.player.update({
+    return await prisma.player.update({
         where: { id: id },
         data: { isActive: newStatus },
     });
-
-    return {
-        result,
-        message: newStatus ? 'El status del jugador fue actualizado' : 'El jugador fue desactivado con exito',
-    };
 }
 
 export async function deletePlayerById(id: number) {
-    const result = await prisma.player.delete({
+    return await prisma.player.delete({
         where: { id },
     });
-
-    return {
-        result,
-        message: 'Jugador eliminado con exito',
-    };
 }

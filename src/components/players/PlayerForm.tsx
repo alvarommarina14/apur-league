@@ -87,12 +87,12 @@ export default function PlayerForm({
 
         try {
             if (mode === 'edit' && playerId) {
-                const response = await updatePlayerDataAction(playerId, data);
-                showSuccessToast(response.message);
+                await updatePlayerDataAction(playerId, data);
+                showSuccessToast('Jugador actualizado con exito');
                 router.push('/admin/players');
             } else {
-                const response = await createPlayerAction(data);
-                showSuccessToast(response.message);
+                await createPlayerAction(data);
+                showSuccessToast('Jugador creado con exito');
                 router.push('/admin/players');
             }
         } catch {

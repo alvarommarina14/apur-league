@@ -1,40 +1,14 @@
 import { prisma } from '@/lib/prisma';
-import { MatchCreateInputType, MatchUpdateInputType, MatchUpdateInputWithIdType } from '@/types/matches';
+import { MatchCreateInputType, MatchUpdateInputType } from '@/types/match';
 import { getMatchDayById } from '@/lib/services/matchDay';
 import { HOUR_AND_HALF_MINUTES } from '@/lib/constants';
 import { PlayerMatchTeamsWithPlayersType } from '@/types/playerMatch';
 import { Team } from '@/generated/prisma';
 import { addMinute } from '@formkit/tempo';
-export async function getMatchById(id: number) {
-    prisma.match.findUnique({
-        where: { id: Number(id) },
-        include: {
-            category: true,
-            playerMatches: {
-                include: {
-                    player: true,
-                },
-            },
-        },
-    });
-}
 
 export async function createMatch(data: MatchCreateInputType) {
     return prisma.match.create({
         data,
-    });
-}
-
-export async function createMatchBulk(data: MatchCreateInputType[]) {
-    return prisma.$transaction(async (prisma) => {
-        const createdMatches = await Promise.all(
-            data.map(async (match: MatchCreateInputType) => {
-                await prisma.match.create({
-                    data: match,
-                });
-            })
-        );
-        return { count: createdMatches.length };
     });
 }
 
@@ -45,38 +19,16 @@ export async function updateMatch(id: number, data: MatchUpdateInputType) {
     });
 }
 
-export async function updateMatchBulk(data: MatchUpdateInputWithIdType[]) {
-    return prisma.$transaction(async (prisma) => {
-        data.map(async (match: MatchUpdateInputWithIdType) => {
-            const { id, ...updateData } = match;
-            await prisma.match.update({
-                where: { id: Number(id) },
-                data: updateData,
-            });
-        });
-    });
-}
-
 export async function deleteMatch(id: number) {
     return prisma.match.delete({
         where: { id: Number(id) },
     });
 }
 
-export async function deleteMatchBulk(ids: number[]) {
-    return prisma.match.deleteMany({
-        where: {
-            id: {
-                in: ids,
-            },
-        },
-    });
-}
-
 export async function getMatchByCourtAndHour(courtId: number, hour: Date, matchDayId: number) {
     const matchDay = await getMatchDayById(matchDayId);
     if (!matchDay) {
-        throw new Error('Match day not found');
+        throw new Error('Dia no encontrado');
     }
 
     const startHour = addMinute(hour, -HOUR_AND_HALF_MINUTES);
@@ -121,7 +73,7 @@ export async function getMatchesByHourAndPlayerId(playerIds: number[], hour: Dat
     const matchDay = await getMatchDayById(matchDayId);
 
     if (!matchDay) {
-        throw new Error('Match day not found');
+        throw new Error('Dia no encontrado');
     }
 
     const startHour = addMinute(hour, -HOUR_AND_HALF_MINUTES);

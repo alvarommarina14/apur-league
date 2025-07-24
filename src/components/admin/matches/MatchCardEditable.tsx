@@ -4,13 +4,13 @@ import { useState } from 'react';
 import { Pencil, Check, X } from 'lucide-react';
 import { format } from '@formkit/tempo';
 
-import { MatchUpdateResultType, MatchUpdateWithPlayerMatchesType } from '@/types/matches';
+import { MatchUpdateResultType, MatchUpdateWithPlayerMatchesType } from '@/types/match';
 import { parseResultToMatrix, isSameScore, determineWinner } from '@/lib/helpers/utils';
 
 import ScoreEditor from '@/components/admin/matches/ScoreEditor';
 import ScoreViewer from '@/components/admin/matches/ScoreViewer';
 import CategoryTag from '@/components/CategoryTag';
-import { deleteMatchAction, updateMatchResultAction } from '@/lib/actions/matches';
+import { deleteMatchAction, updateMatchResultAction } from '@/lib/actions/match';
 
 import { useRouter } from 'next/navigation';
 import { validateScore } from '@/lib/helpers/utils';

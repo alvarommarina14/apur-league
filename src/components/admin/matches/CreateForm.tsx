@@ -11,11 +11,11 @@ import { OptionType } from '@/types/forms';
 import { CategoryType } from '@/types/category';
 import { PlayerType } from '@/types/player';
 import { ClubWithCourtsType } from '@/types/club';
-import { MatchModeType } from '@/types/matches';
+import { MatchModeType } from '@/types/match';
 
 import CustomSelect from '@/components/CustomSelect';
 import { PlayerSelects } from '@/lib/helpers/players/playerSelectHelper';
-import { createMatchAction } from '@/lib/actions/matches';
+import { createMatchAction } from '@/lib/actions/match';
 import { getAllPlayersAction } from '@/lib/actions/players';
 import { showErrorToast, showSuccessToast } from '@/components/Toast';
 import { hourToDefaultUTCDate } from '@/lib/helpers/utils';

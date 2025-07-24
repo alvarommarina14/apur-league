@@ -28,8 +28,8 @@ export default function TableActionsButtons({ row, isActive = true }: PlayerCard
         setIsModalOpen(false);
 
         try {
-            const response = await updatePlayerStatusAction(row.id, false);
-            showSuccessToast(response.message);
+            await updatePlayerStatusAction(row.id, false);
+            showSuccessToast('Jugador desactivado con exito');
             router.refresh();
         } catch (err) {
             console.error(err);
@@ -39,8 +39,8 @@ export default function TableActionsButtons({ row, isActive = true }: PlayerCard
     const handleUpdateStatus = async () => {
         setIsModalOpen(false);
         try {
-            const response = await updatePlayerStatusAction(row.id, true);
-            showSuccessToast(response.message);
+            await updatePlayerStatusAction(row.id, true);
+            showSuccessToast('Jugador activado con exito');
             router.refresh();
         } catch (err) {
             console.error(err);
