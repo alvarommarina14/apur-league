@@ -18,7 +18,7 @@ import { pdf } from '@react-pdf/renderer';
 import { MatchWeekPDF } from '@/components/admin/pdf/MatchWeekPDF';
 import { getMatchWeekWithMatchesAction } from '@/lib/actions/matchWeek';
 
-import { showErrorToast } from '@/components/Toast';
+import { showErrorToast, showSuccessToast } from '@/components/Toast';
 
 interface MatchWeekCardEditableProp {
     week: MatchWeekWithMatchDaysType;
@@ -26,7 +26,7 @@ interface MatchWeekCardEditableProp {
 }
 
 interface DateToDeleteType {
-    id: string | number;
+    id: number;
     date: string;
 }
 
@@ -44,9 +44,15 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
 
     const handleDelete = async () => {
         if (!dateToDelete) return;
-        await deleteMatchDayAction(String(dateToDelete.id));
-        setIsOpen(false);
-        router.refresh();
+        try {
+            await deleteMatchDayAction(dateToDelete.id);
+            showSuccessToast('Fecha eliminada con exito.');
+            router.refresh();
+        } catch (error) {
+            showErrorToast(String(error));
+        } finally {
+            setIsOpen(false);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -56,8 +62,13 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
             matchWeekId: week.id,
             date: new Date(newDate).toISOString(),
         };
-        await createMatchDayAction(formData);
-        router.refresh();
+        try {
+            await createMatchDayAction(formData);
+            showSuccessToast('Fecha agregada con exito.');
+            router.refresh();
+        } catch (error) {
+            showErrorToast(String(error));
+        }
     };
 
     const exportMatchWeekToPDF = async () => {
@@ -112,6 +123,7 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
 
             <div className="flex flex-wrap gap-3">
                 {week.matchDays.map((day) => {
+                    const dateISO = new Date(day.date).toISOString().split('T')[0];
                     const dateStr = format({ date: day.date, format: 'DD/MM/YYYY', tz: 'UTC' });
 
                     return (
@@ -134,8 +146,8 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
                                     type="button"
                                     onClick={() =>
                                         handleRemoveDay({
-                                            id: day.id,
-                                            date: dateStr,
+                                            id: Number(day.id),
+                                            date: dateISO,
                                         })
                                     }
                                     className="absolute -top-3 -right-2 cursor-pointer bg-red-800 text-white rounded-full p-1.5 hover:bg-red-600 transition"
@@ -184,7 +196,7 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
             )}
             <button
                 onClick={() => exportMatchWeekToPDF()}
-                className={`absolute bottom-4 right-4 transition p-2 rounded-full cursor-pointer hover:text-apur-green hover:bg-gray-100  ${isEditing ? 'hidden' : 'text-gray-500'}`}
+                className={`absolute top-4 right-14 transition p-2 rounded-full cursor-pointer hover:text-apur-green hover:bg-gray-100  ${isEditing ? 'hidden' : 'text-gray-500'}`}
             >
                 <Share size={18} />
             </button>
