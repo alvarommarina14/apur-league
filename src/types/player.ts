@@ -7,11 +7,7 @@ export type PlayerType = Prisma.PlayerGetPayload<{
                 category: true;
             };
         };
-        playerMatches: {
-            include: {
-                match: true;
-            };
-        };
+
         categoryStats: {
             include: {
                 category: true;

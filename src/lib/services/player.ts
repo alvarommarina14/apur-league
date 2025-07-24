@@ -62,11 +62,6 @@ export async function getAllPlayers({
                     category: true,
                 },
             },
-            playerMatches: {
-                include: {
-                    match: true,
-                },
-            },
             categoryStats: {
                 include: {
                     category: true,
