@@ -6,7 +6,7 @@ import { PlayerMatchTeamsWithPlayersType } from '@/types/playerMatch';
 import { Team } from '@/generated/prisma';
 import { addMinute } from '@formkit/tempo';
 export async function getMatchById(id: number) {
-    prisma.match.findUnique({
+    return await prisma.match.findUnique({
         where: { id: Number(id) },
         include: {
             category: true,
