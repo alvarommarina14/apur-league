@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { RankingTable } from './RankingTable';
+import { RankingTable } from '@/components/rankings/RankingTable';
 import { fetchMorePlayers } from '@/lib/actions/stats';
 import { PlayerCategoryStatsPromotionsType } from '@/types/stats';
 interface RankingListProps {
