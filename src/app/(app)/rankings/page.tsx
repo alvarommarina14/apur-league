@@ -1,11 +1,9 @@
-import {
-    getPlayersStatsByCategory,
-    countPlayersByFilters,
-} from '@/lib/services/stats';
+import { getPlayersStatsByCategory, countPlayersByFilters } from '@/lib/services/stats';
 
 import { getAllCategories } from '@/lib/services/category';
 
 import Filters from '@/components/Filters';
+import ErrorMessage from '@/components/ErrorMessage';
 
 import { RankingList } from './RankingList';
 
@@ -17,13 +15,20 @@ interface CategoryPlayersSearchParamsType {
     }>;
 }
 
-export default async function RankingsPage({
-    searchParams,
-}: CategoryPlayersSearchParamsType) {
+export default async function RankingsPage({ searchParams }: CategoryPlayersSearchParamsType) {
     const { search, filterByCategory } = await searchParams;
     const initialPage = 1;
     const perPage = 15;
     const categories = await getAllCategories();
+
+    if (categories.length < 1) {
+        return (
+            <ErrorMessage
+                title={'No hay categorias disponibles'}
+                text={'Por el momento no hay categorías disponibles. Por favor, inténtelo nuevamente más tarde.'}
+            />
+        );
+    }
 
     const catId = filterByCategory || categories[0].id;
 
@@ -39,12 +44,9 @@ export default async function RankingsPage({
     return (
         <div className="px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)]">
             <div className="max-w-7xl mx-auto">
-                <h1 className="text-4xl font-bold tracking-tight text-apur-green text-center">
-                    Ranking actual
-                </h1>
+                <h1 className="text-4xl font-bold tracking-tight text-apur-green text-center">Ranking actual</h1>
                 <p className="text-center text-neutral-500 text-sm mt-2">
-                    Lista de jugadores ordenada por puntos obtenidos al dia de
-                    la fecha
+                    Lista de jugadores ordenada por puntos obtenidos al dia de la fecha
                 </p>
                 <div className="flex justify-center mt-6">
                     <div className="w-full lg:w-7/10 flex flex-col md:flex-row gap-4">

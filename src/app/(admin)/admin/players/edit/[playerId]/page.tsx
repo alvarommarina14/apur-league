@@ -2,6 +2,7 @@ import { getAllCategories } from '@/lib/services/category';
 import { getPlayerById } from '@/lib/services/player';
 
 import PlayerForm from '@/components/players/PlayerForm';
+import ErrorMessage from '@/components/ErrorMessage';
 
 interface ParamsType {
     params: Promise<{
@@ -16,13 +17,12 @@ export default async function CreatePlayerPage({ params }: ParamsType) {
 
     if (!player)
         return (
-            <div className="min-h-[calc(100dvh-4rem)] flex flex-col items-center justify-center px-6 bg-gray-50">
-                <h1 className="text-3xl font-semibold text-gray-700 mb-4">Jugador no encontrado</h1>
-                <p className="text-gray-500 max-w-md text-center">
-                    Lo sentimos, no pudimos encontrar al jugador que buscás. Por favor, verifica el ID o intenta
-                    nuevamente más tarde.
-                </p>
-            </div>
+            <ErrorMessage
+                title={'Jugador no encontrado'}
+                text={
+                    'Lo sentimos, no pudimos encontrar al jugador que buscás. Por favor, verifica el ID o intenta nuevamente más tarde.'
+                }
+            />
         );
 
     const playerCategories = player.playerCategories.map((cat) => String(cat.categoryId) ?? null);

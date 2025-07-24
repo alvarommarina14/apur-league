@@ -3,6 +3,7 @@ import { format } from '@formkit/tempo';
 import { getPlayerById } from '@/lib/services/player';
 
 import CategoryTag from '@/components/CategoryTag';
+import ErrorMessage from '@/components/ErrorMessage';
 
 interface ParamsProp {
     params: Promise<{ id: string }>;
@@ -14,13 +15,12 @@ export default async function PlayerPage({ params }: ParamsProp) {
 
     if (!player)
         return (
-            <div className="min-h-[calc(100dvh-4rem)] flex flex-col items-center justify-center px-6 bg-gray-50">
-                <h1 className="text-3xl font-semibold text-gray-700 mb-4">Jugador no encontrado</h1>
-                <p className="text-gray-500 max-w-md text-center">
-                    Lo sentimos, no pudimos encontrar al jugador que buscás. Por favor, verifica el ID o intenta
-                    nuevamente más tarde.
-                </p>
-            </div>
+            <ErrorMessage
+                title={'Jugador no encontrado'}
+                text={
+                    'Lo sentimos, no pudimos encontrar al jugador que buscás. Por favor, verifica el ID o intenta nuevamente más tarde.'
+                }
+            />
         );
 
     const lastMatch = player.playerMatches[0]?.match;

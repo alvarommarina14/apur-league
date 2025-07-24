@@ -37,7 +37,7 @@ export default function RootLayout({
                 <main className="flex min-h-[calc(100dvh-4rem)]">
                     <Sidebar />
                     <Toaster />
-                    <div className="flex-1 p-4 bg-neutral-100">{children}</div>
+                    <div className="flex-1 bg-neutral-100">{children}</div>
                 </main>
             </body>
         </html>
