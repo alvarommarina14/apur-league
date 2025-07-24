@@ -10,11 +10,15 @@ import { parseResultToMatrix, isSameScore, determineWinner } from '@/lib/helpers
 import ScoreEditor from '@/components/admin/matches/ScoreEditor';
 import ScoreViewer from '@/components/admin/matches/ScoreViewer';
 import CategoryTag from '@/components/CategoryTag';
-import { updateMatchResultAction } from '@/lib/actions/matches';
-import { showErrorToast, showSuccessToast } from '@/components/Toast';
+import { deleteMatchAction, updateMatchResultAction } from '@/lib/actions/matches';
 
 import { useRouter } from 'next/navigation';
 import { validateScore } from '@/lib/helpers/utils';
+
+import Modal from '@/components/Modal';
+import ConfirmModal from '@/components/ConfirmModal';
+import { Team } from '@/generated/prisma';
+import { showErrorToast, showSuccessToast } from '@/components/Toast';
 interface Props {
     match: MatchUpdateResultType;
 }
@@ -37,6 +41,8 @@ export default function MatchCardEditable({ match }: Props) {
     const [editedScore, setEditedScore] = useState<string[][]>(() =>
         parseResultToMatrix(match.result ?? '', winnerTeam)
     );
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const originalScore = parseResultToMatrix(match.result ?? '', winnerTeam);
 
@@ -120,6 +126,33 @@ export default function MatchCardEditable({ match }: Props) {
         setIsEditing(false);
     };
 
+    const handleDelete = async () => {
+        try {
+            await deleteMatchAction(match.id);
+            showSuccessToast('Partido eliminado con exito');
+        } catch {
+            showErrorToast('No se pudo eliminar el partido');
+        } finally {
+            setIsModalOpen(false);
+            router.refresh();
+        }
+    };
+
+    const buildName = () => {
+        const teamA = match.playerMatches
+            .filter((pm) => pm.team == Team.EQUIPO_1)
+            .map((pm) => `${pm.player.firstName} ${pm.player.lastName}`);
+
+        const teamB = match.playerMatches
+            .filter((pm) => pm.team == Team.EQUIPO_2)
+            .map((pm) => `${pm.player.firstName} ${pm.player.lastName}`);
+
+        const teamAStr = teamA.join(' / ');
+        const teamBStr = teamB.join(' / ');
+
+        return `${teamAStr} vs ${teamBStr}`;
+    };
+
     return (
         <div className="relative bg-white border border-gray-200 rounded-xl p-4 shadow-md hover:shadow-lg w-full transition">
             <button
@@ -156,16 +189,39 @@ export default function MatchCardEditable({ match }: Props) {
             <div className="mt-3 flex justify-between items-center">
                 <CategoryTag category={match.category?.name} />
                 {isEditing && (
-                    <button
-                        form="edit-match-form"
-                        type="submit"
-                        disabled={!isScoreChanged}
-                        className={`bg-apur-green text-white px-3 py-2 rounded-md ${isScoreChanged ? ' hover:bg-apur-green-hover cursor-pointer' : 'opacity-30 cursor-not-allowed'}`}
-                    >
-                        Guardar
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setIsModalOpen(true)}
+                            className={`bg-red-700 text-white px-3 py-2 rounded-md  hover:bg-red-800 cursor-pointer `}
+                        >
+                            Eliminar
+                        </button>
+                        <button
+                            form="edit-match-form"
+                            type="submit"
+                            disabled={!isScoreChanged}
+                            className={`bg-apur-green text-white px-3 py-2 rounded-md ${isScoreChanged ? ' hover:bg-apur-green-hover cursor-pointer' : 'opacity-30 cursor-not-allowed'}`}
+                        >
+                            Guardar
+                        </button>
+                    </div>
                 )}
             </div>
+            {isModalOpen && (
+                <Modal
+                    onClose={() => {
+                        setIsModalOpen(false);
+                    }}
+                >
+                    <ConfirmModal
+                        entity={'el partido'}
+                        entityItem={buildName()}
+                        onClose={() => setIsModalOpen(false)}
+                        onTrigger={handleDelete}
+                    />
+                </Modal>
+            )}
         </div>
     );
 }

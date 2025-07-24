@@ -31,7 +31,6 @@ interface DateToDeleteType {
 }
 
 export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEditableProp) {
-    console.log(week);
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -57,7 +56,6 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
             matchWeekId: week.id,
             date: new Date(newDate).toISOString(),
         };
-        console.log();
         await createMatchDayAction(formData);
         router.refresh();
     };
