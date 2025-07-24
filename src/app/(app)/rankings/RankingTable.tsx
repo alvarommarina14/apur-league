@@ -1,6 +1,7 @@
 'use client';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { PlayerCategoryStatsPromotionsType } from '@/types/stats';
+import Link from 'next/link';
 interface RankingTableProps {
     rows: PlayerCategoryStatsPromotionsType[];
 }
@@ -67,10 +68,13 @@ export function RankingTable({ rows }: RankingTableProps) {
 
             <div className="flex flex-col gap-4 mt-8 sm:hidden px-4">
                 {rows.map((row, index) => {
-                    const bgClass = row.isPromoting ? 'bg-green-50' : row.isDemoting ? 'bg-red-50' : 'bg-white';
-
+                    const bgClass = row.isPromoting ? 'bg-green-100' : row.isDemoting ? 'bg-red-100' : 'bg-white';
                     return (
-                        <div key={row.id} className={`rounded-xl border border-gray-200 p-4 shadow-sm ${bgClass}`}>
+                        <Link
+                            href={`players/${row.playerId}`}
+                            key={row.id}
+                            className={`rounded-xl border border-gray-200 p-4 shadow-sm ${bgClass}`}
+                        >
                             <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-0">
                                     <span className="text-2xl font-extrabold text-neutral-800 w-8 text-center">
@@ -121,7 +125,7 @@ export function RankingTable({ rows }: RankingTableProps) {
                                     <span>{row.points}</span>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     );
                 })}
             </div>

@@ -79,6 +79,7 @@ export async function getPlayersStatsByCategory({
         const { player, ...stats } = p;
         const result: PlayerCategoryStatsPromotionsType = {
             ...stats,
+            playerId: player.id,
             firstName: player.firstName,
             lastName: player.lastName,
             isDemoting,
