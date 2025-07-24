@@ -6,6 +6,7 @@ import { format } from '@formkit/tempo';
 
 import Filters from '@/components/Filters';
 import MatchCard from '@/components/matches/MatchCard';
+import ErrorMessage from '@/components/ErrorMessage';
 
 interface Props {
     searchParams: Promise<{
@@ -20,7 +21,16 @@ export default async function MatchesPage({ searchParams }: Props) {
     const { filterByMatchWeek, search, filterByCategory, filterByClub } = await searchParams;
 
     const matchWeeks = await getAllMatchWeek();
-    const matchWeekId = filterByMatchWeek ? filterByMatchWeek : matchWeeks[matchWeeks.length - 1].id;
+    if (matchWeeks.length < 1) {
+        return (
+            <ErrorMessage
+                title={'No hay fechas disponibles'}
+                text={'Por el momento no hay fechas disponibles. Por favor, inténtelo nuevamente más tarde.'}
+            />
+        );
+    }
+
+    const matchWeekId = filterByMatchWeek ? filterByMatchWeek : matchWeeks[matchWeeks.length - 1]?.id;
     const searchValue = search ?? undefined;
 
     const selectedMatchWeek = await getMatchWeekWithMatches({

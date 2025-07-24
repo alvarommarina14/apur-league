@@ -3,6 +3,7 @@ import { getAllClubs } from '@/lib/services/club';
 import { getMatchWeekWithMatches } from '@/lib/services/matchWeek';
 
 import ToggleMatchViews from './ToggleMatchViews';
+import ErrorMessage from '@/components/ErrorMessage';
 
 interface AdminMatchesPageType {
     searchParams: Promise<{
@@ -32,15 +33,14 @@ export default async function AdminMatchesPage({ searchParams, params }: AdminMa
         clubId: Number(filterByClub),
     });
 
-    if (!selectedMatchWeek) {
+    if (!selectedMatchWeek || !selectedMatchWeek.matchDays[0]) {
         return (
-            <div className="min-h-[calc(100dvh-4rem)] flex flex-col items-center justify-center px-6 bg-gray-50">
-                <h1 className="text-3xl font-semibold text-gray-700 mb-4">Fecha no encontrada</h1>
-                <p className="text-gray-500 max-w-md text-center">
-                    Lo sentimos, no pudimos encontrar la fecha que buscás. Por favor, verifica el ID o intenta
-                    nuevamente más tarde.
-                </p>
-            </div>
+            <ErrorMessage
+                title={'Fecha no encontrada'}
+                text={
+                    'Lo sentimos, no pudimos encontrar la fecha que buscás. Por favor, verifica el ID o intenta nuevamente más tarde.'
+                }
+            />
         );
     }
 

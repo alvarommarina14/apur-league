@@ -13,7 +13,7 @@ export const authOptions: AuthOptions = {
             },
             async authorize(credentials) {
                 if (!credentials) {
-                    throw new Error('Missing credentials');
+                    throw new Error('Credenciales incorrectas');
                 }
 
                 const userFound = await prisma.user.findUnique({

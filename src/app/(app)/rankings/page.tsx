@@ -3,6 +3,7 @@ import { getPlayersStatsByCategory, countPlayersByFilters } from '@/lib/services
 import { getAllCategories } from '@/lib/services/category';
 
 import Filters from '@/components/Filters';
+import ErrorMessage from '@/components/ErrorMessage';
 
 import { RankingList } from '@/components/rankings/RankingList';
 
@@ -19,6 +20,15 @@ export default async function RankingsPage({ searchParams }: CategoryPlayersSear
     const initialPage = 1;
     const perPage = 15;
     const categories = await getAllCategories();
+
+    if (categories.length < 1) {
+        return (
+            <ErrorMessage
+                title={'No hay categorias disponibles'}
+                text={'Por el momento no hay categorías disponibles. Por favor, inténtelo nuevamente más tarde.'}
+            />
+        );
+    }
 
     const catId = filterByCategory || categories[0].id;
 

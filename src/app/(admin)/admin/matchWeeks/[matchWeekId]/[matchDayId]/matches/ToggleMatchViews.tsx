@@ -34,11 +34,11 @@ export default function ToggleMatchViews({
     const [showForm, setShowForm] = useState(false);
 
     return (
-        <div className="md:p-6">
+        <div className="p-6">
             <div className="flex justify-center gap-4 mb-8">
                 <button
                     onClick={() => setShowForm(false)}
-                    className={`w-44 font-semibold px-6 py-2 rounded border transition shadow-md ${
+                    className={`w-38 md:w-44 font-semibold px-6 py-2 rounded border transition shadow-md ${
                         showForm
                             ? 'bg-white text-apur-green border-apur-green hover:bg-apur-green hover:text-white cursor-pointer'
                             : 'bg-apur-green text-white border-apur-green cursor-default'
@@ -48,7 +48,7 @@ export default function ToggleMatchViews({
                 </button>
                 <button
                     onClick={() => setShowForm(true)}
-                    className={`w-44 font-semibold px-6 py-2 rounded border transition shadow-md ${
+                    className={`w-38 md:w-44 font-semibold px-6 py-2 rounded border transition shadow-md ${
                         showForm
                             ? 'bg-apur-green text-white border-apur-green cursor-default'
                             : 'bg-white text-apur-green border-apur-green hover:bg-apur-green hover:text-white cursor-pointer'
