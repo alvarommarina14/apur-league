@@ -103,6 +103,13 @@ export default function CreateMatchForm({ categories, clubs, matchDayId }: Creat
                 team2Players.filter((p) => !!p).map(Number)
             );
             showSuccessToast('Partido creado exitosamente');
+            setType('SINGLES');
+            setSelectedCategory('');
+            setTeam1Players(['', '']);
+            setTeam2Players(['', '']);
+            setSelectedClub(null);
+            setSelectedCourt(null);
+            setSelectedHour('');
             router.refresh();
         } catch (error) {
             if (error instanceof Error) {
@@ -111,13 +118,6 @@ export default function CreateMatchForm({ categories, clubs, matchDayId }: Creat
                 showErrorToast('An unexpected error occurred');
             }
         } finally {
-            setType('SINGLES');
-            setSelectedCategory('');
-            setTeam1Players(['', '']);
-            setTeam2Players(['', '']);
-            setSelectedClub(null);
-            setSelectedCourt(null);
-            setSelectedHour('');
             setIsLoading(false);
         }
     };

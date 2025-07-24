@@ -10,7 +10,7 @@ type ConfirmModalProps = {
 };
 
 export default function ConfirmModal({
-    isDelete,
+    isDelete = true,
     customMessage,
     entity,
     entityItem,

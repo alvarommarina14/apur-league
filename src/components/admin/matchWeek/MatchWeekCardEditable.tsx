@@ -94,7 +94,7 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = `jornada-${week.name}.pdf`;
+        a.download = `Fecha-${week.name}.pdf`;
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -112,7 +112,7 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
 
             <div className="flex flex-wrap gap-3">
                 {week.matchDays.map((day) => {
-                    const dateStr = format(day.date, 'YYYY-MM-DD');
+                    const dateStr = format({ date: day.date, format: 'DD/MM/YYYY', tz: 'UTC' });
 
                     return (
                         <div key={day.id} className="relative">
@@ -121,11 +121,11 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
                                     href={`/admin/matchWeeks/${week.id}/${day.id}/matches`}
                                     className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-apur-green text-sm font-medium text-apur-green bg-white hover:bg-apur-green hover:text-white transition"
                                 >
-                                    <time dateTime={dateStr}>{format(day.date, 'DD/MM/YYYY', 'es')}</time>
+                                    <time dateTime={dateStr}>{dateStr}</time>
                                 </Link>
                             ) : (
                                 <div className="cursor-default inline-flex items-center justify-center px-4 py-2 rounded-full border border-apur-green text-sm font-medium text-apur-green bg-white">
-                                    <time dateTime={dateStr}>{format(day.date, 'DD/MM/YYYY', 'es')}</time>
+                                    <time dateTime={dateStr}>{dateStr}</time>
                                 </div>
                             )}
 
@@ -176,7 +176,7 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
                 >
                     <ConfirmModal
                         entity={'la fecha'}
-                        entityItem={dateToDelete?.date || ''}
+                        entityItem={dateToDelete ? format(dateToDelete?.date, 'DD/MM/YYYY') : ''}
                         onClose={() => setIsOpen(false)}
                         onTrigger={handleDelete}
                     />

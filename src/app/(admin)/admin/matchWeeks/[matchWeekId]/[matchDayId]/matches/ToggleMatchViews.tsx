@@ -61,10 +61,10 @@ export default function ToggleMatchViews({
                 <div className="mb-10 lg:mb-4 flex flex-col lg:flex-row justify-between lg:items-center">
                     <h2 className="mb-4 lg:mb-0 text-center lg:text-left text-xl font-semibold text-neutral-700">
                         <time dateTime={format(matchDay.date, 'DD/MM/YYYY', 'es')}>
-                            {format(matchDay.date, 'MMMM D, YYYY', 'es')}
+                            {format(matchDay.date, 'MMMM D, YYYY', 'es').replace(/^\w/, (c) => c.toUpperCase())}
                         </time>
                     </h2>
-                    <div className="flex flex-col lg:flex-row gap-4">
+                    <div className="flex flex-col lg:flex-row gap-4 xl:min-w-[800px]">
                         <Filters
                             categories={categories}
                             clubs={clubs}
@@ -81,7 +81,7 @@ export default function ToggleMatchViews({
                 </div>
 
                 {matchDay.matches.length === 0 ? (
-                    <p className="text-sm text-gray-500">No hay partidos en este día.</p>
+                    <p className="text-gray-500">No hay partidos en este día.</p>
                 ) : (
                     <ul className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6 w-full">
                         {matchDay.matches.map((match) => (

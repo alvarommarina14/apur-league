@@ -36,9 +36,9 @@ export default async function MatchesPage({ searchParams }: Props) {
     if (!selectedMatchWeek) {
         return (
             <div className="min-h-[calc(100dvh-4rem)] flex flex-col items-center justify-center px-6 bg-gray-50">
-                <h1 className="text-3xl font-semibold text-gray-700 mb-4">Jornada no encontrada</h1>
+                <h1 className="text-3xl font-semibold text-gray-700 mb-4">Fecha no encontrada</h1>
                 <p className="text-gray-500 max-w-md text-center">
-                    Lo sentimos, no pudimos encontrar la jornada que buscás. Por favor, verifica el ID o intenta
+                    Lo sentimos, no pudimos encontrar la fecha que buscás. Por favor, verifica el ID o intenta
                     nuevamente más tarde.
                 </p>
             </div>
@@ -69,7 +69,7 @@ export default async function MatchesPage({ searchParams }: Props) {
                 </div>
 
                 {selectedMatchWeek.matchDays.length === 0 ? (
-                    <p className="text-center text-gray-500 mt-10">No hay partidos programados para esta jornada.</p>
+                    <p className="text-center text-gray-500 mt-10">No hay partidos programados para esta fecha.</p>
                 ) : (
                     selectedMatchWeek.matchDays.map((day) => (
                         <section key={day.id} className="mt-10">

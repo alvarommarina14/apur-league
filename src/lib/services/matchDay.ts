@@ -6,7 +6,7 @@ export async function deleteMatchDay(id: number) {
     });
 }
 
-export async function createMatchDay(data: { matchWeekId: number; date: Date }) {
+export async function createMatchDay(data: { matchWeekId: number; date: string }) {
     return await prisma.matchDay.create({ data });
 }
 

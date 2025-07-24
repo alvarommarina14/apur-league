@@ -26,10 +26,10 @@ export default async function Home() {
                     alt="Logo de la liga"
                     width={300}
                     height={300}
-                    className="w-72 lg:w-96 h-auto"
+                    className="animate-slide-up animation-delay-[200ms] opacity-0 w-72 lg:w-96 h-auto"
                 />
 
-                <div className="flex flex-col gap-4 w-full max-w-xs">
+                <div className="animate-slide-up animation-delay-[400ms] opacity-0 flex flex-col gap-4 w-full max-w-xs">
                     <Link
                         href="/players"
                         className="w-full text-lg sm:text-xl px-6 py-3 rounded-xl font-semibold text-neutral-900 bg-yellow-300 transition-all duration-300 ease-in-out shadow-md hover:bg-yellow-400 hover:scale-105 hover:shadow-lg"
@@ -48,14 +48,14 @@ export default async function Home() {
                     >
                         Rankings
                     </Link>
-                    <Link
-                        href={session ? '/admin' : '/login'}
-                        className="fixed bottom-4 right-4 z-50 bg-yellow-300 text-neutral-900 p-3 rounded-full shadow-md transition-all duration-300 ease-in-out hover:bg-yellow-400 hover:scale-105 hover:shadow-lg"
-                        aria-label="Acceso administrador"
-                    >
-                        {session ? <Settings className="w-5 h-5" /> : <KeyRound className="w-5 h-5" />}
-                    </Link>
                 </div>
+                <Link
+                    href={session ? '/admin/matchWeeks' : '/login'}
+                    className="fixed bottom-4 right-4 z-50 bg-yellow-300 text-neutral-900 p-3 rounded-full shadow-md transition-all duration-300 ease-in-out hover:bg-yellow-400 hover:scale-105 hover:shadow-lg"
+                    aria-label="Acceso administrador"
+                >
+                    {session ? <Settings className="w-5 h-5" /> : <KeyRound className="w-5 h-5" />}
+                </Link>
             </div>
         </div>
     );
