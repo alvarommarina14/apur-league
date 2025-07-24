@@ -33,7 +33,7 @@ export default function Login() {
         if (!res?.ok) {
             showErrorToast(String(res?.error));
         } else {
-            router.push('/admin');
+            router.push('/admin/matchWeeks');
         }
     };
 

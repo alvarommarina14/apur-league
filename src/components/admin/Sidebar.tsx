@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
 import Link from 'next/link';
-import { Menu, X, House, Users, CalendarDays, LogOut } from 'lucide-react';
+import { Menu, X, Users, CalendarDays, LogOut } from 'lucide-react';
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -15,16 +15,8 @@ export default function Sidebar() {
 
     return (
         <>
-            <button
-                onClick={toggleSidebar}
-                className="py-4 px-2 absolute top-1 z-50 md:hidden"
-                aria-label="Abrir menú"
-            >
-                {open ? (
-                    <X size={28} />
-                ) : (
-                    <Menu size={28} className="text-white" />
-                )}
+            <button onClick={toggleSidebar} className="py-4 px-2 absolute top-1 z-50 md:hidden" aria-label="Abrir menú">
+                {open ? <X size={28} /> : <Menu size={28} className="text-white" />}
             </button>
 
             <aside
@@ -35,7 +27,7 @@ export default function Sidebar() {
                 <div className="h-full mt-16 md:mt-0 p-2 space-y-6">
                     <nav className="h-full flex flex-col justify-between">
                         <div>
-                            <Link
+                            {/* <Link
                                 href="/admin"
                                 className={`${pathname === '/admin' && 'bg-neutral-100'} font-semibold flex items-center hover:bg-admin-grey-hover gap-4 p-2 rounded-md`}
                                 onClick={closeSidebar}
@@ -44,7 +36,7 @@ export default function Sidebar() {
                                     <House size={18} />
                                 </span>
                                 Dashboard
-                            </Link>
+                            </Link> */}
                             <Link
                                 href="/admin/matchWeeks"
                                 className={`${pathname.startsWith('/admin/matchWeeks') && 'bg-neutral-100'} font-semibold flex items-center hover:bg-admin-grey-hover gap-4 p-2 rounded-md`}
@@ -53,7 +45,7 @@ export default function Sidebar() {
                                 <span>
                                     <CalendarDays size={18} />
                                 </span>
-                                Partidos
+                                Fechas
                             </Link>
                             <Link
                                 href="/admin/players"
@@ -79,12 +71,7 @@ export default function Sidebar() {
                 </div>
             </aside>
 
-            {open && (
-                <div
-                    className="fixed inset-0 bg-black opacity-30 z-30 md:hidden"
-                    onClick={closeSidebar}
-                />
-            )}
+            {open && <div className="fixed inset-0 bg-black opacity-30 z-30 md:hidden" onClick={closeSidebar} />}
         </>
     );
 }

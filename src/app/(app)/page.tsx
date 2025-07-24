@@ -50,7 +50,7 @@ export default async function Home() {
                     </Link>
                 </div>
                 <Link
-                    href={session ? '/admin' : '/login'}
+                    href={session ? '/admin/matchWeeks' : '/login'}
                     className="fixed bottom-4 right-4 z-50 bg-yellow-300 text-neutral-900 p-3 rounded-full shadow-md transition-all duration-300 ease-in-out hover:bg-yellow-400 hover:scale-105 hover:shadow-lg"
                     aria-label="Acceso administrador"
                 >
