@@ -2,9 +2,11 @@
 import { createMatchDay } from '@/lib/services/matchDay';
 import { deleteMatchDay } from '@/lib/services/matchDay';
 import { format } from '@formkit/tempo';
+import { revalidatePath } from 'next/cache';
 
 export async function createMatchDayAction(data: { matchWeekId: number; date: string }) {
     try {
+        revalidatePath('/admin/matchWeeks');
         return await createMatchDay(data);
     } catch {
         throw new Error(
