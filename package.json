@@ -21,8 +21,7 @@
         "react-dom": "^19.0.0",
         "react-hook-form": "^7.60.0",
         "react-hot-toast": "^2.5.2",
-        "react-select": "^5.10.2",
-        "yup": "^1.6.1"
+        "react-select": "^5.10.2"
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3",
