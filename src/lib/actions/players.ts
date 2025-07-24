@@ -8,24 +8,44 @@ import {
 } from '@/lib/services/player';
 
 export async function getAllPlayersAction(categoryId: number) {
-    return await getAllPlayers({ categoryId });
+    try {
+        return await getAllPlayers({ categoryId });
+    } catch {
+        throw new Error('Error al obtener la informacion de los jugadores');
+    }
 }
 
 export async function createPlayerAction(data: { firstName: string; lastName: string; categoryIds: number[] }) {
-    return await createPlayer(data);
+    try {
+        return await createPlayer(data);
+    } catch {
+        throw new Error('No se pudo crear el jugador: ' + data.firstName + ' ' + data.lastName);
+    }
 }
 
 export async function updatePlayerDataAction(
     id: number,
     data: { firstName: string; lastName: string; categoryIds: number[] }
 ) {
-    return await updatePlayerData(id, data);
+    try {
+        return await updatePlayerData(id, data);
+    } catch {
+        throw new Error('Error al actualizar el jugador: ' + data.firstName + ' ' + data.lastName);
+    }
 }
 
 export async function updatePlayerStatusAction(id: number, newStatus: boolean) {
-    return await updatePlayerStatus(id, newStatus);
+    try {
+        return await updatePlayerStatus(id, newStatus);
+    } catch {
+        throw new Error('Error al actualizar el estado del jugador');
+    }
 }
 
 export async function deletePlayerByIdAction(id: number) {
-    return await deletePlayerById(id);
+    try {
+        return await deletePlayerById(id);
+    } catch {
+        throw new Error('No se pudo eliminar el jugador');
+    }
 }

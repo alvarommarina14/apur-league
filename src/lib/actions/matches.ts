@@ -23,6 +23,12 @@ import { UpsertStatsType } from '@/types/stats';
 import { ValidateMatchType } from '@/types/matches';
 import { createPlayerMatch } from '@/lib/services/playerMatch';
 import { Team } from '@/generated/prisma';
+import { PlayerMatchTeamsWithPlayersType } from '@/types/playerMatch';
+
+interface ValidationResult {
+    isValid: boolean;
+    error?: string;
+}
 
 export async function createMatchAction(data: MatchCreateInputType, team1Ids: number[], team2Ids: number[]) {
     try {
@@ -43,8 +49,8 @@ export async function createMatchAction(data: MatchCreateInputType, team1Ids: nu
         const match = await createMatch(data);
         await createPlayerMatch(match.id, teamsWithPlayerIds);
         return match;
-    } catch (error) {
-        throw new Error('Failed to create match ' + error);
+    } catch {
+        throw new Error('No se pudo crear el partido');
     }
 }
 
@@ -101,55 +107,83 @@ export async function deleteMatchBulkAction(ids: number[]) {
 
 export async function validateMatchAction(data: ValidateMatchType) {
     const { hour, matchDayId, courtId, teamsWithPlayerIds, categoryId } = data;
-    const playerIds = teamsWithPlayerIds.map((team) => team.playerIds).flat();
+    const playerIds = teamsWithPlayerIds.flatMap((team) => team.playerIds);
 
-    const checkCourtAvailability = await getMatchByCourtAndHour(courtId, hour, matchDayId!);
+    const [courtAvailability, matchesByCategory, matchesByHour, previousMatches] = await Promise.all([
+        validateCourtAvailability(courtId, hour, matchDayId!),
+        validatePlayerAvailability(playerIds, categoryId, matchDayId!, 'category'),
+        validatePlayerAvailability(playerIds, hour, matchDayId!, 'hour'),
+        validatePreviousMatches(teamsWithPlayerIds, categoryId),
+    ]);
 
-    if (checkCourtAvailability && checkCourtAvailability > 0) {
-        throw new Error('La cancha ya tiene un partido programado a esta hora');
+    const validations = [courtAvailability, matchesByHour, matchesByCategory, previousMatches];
+
+    for (const validation of validations) {
+        if (!validation.isValid) {
+            throw new MatchValidationError(validation.error!);
+        }
     }
 
-    const checkMatchesByCategoryAndDayByPlayerIds = await getMatchByPlayerIdAndCategoryAndDay(
-        playerIds,
-        categoryId,
-        matchDayId!
+    return { hour, matchDayId, courtId, playerIds, categoryId };
+}
+
+async function validateCourtAvailability(courtId: number, hour: Date, matchDayId: number): Promise<ValidationResult> {
+    const count = await getMatchByCourtAndHour(courtId, hour, matchDayId);
+    return {
+        isValid: count === 0,
+        error: 'La cancha ya tiene un partido programado a esta hora',
+    };
+}
+
+async function validatePlayerAvailability(
+    playerIds: number[],
+    filter: Date | number,
+    matchDayId: number,
+    type: 'hour' | 'category'
+): Promise<ValidationResult> {
+    const matches =
+        type === 'hour'
+            ? await getMatchesByHourAndPlayerId(playerIds, filter as Date, matchDayId)
+            : await getMatchByPlayerIdAndCategoryAndDay(playerIds, filter as number, matchDayId);
+
+    if (matches.length === 0) return { isValid: true };
+
+    const names = matches.flatMap((match) =>
+        match.playerMatches.map((pm) => `${pm.player.firstName} ${pm.player.lastName}`)
     );
-
-    if (checkMatchesByCategoryAndDayByPlayerIds && checkMatchesByCategoryAndDayByPlayerIds.length > 0) {
-        const names = checkMatchesByCategoryAndDayByPlayerIds
-            .map((match) => match.playerMatches.map((pm) => pm.player.firstName + ' ' + pm.player.lastName))
-            .flat();
-        throw new Error(
-            'Los siguientes jugadores ya tienen un partido para esta categoria en este dia: ' + names.join(', ')
-        );
-    }
-
-    const checkMatchesByHourAndPlayerId = await getMatchesByHourAndPlayerId(playerIds, hour, matchDayId!);
-
-    if (checkMatchesByHourAndPlayerId && checkMatchesByHourAndPlayerId.length > 0) {
-        const names = checkMatchesByHourAndPlayerId
-            .map((match) => match.playerMatches.map((pm) => pm.player.firstName + ' ' + pm.player.lastName))
-            .flat();
-        throw new Error('Los siguientes jugadores ya tienen un partido en este horario: ' + names.join(', '));
-    }
-
-    const previousMatchesByPlayerIdsAndCategory = await getMatchesByPlayerIdsAndCategory(
-        teamsWithPlayerIds,
-        categoryId
-    );
-
-    if (previousMatchesByPlayerIdsAndCategory && previousMatchesByPlayerIdsAndCategory.length > 0) {
-        const names = previousMatchesByPlayerIdsAndCategory
-            .map((match) => match.playerMatches.map((pm) => pm.player.firstName + ' ' + pm.player.lastName))
-            .flat();
-        throw new Error('Los siguientes jugadores ya jugaron en contra en esta categoria: ' + names.join(', '));
-    }
+    const uniqueNames = [...new Set(names)];
 
     return {
-        hour,
-        matchDayId,
-        courtId,
-        playerIds,
-        categoryId,
+        isValid: false,
+        error:
+            type === 'hour'
+                ? `Los siguientes jugadores ya tienen un partido en este horario: ${uniqueNames.join(', ')}`
+                : `Los siguientes jugadores ya tienen un partido para esta categoría en este día: ${uniqueNames.join(', ')}`,
     };
+}
+
+async function validatePreviousMatches(
+    teamsWithPlayerIds: PlayerMatchTeamsWithPlayersType[],
+    categoryId: number
+): Promise<ValidationResult> {
+    const matches = await getMatchesByPlayerIdsAndCategory(teamsWithPlayerIds, categoryId);
+
+    if (matches.length === 0) return { isValid: true };
+
+    const names = matches.flatMap((match) =>
+        match.playerMatches.map((pm) => `${pm.player.firstName} ${pm.player.lastName}`)
+    );
+    const uniqueNames = [...new Set(names)];
+
+    return {
+        isValid: false,
+        error: `Los siguientes jugadores ya jugaron en contra en esta categoría: ${uniqueNames.join(', ')}`,
+    };
+}
+
+class MatchValidationError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'MatchValidationError';
+    }
 }
