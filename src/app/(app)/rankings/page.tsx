@@ -5,7 +5,7 @@ import { getAllCategories } from '@/lib/services/category';
 import Filters from '@/components/Filters';
 import ErrorMessage from '@/components/ErrorMessage';
 
-import { RankingList } from './RankingList';
+import { RankingList } from '@/components/rankings/RankingList';
 
 interface CategoryPlayersSearchParamsType {
     searchParams: Promise<{
