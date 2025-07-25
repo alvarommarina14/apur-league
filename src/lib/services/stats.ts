@@ -67,9 +67,9 @@ export async function getPlayersStatsByCategory({
 
     const demotingAndPromotingPlayers = await getDemotingAndPromotingPlayersByCategory(categoryId);
 
-    const promotingPlayerIds = demotingAndPromotingPlayers.slice(0, 2).map((p) => p.playerId);
+    const promotingPlayerIds = demotingAndPromotingPlayers.slice(0, 3).map((p) => p.playerId);
 
-    const demotingPlayerIds = demotingAndPromotingPlayers.slice(3, 5).map((p) => p.playerId);
+    const demotingPlayerIds = demotingAndPromotingPlayers.slice(3, 6).map((p) => p.playerId);
 
     const players = rawPlayers.map((p) => {
         const isPromoting = promotingPlayerIds.includes(p.player.id);
@@ -125,12 +125,12 @@ export async function getDemotingAndPromotingPlayersByCategory(categoryId: numbe
     return await prisma.$queryRaw`
         (SELECT "playerId" FROM "PlayerCategoryStats" 
          WHERE "categoryId" = ${categoryId}::integer 
-         ORDER BY points DESC 
+         ORDER BY points DESC,"matchesWon" ASC,"matchesPlayed" DESC,"diffSets" DESC,"diffGames" DESC 
          LIMIT 3)
         UNION ALL
         (SELECT "playerId" FROM "PlayerCategoryStats" 
          WHERE "categoryId" = ${categoryId}::integer 
-         ORDER BY points ASC 
+         ORDER BY points ASC,"matchesPlayed" DESC,"diffSets" ASC,"diffGames" ASC
          LIMIT 3)
     `;
 }
