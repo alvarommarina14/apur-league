@@ -14,6 +14,7 @@ export async function createMatchWeekAction() {
 
 export async function getMatchWeekWithMatchesAction(matchWeekId: number) {
     try {
+        revalidatePath('/admin/matchWeeks');
         return await getMatchWeekWithMatches({ matchWeekId });
     } catch {
         throw new Error('Error al obtener datos de la fecha');

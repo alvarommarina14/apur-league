@@ -21,5 +21,3 @@ export default async function AdminMatchWeeksPage() {
         </div>
     );
 }
-
-// export const dynamic = 'force-dynamic';

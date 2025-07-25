@@ -18,6 +18,7 @@ export async function createMatchDayAction(data: { matchWeekId: number; date: st
 
 export async function deleteMatchDayAction(id: number) {
     try {
+        revalidatePath('/admin/matchWeeks');
         return await deleteMatchDay(id);
     } catch {
         throw new Error('No se pudo eliminar el dia seleccionado');
