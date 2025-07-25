@@ -209,6 +209,7 @@ export default function CreateMatchForm({ categories, clubs, matchDayId }: Creat
                 options={clubOptions}
                 onChange={(newValue) => {
                     setSelectedClub((newValue as OptionType | null)?.value ?? null);
+                    setSelectedCourt(null);
                 }}
                 instanceId="club"
                 placeholder="Seleccionar club"
