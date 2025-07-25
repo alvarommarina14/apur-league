@@ -2,11 +2,9 @@
 import { createMatchDay } from '@/lib/services/matchDay';
 import { deleteMatchDay } from '@/lib/services/matchDay';
 import { format } from '@formkit/tempo';
-import { revalidatePath } from 'next/cache';
 
 export async function createMatchDayAction(data: { matchWeekId: number; date: string }) {
     try {
-        revalidatePath('/admin/matchWeeks');
         return await createMatchDay(data);
     } catch {
         throw new Error(
@@ -18,7 +16,6 @@ export async function createMatchDayAction(data: { matchWeekId: number; date: st
 
 export async function deleteMatchDayAction(id: number) {
     try {
-        revalidatePath('/admin/matchWeeks');
         return await deleteMatchDay(id);
     } catch {
         throw new Error('No se pudo eliminar el dia seleccionado');

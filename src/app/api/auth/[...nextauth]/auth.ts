@@ -1,6 +1,7 @@
 import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
+import bcrypt from 'bcrypt';
 
 export const authOptions: AuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
@@ -24,7 +25,7 @@ export const authOptions: AuthOptions = {
                     throw new Error('Usuario no encontrado');
                 }
 
-                const matchPassword = credentials.password === userFound.password;
+                const matchPassword = await bcrypt.compare(credentials.password, userFound.password);
 
                 if (!matchPassword) {
                     throw new Error('Contraseña incorrecta');
