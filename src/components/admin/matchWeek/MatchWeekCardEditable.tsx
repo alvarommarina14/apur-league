@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from '@formkit/tempo';
 import Link from 'next/link';
-import { Pencil, X, Share } from 'lucide-react';
+import { Pencil, X, Share, CalendarX2 } from 'lucide-react';
 
 import { MatchWeekWithMatchDaysType } from '@/types/matchWeek';
 import { ClubWithCourtsType } from '@/types/club';
@@ -16,7 +16,7 @@ import ConfirmModal from '@/components/ConfirmModal';
 
 import { pdf } from '@react-pdf/renderer';
 import { MatchWeekPDF } from '@/components/admin/pdf/MatchWeekPDF';
-import { getMatchWeekWithMatchesAction } from '@/lib/actions/matchWeek';
+import { getMatchWeekWithMatchesAction, deleteMatchWeekAction } from '@/lib/actions/matchWeek';
 
 import { showErrorToast, showSuccessToast } from '@/components/Toast';
 
@@ -36,13 +36,21 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
     const [isEditing, setIsEditing] = useState(false);
     const [newDate, setNewDate] = useState('');
     const [dateToDelete, setDateToDelete] = useState<DateToDeleteType | null>(null);
+    const [isDeleteMatchWeek, setIsDeleteMatchWeek] = useState(false);
 
-    const handleRemoveDay = (day: DateToDeleteType) => {
-        setDateToDelete(day);
-        setIsOpen(true);
+    const handleDeleteMatchWeek = async () => {
+        try {
+            await deleteMatchWeekAction(week.id);
+            showSuccessToast('Fecha eliminada con exito.');
+            router.refresh();
+        } catch (error) {
+            showErrorToast(String(error));
+        } finally {
+            setIsOpen(false);
+        }
     };
 
-    const handleDelete = async () => {
+    const handleDeleteMatchDay = async () => {
         if (!dateToDelete) return;
         try {
             await deleteMatchDayAction(dateToDelete.id);
@@ -118,6 +126,21 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
             >
                 {isEditing ? <X size={18} /> : <Pencil size={18} />}
             </button>
+            <button
+                onClick={() => exportMatchWeekToPDF()}
+                className={`absolute top-4 right-14 transition p-2 rounded-full cursor-pointer hover:text-apur-green hover:bg-gray-100  ${isEditing ? 'hidden' : 'text-gray-500'}`}
+            >
+                <Share size={18} />
+            </button>
+            <button
+                onClick={() => {
+                    setIsOpen(true);
+                    setIsDeleteMatchWeek(true);
+                }}
+                className={`absolute top-4 right-24 transition p-2 rounded-full cursor-pointer hover:text-red-700 hover:bg-red-100 ${isEditing ? 'hidden' : 'text-gray-500'}`}
+            >
+                <CalendarX2 size={18} />
+            </button>
 
             <h2 className="text-xl font-semibold text-neutral-700 mb-4 uppercase">{week.name}</h2>
 
@@ -144,12 +167,11 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
                             {isEditing && (
                                 <button
                                     type="button"
-                                    onClick={() =>
-                                        handleRemoveDay({
-                                            id: Number(day.id),
-                                            date: dateISO,
-                                        })
-                                    }
+                                    onClick={() => {
+                                        setDateToDelete({ id: Number(day.id), date: dateISO });
+                                        setIsDeleteMatchWeek(false);
+                                        setIsOpen(true);
+                                    }}
                                     className="absolute -top-3 -right-2 cursor-pointer bg-red-800 text-white rounded-full p-1.5 hover:bg-red-600 transition"
                                 >
                                     <X size={14} />
@@ -187,19 +209,17 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
                     }}
                 >
                     <ConfirmModal
-                        entity={'la fecha'}
-                        entityItem={dateToDelete ? format(dateToDelete?.date, 'DD/MM/YYYY') : ''}
+                        entity={!isDeleteMatchWeek ? 'la fecha' : ''}
+                        entityItem={
+                            isDeleteMatchWeek ? week.name : dateToDelete ? format(dateToDelete?.date, 'DD/MM/YYYY') : ''
+                        }
                         onClose={() => setIsOpen(false)}
-                        onTrigger={handleDelete}
+                        onTrigger={isDeleteMatchWeek ? handleDeleteMatchWeek : handleDeleteMatchDay}
+                        isTwoStep={isDeleteMatchWeek}
+                        confirmationText={week.name}
                     />
                 </Modal>
             )}
-            <button
-                onClick={() => exportMatchWeekToPDF()}
-                className={`absolute top-4 right-14 transition p-2 rounded-full cursor-pointer hover:text-apur-green hover:bg-gray-100  ${isEditing ? 'hidden' : 'text-gray-500'}`}
-            >
-                <Share size={18} />
-            </button>
         </div>
     );
 }

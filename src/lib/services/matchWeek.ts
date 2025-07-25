@@ -126,3 +126,9 @@ export async function createMatchWeek() {
 
     return newMatchWeek;
 }
+
+export async function deleteMatchWeek({ matchWeekId }: { matchWeekId: number }) {
+    return await prisma.matchWeek.delete({
+        where: { id: matchWeekId },
+    });
+}

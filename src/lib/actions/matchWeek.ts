@@ -1,6 +1,5 @@
 'use server';
-import { getMatchWeekWithMatches } from '@/lib/services/matchWeek';
-import { createMatchWeek } from '@/lib/services/matchWeek';
+import { getMatchWeekWithMatches, createMatchWeek, deleteMatchWeek } from '@/lib/services/matchWeek';
 import { revalidatePath } from 'next/cache';
 
 export async function createMatchWeekAction() {
@@ -18,5 +17,14 @@ export async function getMatchWeekWithMatchesAction(matchWeekId: number) {
         return await getMatchWeekWithMatches({ matchWeekId });
     } catch {
         throw new Error('Error al obtener datos de la fecha');
+    }
+}
+
+export async function deleteMatchWeekAction(matchWeekId: number) {
+    try {
+        revalidatePath('/admin/matchWeeks');
+        return await deleteMatchWeek({ matchWeekId });
+    } catch {
+        throw new Error('Error al intentar eliminar una fecha');
     }
 }
