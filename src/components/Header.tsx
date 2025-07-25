@@ -8,11 +8,8 @@ export default function Header() {
 
     return (
         <header className="w-full bg-neutral-900 text-white shadow-md h-16">
-            <div className="max-w-7xl mx-auto flex items-center justify-between h-full px-4">
-                <Link
-                    href="/"
-                    className={`${pathname.includes('/admin') && 'ml-8'}`}
-                >
+            <div className="mx-auto flex items-center justify-between h-full px-4 md:px-10">
+                <Link href="/" className={`${pathname.includes('/admin') && 'ml-8 md:ml-0'}`}>
                     <Image
                         src="/logo-apur.png"
                         alt="Logo de la liga"

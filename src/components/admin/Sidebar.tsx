@@ -15,8 +15,8 @@ export default function Sidebar() {
 
     return (
         <>
-            <button onClick={toggleSidebar} className="py-4 px-2 absolute top-1 z-50 md:hidden" aria-label="Abrir menú">
-                {open ? <X size={28} /> : <Menu size={28} className="text-white" />}
+            <button onClick={toggleSidebar} className="py-4 px-2 absolute top-1 z-30 md:hidden" aria-label="Abrir menú">
+                <Menu size={28} className="text-white" />
             </button>
 
             <aside
@@ -24,8 +24,15 @@ export default function Sidebar() {
                     open ? 'translate-x-0' : '-translate-x-full'
                 } md:relative md:block`}
             >
-                <div className="h-full mt-16 md:mt-0 p-2 space-y-6">
-                    <nav className="h-full flex flex-col justify-between">
+                <div className="h-[calc(100dvh-4rem)]  md:h-full mt-16 md:mt-0 p-2 space-y-6">
+                    <button
+                        onClick={toggleSidebar}
+                        className="absolute top-2 right-2 z-50 md:hidden"
+                        aria-label="Abrir menú"
+                    >
+                        <X size={28} />
+                    </button>
+                    <nav className="h-[calc(100dvh-5rem)] md:h-full flex flex-col justify-between">
                         <div>
                             {/* <Link
                                 href="/admin"

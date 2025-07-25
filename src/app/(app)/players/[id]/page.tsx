@@ -28,7 +28,7 @@ export default async function PlayerPage({ params }: ParamsProp) {
 
     return (
         <div className="w-full px-4 py-12 bg-neutral-50 min-h-[calc(100dvh-4rem)] flex flex-col items-center">
-            <h1 className="text-4xl font-bold text-apur-green mb-2 truncate uppercase">
+            <h1 className="text-4xl font-bold text-apur-green mb-2 w-full text-center uppercase">
                 {player.firstName} {player.lastName}
             </h1>
             <p
