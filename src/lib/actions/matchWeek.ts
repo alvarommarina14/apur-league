@@ -7,8 +7,8 @@ export async function createMatchWeekAction() {
     try {
         revalidatePath('/admin/matchWeeks');
         return await createMatchWeek();
-    } catch {
-        throw new Error('No se pudo crear la fecha');
+    } catch (error) {
+        throw error;
     }
 }
 
