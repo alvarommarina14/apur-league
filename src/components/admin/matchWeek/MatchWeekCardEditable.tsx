@@ -44,7 +44,12 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
             showSuccessToast('Fecha eliminada con exito.');
             router.refresh();
         } catch (error) {
-            showErrorToast(String(error));
+            if (error instanceof Error) {
+                const message = error.message.split('Error:')[0];
+                showErrorToast(message);
+            } else {
+                showErrorToast('An unexpected error occurred');
+            }
         } finally {
             setIsOpen(false);
         }
@@ -57,7 +62,11 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
             showSuccessToast('Fecha eliminada con exito.');
             router.refresh();
         } catch (error) {
-            showErrorToast(String(error));
+            if (error instanceof Error) {
+                showErrorToast(error.message.split('Error:')[0]);
+            } else {
+                showErrorToast('An unexpected error occurred');
+            }
         } finally {
             setIsOpen(false);
         }
@@ -67,7 +76,7 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
         e.preventDefault();
 
         const formData = {
-            matchWeekId: week.id,
+            matchWeekId: week.id * 1000,
             date: new Date(newDate).toISOString(),
         };
         try {
@@ -75,7 +84,11 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
             showSuccessToast('Fecha agregada con exito.');
             router.refresh();
         } catch (error) {
-            showErrorToast(String(error));
+            if (error instanceof Error) {
+                showErrorToast(error.message.split('Error:')[0]);
+            } else {
+                showErrorToast('An unexpected error occurred');
+            }
         }
     };
 

@@ -17,7 +17,11 @@ export default function CreateButton() {
             showSuccessToast('Fecha creada con exito');
             router.refresh();
         } catch (error) {
-            showErrorToast(String(error));
+            if (error instanceof Error) {
+                showErrorToast(error.message);
+            } else {
+                showErrorToast('An unexpected error occurred');
+            }
         }
     };
     return (

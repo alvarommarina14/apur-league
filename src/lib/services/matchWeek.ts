@@ -105,18 +105,14 @@ export async function getAllMatchWeekWithMatchDays() {
     return weeks;
 }
 
-export async function createMatchWeek() {
-    const lastWeek = await prisma.matchWeek.findFirst({
+export async function getLastMatchWeek() {
+    return await prisma.matchWeek.findFirst({
         orderBy: { order: 'desc' },
         include: { matchDays: true },
     });
+}
 
-    if (lastWeek && lastWeek.matchDays.length === 0) {
-        throw new Error('No se puede crear una nueva fecha hasta que la anterior tenga días cargados');
-    }
-
-    const nextOrder = lastWeek ? lastWeek.order + 1 : 1;
-
+export async function createMatchWeek(nextOrder: number) {
     const newMatchWeek = await prisma.matchWeek.create({
         data: {
             name: `Fecha ${nextOrder}`,
