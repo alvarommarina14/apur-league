@@ -34,15 +34,19 @@ export async function createMatchAction(data: MatchCreateInputType, team1Ids: nu
                 team: Team.EQUIPO_2,
             })),
         ];
-        await validateMatchAction({
+        const result = await validateMatchAction({
             ...data,
             teamsWithPlayerIds,
         });
-        const match = await createMatch(data);
-        await createPlayerMatch(match.id, teamsWithPlayerIds);
-        return match;
-    } catch {
-        throw new Error('No se pudo crear el partido');
+        if (result.success) {
+            const match = await createMatch(data);
+            await createPlayerMatch(match.id, teamsWithPlayerIds);
+            return { response: 'Partido creado exitosamente', success: true };
+        }
+
+        return result;
+    } catch (error) {
+        throw error;
     }
 }
 
@@ -100,11 +104,11 @@ export async function validateMatchAction(data: ValidateMatchType) {
 
     for (const validation of validations) {
         if (!validation.isValid) {
-            throw new MatchValidationError(validation.error!);
+            return { response: validation.error!, success: false };
         }
     }
 
-    return { hour, matchDayId, courtId, playerIds, categoryId };
+    return { response: '', success: true };
 }
 
 async function validateCourtAvailability(courtId: number, hour: Date, matchDayId: number): Promise<ValidationResult> {
@@ -159,11 +163,4 @@ async function validatePreviousMatches(
         isValid: false,
         error: `Los siguientes jugadores ya jugaron en contra en esta categoría: ${uniqueNames.join(', ')}`,
     };
-}
-
-class MatchValidationError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = 'Match Validation Error';
-    }
 }

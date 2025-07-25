@@ -19,7 +19,6 @@ import { MatchWeekPDF } from '@/components/admin/pdf/MatchWeekPDF';
 import { getMatchWeekWithMatchesAction, deleteMatchWeekAction } from '@/lib/actions/matchWeek';
 
 import { showErrorToast, showSuccessToast } from '@/components/Toast';
-
 interface MatchWeekCardEditableProp {
     week: MatchWeekWithMatchDaysType;
     clubs: ClubWithCourtsType[];
@@ -43,13 +42,8 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
             await deleteMatchWeekAction(week.id);
             showSuccessToast('Fecha eliminada con exito.');
             router.refresh();
-        } catch (error) {
-            if (error instanceof Error) {
-                const message = error.message.split('Error:')[0];
-                showErrorToast(message);
-            } else {
-                showErrorToast('An unexpected error occurred');
-            }
+        } catch {
+            showErrorToast('Error al intentar eliminar la fecha');
         } finally {
             setIsOpen(false);
         }
@@ -61,12 +55,8 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
             await deleteMatchDayAction(dateToDelete.id);
             showSuccessToast('Fecha eliminada con exito.');
             router.refresh();
-        } catch (error) {
-            if (error instanceof Error) {
-                showErrorToast(error.message.split('Error:')[0]);
-            } else {
-                showErrorToast('An unexpected error occurred');
-            }
+        } catch {
+            showErrorToast('No se pudo eliminar el dia de la fecha');
         } finally {
             setIsOpen(false);
         }
@@ -83,17 +73,16 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
             await createMatchDayAction(formData);
             showSuccessToast('Fecha agregada con exito.');
             router.refresh();
-        } catch (error) {
-            if (error instanceof Error) {
-                showErrorToast(error.message.split('Error:')[0]);
-            } else {
-                showErrorToast('An unexpected error occurred');
-            }
+        } catch {
+            showErrorToast(
+                'No se pudo crear el dia seleccionado para la fecha: ' +
+                    format({ date: formData.date, format: 'DD/MM/YYYY', tz: 'UTC' })
+            );
         }
     };
 
     const exportMatchWeekToPDF = async () => {
-        const matchWeekWithMatches = await getMatchWeekWithMatchesAction(week.id);
+        const matchWeekWithMatches = (await getMatchWeekWithMatchesAction(week.id)).response;
         if (!matchWeekWithMatches) {
             showErrorToast('Error al intentar descargar la fecha, intente nuevamente.');
             return;

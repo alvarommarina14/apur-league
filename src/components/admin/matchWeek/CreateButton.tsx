@@ -13,17 +13,18 @@ export default function CreateButton() {
         e.preventDefault();
 
         try {
-            await createMatchWeekAction();
-            showSuccessToast('Fecha creada con exito');
-            router.refresh();
-        } catch (error) {
-            if (error instanceof Error) {
-                showErrorToast(error.message);
+            const result = await createMatchWeekAction();
+            if (result.success) {
+                showSuccessToast('Fecha creada con exito');
             } else {
-                showErrorToast('An unexpected error occurred');
+                showErrorToast(result.response!);
             }
+            router.refresh();
+        } catch {
+            showErrorToast('No se pudo cargar la fecha');
         }
     };
+
     return (
         <form onSubmit={handleCreate} className="flex justify-center mt-4">
             <button

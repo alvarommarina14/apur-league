@@ -31,9 +31,7 @@ export default function TableActionsButtons({ row, isActive = true }: PlayerCard
             await updatePlayerStatusAction(row.id, false);
             showSuccessToast('Jugador desactivado con exito');
             router.refresh();
-        } catch (err) {
-            console.error(err);
-        }
+        } catch {}
     };
 
     const handleUpdateStatus = async () => {
@@ -42,9 +40,7 @@ export default function TableActionsButtons({ row, isActive = true }: PlayerCard
             await updatePlayerStatusAction(row.id, true);
             showSuccessToast('Jugador activado con exito');
             router.refresh();
-        } catch (err) {
-            console.error(err);
-        }
+        } catch {}
     };
 
     return (

@@ -119,8 +119,7 @@ export default function MatchCardEditable({ match }: Props) {
             );
             showSuccessToast('Resultado actualizado correctamente');
             router.refresh();
-        } catch (error) {
-            console.error('Error updating match result:', error);
+        } catch {
             showErrorToast('Error al actualizar el resultado del partido. Por favor, inténtalo de nuevo más tarde.');
         }
         setIsEditing(false);
