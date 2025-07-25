@@ -8,7 +8,7 @@ import { Trash, Pencil, UserPlus } from 'lucide-react';
 import { PlayerType } from '@/types/player';
 import { updatePlayerStatusAction } from '@/lib/actions/players';
 
-import { showSuccessToast } from '@/components/Toast';
+import { showErrorToast, showSuccessToast } from '@/components/Toast';
 
 import Link from 'next/link';
 import Modal from '@/components/Modal';
@@ -31,8 +31,8 @@ export default function TableActionsButtons({ row, isActive = true }: PlayerCard
             await updatePlayerStatusAction(row.id, false);
             showSuccessToast('Jugador desactivado con exito');
             router.refresh();
-        } catch (err) {
-            console.error(err);
+        } catch {
+            showErrorToast('No se pudo desactivar el jugador');
         }
     };
 
@@ -42,8 +42,8 @@ export default function TableActionsButtons({ row, isActive = true }: PlayerCard
             await updatePlayerStatusAction(row.id, true);
             showSuccessToast('Jugador activado con exito');
             router.refresh();
-        } catch (err) {
-            console.error(err);
+        } catch {
+            showErrorToast('No se pudo activar el jugador');
         }
     };
 

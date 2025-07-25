@@ -97,26 +97,26 @@ export default function CreateMatchForm({ categories, clubs, matchDayId }: Creat
         };
         try {
             setIsLoading(true);
-            await createMatchAction(
+            const result = await createMatchAction(
                 formData,
                 team1Players.filter((p) => !!p).map(Number),
                 team2Players.filter((p) => !!p).map(Number)
             );
-            showSuccessToast('Partido creado exitosamente');
-            setType('SINGLES');
-            setSelectedCategory('');
-            setTeam1Players(['', '']);
-            setTeam2Players(['', '']);
-            setSelectedClub(null);
-            setSelectedCourt(null);
-            setSelectedHour('');
-            router.refresh();
-        } catch (error) {
-            if (error instanceof Error) {
-                showErrorToast(error.message.split('Error:')[1]);
+            if (result.success) {
+                showSuccessToast(result.response);
+                setType('SINGLES');
+                setSelectedCategory('');
+                setTeam1Players(['', '']);
+                setTeam2Players(['', '']);
+                setSelectedClub(null);
+                setSelectedCourt(null);
+                setSelectedHour('');
+                router.refresh();
             } else {
-                showErrorToast('An unexpected error occurred');
+                showErrorToast(result.response);
             }
+        } catch {
+            showErrorToast('No se pudo crear el partido');
         } finally {
             setIsLoading(false);
         }
