@@ -37,8 +37,8 @@ export async function updatePlayerDataAction(
 export async function updatePlayerStatusAction(id: number, newStatus: boolean) {
     try {
         return await updatePlayerStatus(id, newStatus);
-    } catch {
-        throw new Error('Error al actualizar el estado del jugador');
+    } catch (error) {
+        throw error;
     }
 }
 
