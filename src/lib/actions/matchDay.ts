@@ -6,7 +6,8 @@ import { format } from '@formkit/tempo';
 export async function createMatchDayAction(data: { matchWeekId: number; date: string }) {
     try {
         return await createMatchDay(data);
-    } catch {
+    } catch (error) {
+        console.log(error);
         throw new Error(
             'No se pudo crear el dia seleccionado para la fecha: ' +
                 format({ date: data.date, format: 'DD/MM/YYYY', tz: 'UTC' })
