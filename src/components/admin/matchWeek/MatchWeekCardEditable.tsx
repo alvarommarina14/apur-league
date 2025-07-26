@@ -66,7 +66,7 @@ export default function MatchWeekCardEditable({ week, clubs }: MatchWeekCardEdit
         e.preventDefault();
 
         const formData = {
-            matchWeekId: week.id * 1000,
+            matchWeekId: week.id,
             date: new Date(newDate).toISOString(),
         };
         try {
